@@ -276,32 +276,196 @@ function generateInsertionSortTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateMergeSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+
+    function merge(arr: number[], l: number, m: number, r: number) {
+        const n1 = m - l + 1;
+        const n2 = r - m;
+        const L = arr.slice(l, m + 1);
+        const R = arr.slice(m + 1, r + 1);
+        
+        trace.push({ line: 11, variables: {left: `[${L.join(',')}]`, right: `[${R.join(',')}]`}, data: [...localArr], highlighted: arr.slice(l, r + 1).map((_, i) => l + i) });
+
+        let i = 0, j = 0, k = l;
+        trace.push({ line: 12, variables: {left: `[${L.join(',')}]`, right: `[${R.join(',')}]`, resultArray: "[]", leftIndex: i, rightIndex: j}, data: [...localArr], highlighted: [] });
+
+        while (i < n1 && j < n2) {
+            trace.push({ line: 13, variables: {left: `[${L.join(',')}]`, right: `[${R.join(',')}]`, condition: `${L[i]} < ${R[j]}`}, data: [...localArr], highlighted: [l+i, m+1+j] });
+            if (L[i] <= R[j]) {
+                trace.push({ line: 14, variables: {}, data: [...localArr], highlighted: [l+i] });
+                arr[k] = L[i];
+                localArr[k] = L[i];
+                trace.push({ line: 15, variables: {resultArray: `[${arr.slice(l, k+1).join(',')}]`, leftIndex: i}, data: [...localArr], highlighted: [k] });
+                i++;
+                trace.push({ line: 16, variables: {resultArray: `[${arr.slice(l, k+1).join(',')}]`, leftIndex: i}, data: [...localArr], highlighted: [k] });
+            } else {
+                trace.push({ line: 17, variables: {}, data: [...localArr], highlighted: [m+1+j] });
+                arr[k] = R[j];
+                localArr[k] = R[j];
+                trace.push({ line: 18, variables: {resultArray: `[${arr.slice(l, k+1).join(',')}]`, rightIndex: j}, data: [...localArr], highlighted: [k] });
+                j++;
+                 trace.push({ line: 19, variables: {resultArray: `[${arr.slice(l, k+1).join(',')}]`, rightIndex: j}, data: [...localArr], highlighted: [k] });
+            }
+            k++;
+        }
+
+        while (i < n1) {
+             trace.push({ line: 23, variables: {resultArray: `[${arr.slice(l, k).join(',')}]`}, data: [...localArr], highlighted: [l+i] });
+            arr[k] = L[i];
+            localArr[k] = L[i];
+            i++;
+            k++;
+        }
+
+        while (j < n2) {
+             trace.push({ line: 24, variables: {resultArray: `[${arr.slice(l, k).join(',')}]`}, data: [...localArr], highlighted: [m+1+j] });
+            arr[k] = R[j];
+            localArr[k] = R[j];
+            j++;
+            k++;
+        }
+        trace.push({ line: 25, variables: {resultArray: `[${arr.slice(l, r+1).join(',')}]`}, data: [...localArr], highlighted: arr.slice(l, r + 1).map((_, i) => l + i) });
+    }
+
+    function sort(arr: number[], l: number, r: number) {
+        trace.push({ line: 1, variables: {arr: `[${arr.slice(l,r+1).join(',')}]`}, data: [...localArr], highlighted: arr.slice(l,r+1).map((_,i) => l+i) });
+        if (l < r) {
+            trace.push({ line: 2, variables: { arr: `[${arr.slice(l,r+1).join(',')}]`, condition: `${arr.length} <= 1`}, data: [...localArr], highlighted: [] });
+            const m = Math.floor(l + (r - l) / 2);
+            trace.push({ line: 5, variables: { arr: `[${arr.slice(l,r+1).join(',')}]`, mid: m}, data: [...localArr], highlighted: [m] });
+            
+            trace.push({ line: 6, variables: { arr: `[${arr.slice(l,r+1).join(',')}]`}, data: [...localArr], highlighted: arr.slice(l, m+1).map((_,i) => l+i) });
+            sort(arr, l, m);
+            trace.push({ line: 7, variables: { arr: `[${arr.slice(l,r+1).join(',')}]`}, data: [...localArr], highlighted: arr.slice(m+1,r+1).map((_,i) => m+1+i) });
+            sort(arr, m + 1, r);
+
+            trace.push({ line: 8, variables: { arr: `[${arr.slice(l,r+1).join(',')}]`}, data: [...localArr], highlighted: arr.slice(l, r + 1).map((_, i) => l + i) });
+            merge(arr, l, m, r);
+        } else {
+             trace.push({ line: 2, variables: { arr: `[${arr.slice(l,r+1).join(',')}]`, condition: `${arr.length} <= 1`}, data: [...localArr], highlighted: [] });
+             trace.push({ line: 3, variables: { arr: `[${arr.slice(l,r+1).join(',')}]`}, data: [...localArr], highlighted: [] });
+        }
+    }
+    
+    sort(localArr, 0, localArr.length - 1);
+    trace.push({line: 9, variables: { 'return value': `[${localArr.join(', ')}]`}, data: localArr, highlighted: []});
+    return trace;
+}
+
+
+function generateQuickSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+
+    function partition(low: number, high: number) {
+        trace.push({ line: 11, variables: { arr: `[${localArr.join(', ')}]`, low, high }, data: [...localArr], highlighted: [] });
+        let pivot = localArr[high];
+        trace.push({ line: 12, variables: { arr: `[${localArr.join(', ')}]`, low, high, pivot }, data: [...localArr], highlighted: [high] });
+        let i = low - 1;
+        trace.push({ line: 13, variables: { arr: `[${localArr.join(', ')}]`, low, high, pivot, i }, data: [...localArr], highlighted: [] });
+
+        for (let j = low; j < high; j++) {
+            trace.push({ line: 14, variables: { arr: `[${localArr.join(', ')}]`, low, high, pivot, i, j }, data: [...localArr], highlighted: [j] });
+            trace.push({ line: 15, variables: { arr: `[${localArr.join(', ')}]`, low, high, pivot, i, j, condition: `${localArr[j]} < ${pivot}` }, data: [...localArr], highlighted: [j, high] });
+            if (localArr[j] < pivot) {
+                i++;
+                trace.push({ line: 16, variables: { arr: `[${localArr.join(', ')}]`, low, high, pivot, i, j }, data: [...localArr], highlighted: [i] });
+                [localArr[i], localArr[j]] = [localArr[j], localArr[i]];
+                trace.push({ line: 17, variables: { arr: `[${localArr.join(', ')}]`, low, high, pivot, i, j }, data: [...localArr], highlighted: [i,j] });
+            }
+        }
+        [localArr[i + 1], localArr[high]] = [localArr[high], localArr[i + 1]];
+        trace.push({ line: 20, variables: { arr: `[${localArr.join(', ')}]`, low, high, pivot, i }, data: [...localArr], highlighted: [i+1, high] });
+        trace.push({ line: 21, variables: { arr: `[${localArr.join(', ')}]`, low, high, 'return value': i + 1 }, data: [...localArr], highlighted: [i+1] });
+        return i + 1;
+    }
+
+    function sort(low: number, high: number) {
+        trace.push({ line: 1, variables: { arr: `[${localArr.join(', ')}]`, low, high }, data: [...localArr], highlighted: [] });
+        trace.push({ line: 2, variables: { arr: `[${localArr.join(', ')}]`, low, high, condition: `${low} < ${high}` }, data: [...localArr], highlighted: [] });
+        if (low < high) {
+            let pi = partition(low, high);
+            trace.push({ line: 3, variables: { arr: `[${localArr.join(', ')}]`, low, high, pi }, data: [...localArr], highlighted: [pi] });
+            trace.push({ line: 4, variables: { arr: `[${localArr.join(', ')}]`, low, high, pi }, data: [...localArr], highlighted: [] });
+            sort(low, pi - 1);
+            trace.push({ line: 5, variables: { arr: `[${localArr.join(', ')}]`, low, high, pi }, data: [...localArr], highlighted: [] });
+            sort(pi + 1, high);
+        }
+    }
+    
+    sort(0, localArr.length - 1);
+    trace.push({line: 8, variables: { 'return value': `[${localArr.join(', ')}]`}, data: localArr, highlighted: []});
+    return trace;
+}
+
+function generateHeapSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+    let n = localArr.length;
+
+    function heapify(size: number, i: number) {
+        trace.push({ line: 14, variables: { arr: `[${localArr.join(', ')}]`, n: size, i }, data: [...localArr], highlighted: [i] });
+        let largest = i;
+        let l = 2 * i + 1;
+        let r = 2 * i + 2;
+        trace.push({ line: 15, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest }, data: [...localArr], highlighted: [i] });
+        trace.push({ line: 16, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, l }, data: [...localArr], highlighted: [l] });
+        trace.push({ line: 17, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, l, r }, data: [...localArr], highlighted: [r] });
+        trace.push({ line: 18, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, l, r, condition: `${l} < ${size} && ${localArr[l]} > ${localArr[largest]}` }, data: [...localArr], highlighted: [l, largest] });
+        if (l < size && localArr[l] > localArr[largest]) {
+            largest = l;
+            trace.push({ line: 19, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest }, data: [...localArr], highlighted: [largest] });
+        }
+        trace.push({ line: 20, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, l, r, condition: `${r} < ${size} && ${localArr[r]} > ${localArr[largest]}` }, data: [...localArr], highlighted: [r, largest] });
+        if (r < size && localArr[r] > localArr[largest]) {
+            largest = r;
+            trace.push({ line: 21, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest }, data: [...localArr], highlighted: [largest] });
+        }
+
+        trace.push({ line: 22, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, condition: `${largest} != ${i}`}, data: [...localArr], highlighted: [largest, i] });
+        if (largest !== i) {
+            let swap = localArr[i];
+            trace.push({ line: 23, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, swap }, data: [...localArr], highlighted: [i, largest] });
+            localArr[i] = localArr[largest];
+            trace.push({ line: 24, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, 'arr[i]': localArr[i] }, data: [...localArr], highlighted: [i, largest] });
+            localArr[largest] = swap;
+            trace.push({ line: 25, variables: { arr: `[${localArr.join(', ')}]`, n: size, i, largest, 'arr[largest]': localArr[largest] }, data: [...localArr], highlighted: [i, largest] });
+            heapify(size, largest);
+        }
+    }
+
+    trace.push({ line: 2, variables: { arr: `[${localArr.join(', ')}]`, n }, data: [...localArr], highlighted: [] });
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        trace.push({ line: 3, variables: { arr: `[${localArr.join(', ')}]`, n, i }, data: [...localArr], highlighted: [i] });
+        heapify(n, i);
+        trace.push({ line: 4, variables: { arr: `[${localArr.join(', ')}]`, n, i }, data: [...localArr], highlighted: [i] });
+    }
+
+    for (let i = n - 1; i > 0; i--) {
+        trace.push({ line: 5, variables: { arr: `[${localArr.join(', ')}]`, n, i }, data: [...localArr], highlighted: [i] });
+        let temp = localArr[0];
+        trace.push({ line: 6, variables: { arr: `[${localArr.join(', ')}]`, n, i, temp }, data: [...localArr], highlighted: [0, i] });
+        localArr[0] = localArr[i];
+        trace.push({ line: 7, variables: { arr: `[${localArr.join(', ')}]`, n, i, temp, 'arr[0]': localArr[0] }, data: [...localArr], highlighted: [0, i] });
+        localArr[i] = temp;
+        trace.push({ line: 8, variables: { arr: `[${localArr.join(', ')}]`, n, i, temp, 'arr[i]': localArr[i] }, data: [...localArr], highlighted: [0, i] });
+        heapify(i, 0);
+        trace.push({ line: 9, variables: { arr: `[${localArr.join(', ')}]`, n, i }, data: [...localArr], highlighted: [i] });
+    }
+    trace.push({ line: 12, variables: { arr: `[${localArr.join(', ')}]`, 'return value': `[${localArr.join(', ')}]` }, data: [...localArr], highlighted: [] });
+    return trace;
+}
+
+
 const TRACE_GENERATORS = {
   bubbleSort: generateBubbleSortTrace,
   selectionSort: generateSelectionSortTrace,
   insertionSort: generateInsertionSortTrace,
-  mergeSort: (arr: number[]) => { 
-    // Simplified trace for complex recursive algorithms
-    const trace: TraceStep[] = [];
-    const sorted = [...arr].sort((a,b) => a - b);
-    trace.push({line: 1, variables: {arr: `[${arr.join(', ')}]`}, data: arr, highlighted: []});
-    trace.push({line: 15, variables: {'return value': `[${sorted.join(', ')}]`}, data: sorted, highlighted: []});
-    return trace;
-  },
-   quickSort: (arr: number[]) => { 
-    const trace: TraceStep[] = [];
-    const sorted = [...arr].sort((a,b) => a - b);
-    trace.push({line: 1, variables: {arr: `[${arr.join(', ')}]`}, data: arr, highlighted: []});
-    trace.push({line: 18, variables: {'return value': `[${sorted.join(', ')}]`}, data: sorted, highlighted: []});
-    return trace;
-  },
-  heapSort: (arr: number[]) => { 
-    const trace: TraceStep[] = [];
-    const sorted = [...arr].sort((a,b) => a - b);
-    trace.push({line: 1, variables: {arr: `[${arr.join(', ')}]`}, data: arr, highlighted: []});
-    trace.push({line: 13, variables: {'return value': `[${sorted.join(', ')}]`}, data: sorted, highlighted: []});
-    return trace;
-  },
+  mergeSort: generateMergeSortTrace,
+  quickSort: generateQuickSortTrace,
+  heapSort: generateHeapSortTrace,
   // Placeholders for other algorithms
   shellSort: (arr: number[]) => [],
   combSort: (arr: number[]) => [],
