@@ -12,6 +12,14 @@ export function ArrayVisualizer({ data, highlightedIndices = [] }: ArrayVisualiz
   const chartData = useMemo(() => data.map((value, index) => ({ name: index.toString(), value })), [data]);
   const maxValue = useMemo(() => Math.max(...data, 0), [data]);
 
+  if (!data || data.length === 0) {
+    return (
+        <div className="flex items-center justify-center h-64 text-muted-foreground">
+            Enter an algorithm to start visualization.
+        </div>
+    );
+  }
+
   return (
     <div className="w-full h-64">
       <ResponsiveContainer width="100%" height="100%">

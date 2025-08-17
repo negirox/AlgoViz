@@ -6,116 +6,123 @@ import { CodeEditor } from "@/components/code-editor";
 import { VariableInspector } from "@/components/variable-inspector";
 import { PlaybackControls } from "@/components/playback-controls";
 import { ArrayVisualizer } from "@/components/array-visualizer";
-import { AiExplainer } from './ai-explainer';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { Label } from './ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { generateTrace, GenerateTraceOutput } from '@/ai/flows/generate-trace';
-import { explainStep } from '@/ai/flows/explain-step';
 import { Loader2 } from 'lucide-react';
 
-const BUBBLE_SORT_CODE = `function bubbleSort(arr) {
-  const n = arr.length;
+const BUBBLE_SORT_CODE = `function sort(arr) {
+  let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
-        // Swap arr[j] and arr[j+1]
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+        let temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
       }
     }
   }
   return arr;
 }`;
 
-const INITIAL_ARRAY = '[5, 3, 8, 4, 2]';
+const INITIAL_ARRAY = [5, 3, 8, 4, 2];
 
-type TraceStep = GenerateTraceOutput['trace'][0];
+type TraceStep = {
+  line: number;
+  variables: Record<string, any>;
+  array: number[];
+  highlighted: number[];
+};
+
+// Simple execution trace generator for a specific bubble sort implementation
+function generateTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({
+            line,
+            variables: { ...variables },
+            array: [...localArr],
+            highlighted,
+        });
+    };
+
+    let n = localArr.length;
+    addTrace(2, { arr: localArr, n });
+
+    for (let i = 0; i < n - 1; i++) {
+        addTrace(3, { arr: localArr, n, i });
+        for (let j = 0; j < n - i - 1; j++) {
+            addTrace(4, { arr: localArr, n, i, j });
+            addTrace(5, { arr: localArr, n, i, j, comparison: `${localArr[j]} > ${localArr[j + 1]}` }, [j, j + 1]);
+            if (localArr[j] > localArr[j + 1]) {
+                addTrace(6, { arr: localArr, n, i, j, temp: localArr[j] }, [j, j+1]);
+                let temp = localArr[j];
+                localArr[j] = localArr[j + 1];
+                addTrace(7, { arr: localArr, n, i, j, temp }, [j, j+1]);
+                localArr[j + 1] = temp;
+                addTrace(8, { arr: localArr, n, i, j, temp }, [j, j+1]);
+            }
+        }
+    }
+    addTrace(11, { arr: localArr, 'return value': localArr });
+    return trace;
+}
+
 
 export function AlgoViz() {
   const [code, setCode] = useState(BUBBLE_SORT_CODE);
-  const [inputArray, setInputArray] = useState(INITIAL_ARRAY);
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [explanation, setExplanation] = useState('');
-  const [isExplaining, setIsExplaining] = useState(false);
+
   const { toast } = useToast();
 
-  const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
-
-  const arrayData = useMemo(() => {
-    if (!currentTrace) return [];
-    const arr = currentTrace.variables.arr;
-    if (Array.isArray(arr)) return arr;
-    if (typeof arr === 'string') {
-      try {
-        const parsed = JSON.parse(arr.replace(/'/g, '"'));
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  }, [currentTrace]);
-
-  const handleTraceGeneration = useCallback(async () => {
+  const handleTraceGeneration = useCallback(() => {
     setIsLoading(true);
-    setExecutionTrace([]);
     setCurrentStep(0);
     try {
-      const result = await generateTrace({ code, inputArray });
-      if (result.trace && result.trace.length > 0) {
-        setExecutionTrace(result.trace);
+      // For this example, we'll always use the initial array.
+      // A full implementation would parse the input array from a text field.
+      const trace = generateTrace(INITIAL_ARRAY);
+      if (trace && trace.length > 0) {
+        setExecutionTrace(trace);
       } else {
         toast({
           variant: "destructive",
           title: "Error Generating Trace",
-          description: "Could not generate execution trace. Please check the code and input array.",
+          description: "Could not generate execution trace from the code.",
         });
+        setExecutionTrace([]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "An unexpected error occurred while generating the trace.",
+        title: "Execution Error",
+        description: error.message || "An unexpected error occurred.",
       });
+       setExecutionTrace([]);
     } finally {
       setIsLoading(false);
     }
-  }, [code, inputArray, toast]);
+  }, [toast]);
   
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    handleTraceGeneration();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Re-generate trace when code changes, with a debounce
+    const handler = setTimeout(() => {
+        // NOTE: For this version, we are not parsing the user's code.
+        // We will always run the hardcoded bubble sort trace generator.
+        // A more advanced implementation would parse and execute the `code` string.
+        handleTraceGeneration();
+    }, 500);
 
-  const getExplanation = useCallback(async () => {
-    if (!currentTrace) return;
-    setIsExplaining(true);
-    try {
-      const result = await explainStep({
-        code,
-        step: `Line ${currentTrace.line}`,
-        variables: JSON.stringify(currentTrace.variables, null, 2),
-      });
-      setExplanation(result.explanation);
-    } catch (error) {
-      console.error(error);
-      setExplanation('Could not load explanation.');
-    } finally {
-      setIsExplaining(false);
-    }
-  }, [currentTrace, code]);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [code, handleTraceGeneration]);
 
-  useEffect(() => {
-    if (currentTrace) {
-      getExplanation();
-    }
-  }, [currentTrace, getExplanation]);
+  const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
 
   const handleNext = useCallback(() => {
     setCurrentStep((prev) => Math.min(prev + 1, executionTrace.length - 1));
@@ -133,6 +140,11 @@ export function AlgoViz() {
   const handlePlayPause = useCallback(() => {
     setIsPlaying((prev) => !prev);
   }, []);
+  
+  const handleCodeChange = (newCode: string) => {
+    setCode(newCode);
+    handleReset();
+  };
 
   useEffect(() => {
     if (isPlaying) {
@@ -142,7 +154,7 @@ export function AlgoViz() {
       }
       const interval = setInterval(() => {
         handleNext();
-      }, 1000);
+      }, 800); // Slower speed for better visualization
       return () => clearInterval(interval);
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
@@ -161,10 +173,8 @@ export function AlgoViz() {
              </div>
           ) : (
             <ArrayVisualizer
-              data={arrayData}
-              highlightedIndices={
-                currentTrace?.variables.j !== undefined ? [currentTrace.variables.j, currentTrace.variables.j + 1] : []
-              }
+              data={currentTrace?.array ?? []}
+              highlightedIndices={currentTrace?.highlighted ?? []}
             />
           )}
         </CardContent>
@@ -173,32 +183,14 @@ export function AlgoViz() {
         <div className="flex flex-col gap-8 lg:sticky lg:top-20">
           <Card className="w-full bg-card/50">
             <CardHeader>
-              <CardTitle>Algorithm</CardTitle>
-              <CardDescription>Enter your algorithm and input array</CardDescription>
+              <CardTitle>Code Editor</CardTitle>
+              <CardDescription>Enter your sorting algorithm in JavaScript. The visualizer currently supports a specific bubble sort implementation.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent>
               <CodeEditor
                 code={code}
-                onCodeChange={setCode}
+                onCodeChange={handleCodeChange}
                 highlightedLine={currentTrace?.line} />
-              <div className='space-y-2'>
-                <Label htmlFor='input-array'>Input Array (as JSON)</Label>
-                <Textarea
-                  id="input-array"
-                  value={inputArray}
-                  onChange={(e) => setInputArray(e.target.value)}
-                  className="font-code text-sm"
-                  rows={2}
-                />
-              </div>
-              <Button onClick={handleTraceGeneration} disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : 'Run & Visualize'}
-              </Button>
             </CardContent>
           </Card>
            {executionTrace.length > 0 && (
@@ -214,11 +206,8 @@ export function AlgoViz() {
           )}
         </div>
         <div className="flex flex-col gap-8">
-          {executionTrace.length > 0 && (
-            <>
-              <VariableInspector variables={currentTrace?.variables ?? {}} />
-              <AiExplainer explanation={explanation} isLoading={isExplaining || isLoading} />
-            </>
+          {executionTrace.length > 0 && currentTrace && (
+            <VariableInspector variables={currentTrace.variables} />
           )}
         </div>
       </div>
