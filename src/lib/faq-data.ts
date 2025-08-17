@@ -766,6 +766,55 @@ export const FAQ_DATA: FaqData = {
                 ]
             }
         }
+    },
+    'data-structures': {
+        algorithms: {
+            hashing: {
+                title: "Hashing",
+                faqs: [
+                    {
+                        question: "What is Hashing?",
+                        answer: "Hashing is a technique used to map data of an arbitrary size to a fixed-size value, called a hash code or hash value. This is done using a hash function. It's fundamental to hash tables (hash maps), a data structure used for fast data retrieval."
+                    },
+                    {
+                        question: "What is a Hash Table?",
+                        answer: "A Hash Table is a data structure that implements an associative array abstract data type, a structure that can map keys to values. A hash table uses a hash function to compute an index, also called a hash code, into an array of buckets or slots, from which the desired value can be found."
+                    },
+                    {
+                        question: "What is a hash function and what makes a good one?",
+                        answer: "A hash function is an algorithm that takes an input (or 'key') and returns a fixed-size string of bytes, which is the hash value. A good hash function should be: 1) Fast to compute. 2) Deterministic (the same input always produces the same output). 3) It should minimize collisions by distributing keys uniformly across the buckets."
+                    },
+                    {
+                        question: "What is a collision in a hash table?",
+                        answer: "A collision occurs when two different keys hash to the same index in the array. Since two values cannot be stored in the same slot, collision resolution strategies are needed."
+                    },
+                    {
+                        question: "How can collisions be handled?",
+                        answer: "The two most common methods are: 1) Separate Chaining, where each bucket is the head of a linked list, and all keys that hash to that bucket are stored in the list. 2) Open Addressing, where if a collision occurs, the algorithm probes for the next empty slot in the array (e.g., linear probing, quadratic probing)."
+                    },
+                    {
+                        question: "What is the time complexity of search, insert, and delete in a hash table?",
+                        answer: "On average, the time complexity is O(1), assuming a good hash function and minimal collisions. In the worst case (where all keys hash to the same bucket), the complexity degrades to O(n), as it becomes equivalent to a linear search through a linked list."
+                    },
+                    {
+                        question: "What is the 'load factor' of a hash table?",
+                        answer: "The load factor (α) is the ratio of the number of stored elements to the number of buckets in the hash table (α = n/k). It's a measure of how full the hash table is. A higher load factor increases the probability of collisions. To maintain performance, a hash table is often resized when the load factor exceeds a certain threshold (e.g., 0.7)."
+                    },
+                    {
+                        question: "When would you use a hash table?",
+                        answer: "Hash tables are ideal when you need fast lookups, insertions, and deletions. They are used to implement caches, dictionaries (maps), and sets. For example, counting the frequency of words in a document or checking for the presence of an item in a collection."
+                    },
+                    {
+                        question: "What are some real-world applications of hashing?",
+                        answer: "Beyond hash tables, hashing is crucial for cryptography (e.g., storing password hashes instead of plain text), data integrity checks (e.g., checksums for file downloads), and building data structures like Bloom filters."
+                    },
+                    {
+                        question: "Can a hash table store duplicate keys?",
+                        answer: "A standard hash map or dictionary cannot store duplicate keys, as each key must uniquely map to a value. If you try to insert a key that already exists, you will typically overwrite the existing value. To store multiple values for one key, you would need a 'multimap', where each bucket can hold multiple values (e.g., in a list)."
+                    }
+                ]
+            }
+        }
     }
 };
 

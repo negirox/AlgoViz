@@ -603,6 +603,44 @@ function traverse(node) {
         spaceComplexity: "N/A",
       }
     }
+  },
+  'data-structures': {
+      name: "Data Structures",
+      algorithms: {
+          hashing: {
+              name: "Hashing",
+              code: `class HashTable {
+    constructor(size) {
+        this.table = new Array(size);
+        this.size = size;
+    }
+
+    hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * i) % this.size;
+        }
+        return hash;
+    }
+
+    set(key, value) {
+        const index = this.hash(key);
+        // ... collision handling ...
+        this.table[index] = { key, value };
+    }
+
+    get(key) {
+        const index = this.hash(key);
+        // ... collision handling ...
+        return this.table[index];
+    }
+}`,
+              input: "key1, value1; key2, value2",
+              visualizer: "hash-table",
+              timeComplexity: "O(1) Average",
+              spaceComplexity: "O(n)",
+          }
+      }
   }
 } as const;
 

@@ -985,6 +985,7 @@ const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => Trace
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   tree: (arr: any) => [],
+  hashing: (arr: any) => [],
 };
 
 const getDefaultAlgorithm = (category: AlgorithmCategoryKey) => {
@@ -1059,7 +1060,7 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (selectedAlgorithm.visualizer === 'tree') {
+    if (selectedAlgorithm.visualizer === 'tree' || selectedAlgorithm.visualizer === 'hash-table') {
         toast({
             title: "Coming Soon!",
             description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
@@ -1167,7 +1168,7 @@ export function AlgoViz() {
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = selectedAlgorithm.visualizer as 'array' | 'tree';
+  const visualizerType = selectedAlgorithm.visualizer as 'array' | 'tree' | 'hash-table';
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-8">
@@ -1242,6 +1243,12 @@ export function AlgoViz() {
                           <SelectItem value="tree">Tree / Graph Traversal</SelectItem>
                         </SelectGroup>
                        )}
+                        {algorithmCategory === 'data-structures' && (
+                            <SelectGroup>
+                                <SelectLabel>Data Structures</SelectLabel>
+                                <SelectItem value="hashing">Hashing</SelectItem>
+                            </SelectGroup>
+                        )}
                     </SelectContent>
                   </Select>
                 </div>

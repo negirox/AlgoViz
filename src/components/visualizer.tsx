@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,7 @@ import type { TraceStep } from './algo-viz';
 type VisualizerProps = {
     isLoading: boolean;
     traceStep?: TraceStep;
-    type: 'array' | 'tree' | 'graph'; // Extensible for future types
+    type: 'array' | 'tree' | 'graph' | 'hash-table'; // Extensible for future types
 };
 
 export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
@@ -32,7 +33,9 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
               />
             )}
             {/* Future visualizers will go here */}
-            {type === 'tree' && <p>Tree visualizer coming soon!</p>}
+            {type === 'tree' && <div className="flex items-center justify-center h-64 text-muted-foreground">Tree visualizer coming soon!</div>}
+            {type === 'hash-table' && <div className="flex items-center justify-center h-64 text-muted-foreground">Hash Table visualizer coming soon!</div>}
+
           </>
         )}
       </CardContent>
