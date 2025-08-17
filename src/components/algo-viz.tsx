@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Visualizer } from '@/components/visualizer';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AiExplainer } from './ai-explainer';
+import { explainStep } from '@/ai/flows/explain-step';
 
 const ALGO_TEMPLATES = {
   sorting: {
@@ -105,6 +107,8 @@ export function AlgoViz() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [explanation, setExplanation] = useState('');
+  const [isExplanationLoading, setIsExplanationLoading] = useState(false);
 
   const { toast } = useToast();
 
@@ -123,7 +127,6 @@ export function AlgoViz() {
     setExecutionTrace([]);
     
     if (algorithmType !== 'sorting') {
-        // Placeholder for other algorithm types
         toast({
             title: "Coming Soon!",
             description: `Visualization for ${algorithmType} algorithms is not yet implemented.`,
@@ -172,6 +175,27 @@ export function AlgoViz() {
   }, [algorithmType]); // Re-run when algo type changes
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
+
+  useEffect(() => {
+    if (currentTrace) {
+      setIsExplanationLoading(true);
+      explainStep({
+        code,
+        currentLine: currentTrace.line,
+        variables: JSON.stringify(currentTrace.variables),
+      })
+      .then(result => {
+        setExplanation(result.explanation);
+      })
+      .catch(error => {
+        console.error("Error fetching explanation:", error);
+        setExplanation("Could not load explanation for this step.");
+      })
+      .finally(() => {
+        setIsExplanationLoading(false);
+      });
+    }
+  }, [currentTrace, code]);
 
   const handleNext = useCallback(() => {
     setCurrentStep((prev) => Math.min(prev + 1, executionTrace.length - 1));
@@ -277,7 +301,10 @@ export function AlgoViz() {
         </div>
         <div className="flex flex-col gap-8">
           {executionTrace.length > 0 && currentTrace && (
-            <VariableInspector variables={currentTrace.variables} />
+            <>
+              <AiExplainer explanation={explanation} isLoading={isExplanationLoading} />
+              <VariableInspector variables={currentTrace.variables} />
+            </>
           )}
         </div>
       </div>

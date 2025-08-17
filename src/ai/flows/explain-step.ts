@@ -14,13 +14,13 @@ import {z} from 'genkit';
 
 const ExplainStepInputSchema = z.object({
   code: z.string().describe('The code of the algorithm.'),
-  step: z.string().describe('The current step of the algorithm.'),
-  variables: z.string().describe('The current state of the variables.'),
+  currentLine: z.number().describe('The current line number being executed.'),
+  variables: z.string().describe('The JSON stringified current state of the variables.'),
 });
 export type ExplainStepInput = z.infer<typeof ExplainStepInputSchema>;
 
 const ExplainStepOutputSchema = z.object({
-  explanation: z.string().describe('A short explanation of the current step.'),
+  explanation: z.string().describe('A short, clear, one-sentence explanation of the current step. Explain it like you are a friendly teacher.'),
 });
 export type ExplainStepOutput = z.infer<typeof ExplainStepOutputSchema>;
 
@@ -32,18 +32,28 @@ const prompt = ai.definePrompt({
   name: 'explainStepPrompt',
   input: {schema: ExplainStepInputSchema},
   output: {schema: ExplainStepOutputSchema},
-  prompt: `You are an expert algorithm explainer. You are able to explain complex algorithms in simple terms.
+  prompt: `You are an expert algorithm explainer. You are able to explain complex algorithms in simple terms for a beginner.
 
-  Here is the code of the algorithm:
-  {{code}}
+You will be given the full code of a sorting algorithm, the line number that is currently being executed, and the current state of the variables.
 
-  Here is the current step of the algorithm:
-  {{step}}
+Your task is to provide a short, one-sentence explanation of what is happening in the current step. Focus on what the code is doing with the variables. Be concise and clear.
 
-  Here are the current variables:
-  {{variables}}
+For example, if the line is 'if (arr[j] > arr[j + 1])' and the variables show that arr[j] is 8 and arr[j+1] is 4, a good explanation would be: "The code is checking if the element at index j (value 8) is greater than the element at index j+1 (value 4)."
 
-  Please provide a short, one-sentence explanation of what is happening in this step. Focus on what the current step does with the variables.
+---
+Algorithm Code:
+\`\`\`javascript
+{{code}}
+\`\`\`
+
+Current Line: {{currentLine}}
+
+Current Variables:
+\`\`\`json
+{{variables}}
+\`\`\`
+
+Please provide your one-sentence explanation.
   `,
 });
 
