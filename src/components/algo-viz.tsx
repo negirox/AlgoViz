@@ -1007,7 +1007,18 @@ export function AlgoViz() {
   const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory]?.algorithms[algorithmKey as any] || getDefaultAlgorithm(algorithmCategory);
 
   const [code, setCode] = useState(selectedAlgorithm?.code || '');
-  const [inputStr, setInputStr] = useState(selectedAlgorithm?.input || '');
+  const [inputStr, setInputStr] = useState(() => {
+    if (algorithmCategory === 'searching') {
+        return selectedAlgorithm?.input.split(';')[0] || '';
+    }
+    return selectedAlgorithm?.input || '';
+  });
+  const [targetStr, setTargetStr] = useState(() => {
+      if (algorithmCategory === 'searching') {
+          return selectedAlgorithm?.input.split(';')[1] || '';
+      }
+      return '';
+  });
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -1028,7 +1039,16 @@ export function AlgoViz() {
       const newAlgo = ALGO_CATEGORIES[category].algorithms[key];
       setAlgorithmKey(key);
       setCode(newAlgo.code);
-      setInputStr(newAlgo.input);
+
+      if (category === 'searching') {
+          const [arrayPart, targetPart] = newAlgo.input.split(';');
+          setInputStr(arrayPart || '');
+          setTargetStr(targetPart || '');
+      } else {
+          setInputStr(newAlgo.input);
+          setTargetStr('');
+      }
+
       setExecutionTrace([]);
       setCurrentStep(0);
       setIsPlaying(false);
@@ -1053,17 +1073,12 @@ export function AlgoViz() {
     try {
       let parsedArray: number[];
       let target: number | undefined;
-
+      
+      parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+      
       if (algorithmCategory === 'searching') {
-        const parts = inputStr.split(';');
-        if (parts.length !== 2) throw new Error("Input for searching must be in 'array;target' format (e.g., '1,2,3;2').");
-        
-        parsedArray = parts[0].split(',').map(s => s.trim()).filter(Boolean).map(Number);
-        target = Number(parts[1].trim());
+        target = Number(targetStr.trim());
         if (isNaN(target)) throw new Error("Invalid target value.");
-
-      } else {
-        parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
       }
       
       if (parsedArray.some(isNaN)) {
@@ -1105,7 +1120,7 @@ export function AlgoViz() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, inputStr, algorithmKey, selectedAlgorithm, algorithmCategory]);
+  }, [toast, inputStr, targetStr, algorithmKey, selectedAlgorithm, algorithmCategory]);
   
   // Initial trace generation
   useEffect(() => {
@@ -1250,8 +1265,18 @@ export function AlgoViz() {
                           id="input-data"
                           value={inputStr}
                           onChange={(e) => setInputStr(e.target.value)}
-                          placeholder={selectedAlgorithm.visualizer === 'array' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
+                          placeholder={algorithmCategory === 'sorting' ? "e.g. 5, 3, 8, 4, 2" : "e.g. 2, 8, 5, 12"}
+                          className="flex-1"
                       />
+                      {algorithmCategory === 'searching' && (
+                        <Input
+                          id="target-data"
+                          value={targetStr}
+                          onChange={(e) => setTargetStr(e.target.value)}
+                          placeholder="Target"
+                          className="w-24"
+                        />
+                      )}
                       <Button onClick={handleTraceGeneration}>Visualize</Button>
                   </div>
               </div>
