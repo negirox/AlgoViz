@@ -437,89 +437,89 @@ export function AlgoViz() {
   const visualizerType = ALGO_TEMPLATES[algorithmType].visualizer as 'array' | 'tree';
 
   return (
-    <div className="container mx-auto p-4 md:p-6 lg:p-8">
+    <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-8">
+      <Card className="w-full bg-card/50">
+        <CardHeader>
+          <CardTitle>Configuration</CardTitle>
+          <CardDescription>Select algorithm type and provide input data.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div>
+              <label htmlFor="algo-type" className="text-sm font-medium mb-2 block">Algorithm Type</label>
+              <Select value={algorithmType} onValueChange={(value) => handleAlgorithmChange(value as AlgorithmType)}>
+                <SelectTrigger id="algo-type">
+                  <SelectValue placeholder="Select algorithm type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Sorting Algorithms</SelectLabel>
+                    <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
+                    <SelectItem value="selectionSort">Selection Sort</SelectItem>
+                    <SelectItem value="insertionSort">Insertion Sort</SelectItem>
+                    <SelectItem value="mergeSort">Merge Sort</SelectItem>
+                    <SelectItem value="quickSort">Quick Sort</SelectItem>
+                    <SelectItem value="heapSort">Heap Sort</SelectItem>
+                  </SelectGroup>
+                  <SelectGroup>
+                      <SelectLabel>Other Data Structures</SelectLabel>
+                      <SelectItem value="tree">Tree / Graph</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+                <label htmlFor="input-data" className="text-sm font-medium mb-2 block">Input Data</label>
+                <div className="flex gap-2">
+                    <Input 
+                        id="input-data"
+                        value={inputStr}
+                        onChange={(e) => setInputStr(e.target.value)}
+                        placeholder={ALGO_TEMPLATES[algorithmType].visualizer === 'array' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
+                    />
+                    <Button onClick={handleTraceGeneration}>Visualize</Button>
+                </div>
+            </div>
+        </CardContent>
+      </Card>
+      
       <Visualizer
           isLoading={isLoading}
           traceStep={currentTrace}
           type={visualizerType}
       />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
-        <div className="flex flex-col gap-8 lg:sticky lg:top-20">
-          <Card className="w-full bg-card/50">
-            <CardHeader>
-              <CardTitle>Configuration</CardTitle>
-              <CardDescription>Select algorithm type and provide input data.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-               <div>
-                  <label htmlFor="algo-type" className="text-sm font-medium mb-2 block">Algorithm Type</label>
-                  <Select value={algorithmType} onValueChange={(value) => handleAlgorithmChange(value as AlgorithmType)}>
-                    <SelectTrigger id="algo-type">
-                      <SelectValue placeholder="Select algorithm type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Sorting Algorithms</SelectLabel>
-                        <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
-                        <SelectItem value="selectionSort">Selection Sort</SelectItem>
-                        <SelectItem value="insertionSort">Insertion Sort</SelectItem>
-                        <SelectItem value="mergeSort">Merge Sort</SelectItem>
-                        <SelectItem value="quickSort">Quick Sort</SelectItem>
-                        <SelectItem value="heapSort">Heap Sort</SelectItem>
-                      </SelectGroup>
-                      <SelectGroup>
-                         <SelectLabel>Other Data Structures</SelectLabel>
-                         <SelectItem value="tree">Tree / Graph</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                    <label htmlFor="input-data" className="text-sm font-medium mb-2 block">Input Data</label>
-                    <div className="flex gap-2">
-                        <Input 
-                            id="input-data"
-                            value={inputStr}
-                            onChange={(e) => setInputStr(e.target.value)}
-                            placeholder={ALGO_TEMPLATES[algorithmType].visualizer === 'array' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
-                        />
-                        <Button onClick={handleTraceGeneration}>Visualize</Button>
-                    </div>
-                </div>
-            </CardContent>
-          </Card>
-          <Card className="w-full bg-card/50">
-            <CardHeader>
-              <CardTitle>Code Editor</CardTitle>
-              <CardDescription>The code is for reference. Editing it won't affect the visualization yet.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <CodeEditor
-                code={code}
-                onCodeChange={handleCodeChange}
-                highlightedLine={currentTrace?.line}
-                readOnly={true} />
-            </CardContent>
-          </Card>
-           {executionTrace.length > 0 && (
-            <PlaybackControls
-              onPrev={handlePrev}
-              onNext={handleNext}
-              onPlayPause={handlePlayPause}
-              onReset={handleReset}
-              isPlaying={isPlaying}
-              canStepPrev={currentStep > 0}
-              canStepNext={currentStep < executionTrace.length - 1}
-            />
-          )}
+
+      {executionTrace.length > 0 && (
+        <div className="sticky bottom-4 z-10">
+          <PlaybackControls
+            onPrev={handlePrev}
+            onNext={handleNext}
+            onPlayPause={handlePlayPause}
+            onReset={handleReset}
+            isPlaying={isPlaying}
+            canStepPrev={currentStep > 0}
+            canStepNext={currentStep < executionTrace.length - 1}
+          />
         </div>
-        <div className="flex flex-col gap-8">
-          {executionTrace.length > 0 && currentTrace && (
-            <>
-              <VariableInspector variables={currentTrace.variables} />
-            </>
-          )}
-        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <Card className="w-full bg-card/50">
+          <CardHeader>
+            <CardTitle>Code Editor</CardTitle>
+            <CardDescription>The code is for reference. Editing it won't affect the visualization yet.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CodeEditor
+              code={code}
+              onCodeChange={handleCodeChange}
+              highlightedLine={currentTrace?.line}
+              readOnly={true} />
+          </CardContent>
+        </Card>
+        
+        {executionTrace.length > 0 && currentTrace && (
+          <VariableInspector variables={currentTrace.variables} />
+        )}
       </div>
     </div>
   );

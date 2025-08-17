@@ -23,7 +23,7 @@ export function PlaybackControls({
   canStepNext,
 }: PlaybackControlsProps) {
   return (
-    <div className="flex items-center justify-center gap-2 rounded-lg bg-card/50 p-4">
+    <div className="flex items-center justify-center gap-2 rounded-lg bg-card/80 p-4 border border-border/40 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <Button onClick={onReset} variant="outline" size="icon" aria-label="Reset Visualization">
         <RotateCcw className="h-5 w-5" />
       </Button>
@@ -34,7 +34,7 @@ export function PlaybackControls({
         onClick={onPlayPause}
         variant="default"
         size="icon"
-        className="bg-accent hover:bg-accent/90 w-12 h-12 rounded-full"
+        className="bg-primary hover:bg-primary/90 w-12 h-12 rounded-full"
         aria-label={isPlaying ? "Pause Visualization" : "Play Visualization"}
       >
         {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 ml-1" />}
