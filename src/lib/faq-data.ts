@@ -64,6 +64,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Why is it called 'Bubble' Sort?",
                         answer: "It's called Bubble Sort because with each pass, the largest unsorted element 'bubbles up' to its correct position at the end of the array, similar to how a bubble rises to the surface of water."
+                    },
+                     {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/bubble-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -109,6 +113,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Why might you choose Selection Sort for a small dataset?",
                         answer: "For very small datasets, its simplicity and lack of recursion make it easy to implement and debug. While other algorithms are faster for larger sets, the performance difference is negligible for tiny arrays."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/selection-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -154,6 +162,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "How does Insertion Sort handle duplicate keys?",
                         answer: "As a stable sort, if it encounters an element that is equal to one already in the sorted portion, it will insert the new element after the existing one, preserving their original order."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/insertion-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -199,6 +211,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Is Merge Sort a comparison-based sort?",
                         answer: "Yes, Merge Sort is a comparison-based sorting algorithm because it relies on comparing elements to determine their order during the merge step."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/merge-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -244,6 +260,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Can Quick Sort be implemented iteratively?",
                         answer: "Yes, Quick Sort can be implemented iteratively using an explicit stack to manage the sub-array boundaries. This avoids deep recursion and potential stack overflow errors for very large arrays."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/quick-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -289,6 +309,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "What are the main use cases for Heap Sort?",
                         answer: "Heap Sort is useful when a guaranteed O(n log n) worst-case performance is needed and when space is limited (since it's in-place). It is also the underlying algorithm for a Priority Queue data structure."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/heap-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -334,6 +358,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "When is Counting Sort better than Quick Sort?",
                         answer: "Counting Sort is better than Quick Sort when the data is a set of integers within a small, known range. In this scenario, its O(n + k) performance will be significantly faster than Quick Sort's O(n log n)."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/counting-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -379,6 +407,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Is Radix Sort an in-place algorithm?",
                         answer: "No, because it relies on a subroutine like Counting Sort which requires auxiliary space, Radix Sort is not an in-place algorithm."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/radix-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -424,6 +456,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Is Bucket Sort a comparison-based sort?",
                         answer: "It's a mix. The distribution of elements into buckets is not comparison-based. However, the sorting of the individual buckets usually uses a comparison-based sort. Its overall efficiency comes from reducing the number of comparisons by partitioning the data first."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/bucket-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -469,6 +505,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Why isn't Pigeonhole Sort used more commonly?",
                         answer: "It's not a general-purpose sorting algorithm. Its strict requirement of having n ≈ N makes its use cases very specific and rare in practice compared to algorithms like Quick Sort or Merge Sort."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/pigeonhole-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -514,6 +554,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Can Tim Sort's performance degrade?",
                         answer: "Unlike Quick Sort, Tim Sort does not have a common worst-case input that degrades its performance to O(n^2). Its performance is consistently O(n log n) due to its merge-based strategy. The main performance variations come from how much existing order it can exploit in the input data."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/timsort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -559,6 +603,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Why is it called 'Introspective' Sort?",
                         answer: "It is named 'Introspective' because the algorithm 'watches' its own performance during the Quick Sort phase. If the recursion becomes too deep (an indicator of a potential worst-case scenario), it reflects on this and switches its strategy to Heap Sort to guarantee O(n log n) performance."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/introsort-or-introspective-sort/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             }
@@ -608,6 +656,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "What is a sentinel Linear Search?",
                         answer: "A sentinel Linear Search is a small optimization where the target element is added to the end of the list (as a 'sentinel'). This removes the need to check for the end of the array in each iteration of the loop, slightly reducing the number of comparisons per loop, although the overall complexity remains O(n)."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/linear-search/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -653,6 +705,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "When would you prefer a linear search over a binary search?",
                         answer: "You would use a linear search if the data is unsorted, as sorting it first would take O(n log n) time, which is slower than a simple O(n) linear scan. Linear search is also preferable for very small arrays where its simplicity and good cache performance might make it faster in practice."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/binary-search/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -669,6 +725,10 @@ export const FAQ_DATA: FaqData = {
                     { question: "How does it compare to Linear Search?", answer: "It is much faster than Linear Search (O(√n) vs O(n)) for large arrays." },
                     { question: "Can Jump Search be used for linked lists?", answer: "It's not practical for standard linked lists due to the lack of random access needed to perform the 'jumps' efficiently." },
                     { question: "What happens if the element is not found?", answer: "If the linear search phase completes without finding the element, or if the initial jumps go past the end of the array without finding a block that could contain the element, it is concluded that the element is not present." },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/jump-search/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
                 ]
             },
             interpolationSearch: {
@@ -684,6 +744,10 @@ export const FAQ_DATA: FaqData = {
                     { question: "Can it handle non-integer data types?", answer: "The interpolation formula relies on arithmetic operations, so it's primarily designed for numeric data types that can be operated on in this way." },
                     { question: "How does it compare to Jump Search?", answer: "For uniformly distributed data, Interpolation Search is much faster. However, Jump Search has a more reliable O(√n) worst-case performance, which is better than Interpolation Search's O(n) worst case." },
                     { question: "Is it difficult to implement?", answer: "The logic is similar to Binary Search, but involves a more complex calculation for the probe position, which can be prone to implementation errors like division by zero if not handled carefully." },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/interpolation-search/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
                 ]
             },
             exponentialSearch: {
@@ -699,6 +763,10 @@ export const FAQ_DATA: FaqData = {
                     { question: "How does it differ from Interpolation Search?", answer: "Exponential Search's strategy is based on finding a range by doubling, while Interpolation Search's strategy is based on probing a likely position using a formula. Exponential Search does not require uniformly distributed data." },
                     { question: "Can it be implemented without recursion?", answer: "Yes, the final binary search step can be implemented iteratively to avoid recursion and reduce space complexity." },
                     { question: "What is another name for Exponential Search?", answer: "It is also sometimes known as Galloping Search or Doubling Search." },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/exponential-search/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
                 ]
             },
             ternarySearch: {
@@ -714,6 +782,10 @@ export const FAQ_DATA: FaqData = {
                     { question: "How does it compare to Jump Search?", answer: "Binary Search is almost always better than both, but comparing the two, their performance depends on the array size and data distribution. Jump Search's O(√n) is generally worse than Ternary Search's O(log3 n)." },
                     { question: "When should one absolutely use Ternary Search?", answer: "The main practical application is for finding the extremum (min/max) of a unimodal function, where you cannot simply check the middle and decide which half to discard. In this scenario, it is a very effective algorithm." },
                     { question: "How many comparisons are made in the worst case per iteration?", answer: "In the worst case, two comparisons are made: one against `ar[mid1]` and another against `ar[mid2]`." },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/ternary-search/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
                 ]
             }
         }
@@ -762,6 +834,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "What is a trivial use case for a post-order traversal?",
                         answer: "A classic use case for post-order traversal is to delete all nodes in a tree. You must delete the children (left and right) before you can delete the parent node itself. Post-order traversal (Left, Right, Root) ensures this correct order of operations."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/tree-traversal-inorder-preorder-postorder/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -808,6 +884,10 @@ export const FAQ_DATA: FaqData = {
                         question: "What are self-balancing BSTs?",
                         answer: "Self-balancing BSTs, such as AVL trees or Red-Black trees, are special types of BSTs that automatically perform rotations to keep their height as close to O(log n) as possible, thus guaranteeing O(log n) performance for all operations."
                     },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/binary-search-tree-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
                 ]
             },
             avlTree: {
@@ -853,6 +933,10 @@ export const FAQ_DATA: FaqData = {
                         question: "What is the 'balance factor'?",
                         answer: "The balance factor of a node is calculated as `height(left subtree) - height(right subtree)`. This value must be in the range [-1, 1] for the tree to be considered balanced."
                     },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/avl-tree-set-1-insertion/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
                 ]
             }
         }
@@ -901,6 +985,10 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Can a hash table store duplicate keys?",
                         answer: "A standard hash map or dictionary cannot store duplicate keys, as each key must uniquely map to a value. If you try to insert a key that already exists, you will typically overwrite the existing value. To store multiple values for one key, you would need a 'multimap', where each bucket can hold multiple values (e.g., in a list)."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/hashing-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             }
