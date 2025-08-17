@@ -339,12 +339,72 @@ function timSort(arr) {
   },
   introSort: {
     name: "Intro Sort",
-    code: `// Intro Sort implementation will go here
-// Combines Quick Sort, Heap Sort, and Insertion Sort
-function introSort(arr) {
-  // Placeholder for implementation
-  arr.sort((a, b) => a - b); // Use native sort for now
+    code: `function introSort(arr) {
+  let maxdepth = Math.floor(Math.log2(arr.length)) * 2;
+  introsort_helper(arr, 0, arr.length - 1, maxdepth);
   return arr;
+}
+
+function introsort_helper(arr, begin, end, maxdepth) {
+  if (end - begin < 16) {
+    insertionSort(arr, begin, end);
+    return;
+  }
+  if (maxdepth === 0) {
+    heapSort(arr, begin, end);
+    return;
+  }
+  let p = partition(arr, begin, end);
+  introsort_helper(arr, begin, p - 1, maxdepth - 1);
+  introsort_helper(arr, p + 1, end, maxdepth - 1);
+}
+
+function partition(arr, begin, end) {
+  let pivot = arr[end];
+  let i = begin - 1;
+  for (let j = begin; j < end; j++) {
+    if (arr[j] <= pivot) {
+      i++;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  [arr[i + 1], arr[end]] = [arr[end], arr[i + 1]];
+  return i + 1;
+}
+
+function heapSort(arr, begin, end) {
+  let n = end - begin + 1;
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i, begin);
+  }
+  for (let i = n - 1; i > 0; i--) {
+    [arr[begin], arr[begin + i]] = [arr[begin + i], arr[begin]];
+    heapify(arr, i, 0, begin);
+  }
+}
+
+function heapify(arr, n, i, offset) {
+  let largest = i;
+  let l = 2 * i + 1;
+  let r = 2 * i + 2;
+  if (l < n && arr[offset + l] > arr[offset + largest]) largest = l;
+  if (r < n && arr[offset + r] > arr[offset + largest]) largest = r;
+  if (largest !== i) {
+    [arr[offset+i], arr[offset+largest]] = [arr[offset+largest], arr[offset+i]];
+    heapify(arr, n, largest, offset);
+  }
+}
+
+function insertionSort(arr, left, right) {
+  for (let i = left + 1; i <= right; i++) {
+    let key = arr[i];
+    let j = i - 1;
+    while (j >= left && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+    arr[j + 1] = key;
+  }
 }`,
     input: "2, 1, 0, 5, 8, 3, 7, 4, 9, 6",
     visualizer: "array"
@@ -942,6 +1002,134 @@ function generateTimSortTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateIntroSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables, arr: `[${localArr.join(',')}]` }, data: [...localArr], highlighted });
+    };
+
+    function insertionSort(begin: number, end: number) {
+        addTrace(68, { begin, end, status: "Running Insertion Sort" }, Array.from({length: end-begin+1}, (_,i) => begin+i) );
+        for (let i = begin + 1; i <= end; i++) {
+            addTrace(69, { i }, [i]);
+            let key = localArr[i];
+            addTrace(70, { i, key }, [i]);
+            let j = i - 1;
+            addTrace(71, { i, key, j }, [j]);
+            while (j >= begin && localArr[j] > key) {
+                addTrace(72, { j, key, condition: `${localArr[j]} > ${key}` }, [j, j+1]);
+                localArr[j + 1] = localArr[j];
+                addTrace(73, { arr: `[${localArr.join(',')}]` }, [j+1]);
+                j = j - 1;
+                addTrace(74, { j }, [j+1]);
+            }
+            localArr[j + 1] = key;
+            addTrace(76, { arr: `[${localArr.join(',')}]` }, [j+1]);
+        }
+    }
+
+    function heapify(n: number, i: number, offset: number) {
+        addTrace(52, { n, i, offset });
+        let largest = i;
+        addTrace(53, { largest });
+        let l = 2 * i + 1;
+        addTrace(54, { l });
+        let r = 2 * i + 2;
+        addTrace(55, { r });
+
+        addTrace(56, { condition: `${l} < ${n} && ${localArr[offset + l]} > ${localArr[offset + largest]}`}, [offset+l, offset+largest]);
+        if (l < n && localArr[offset + l] > localArr[offset + largest]) largest = l;
+        addTrace(57, { largest });
+        
+        addTrace(58, { condition: `${r} < ${n} && ${localArr[offset + r]} > ${localArr[offset + largest]}` }, [offset+r, offset+largest]);
+        if (r < n && localArr[offset + r] > localArr[offset + largest]) largest = r;
+        addTrace(59, { largest });
+
+        addTrace(60, { condition: `${largest} !== ${i}`}, [offset+i, offset+largest]);
+        if (largest !== i) {
+            [localArr[offset+i], localArr[offset+largest]] = [localArr[offset+largest], localArr[offset+i]];
+            addTrace(61, { arr: `[${localArr.join(',')}]` }, [offset+i, offset+largest]);
+            heapify(n, largest, offset);
+            addTrace(62, {});
+        }
+    }
+    
+    function heapSort(begin: number, end: number) {
+        addTrace(43, { begin, end, status: "Running Heap Sort" }, Array.from({length: end-begin+1}, (_,i) => begin+i));
+        let n = end - begin + 1;
+        addTrace(44, { n });
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+            addTrace(45, { i });
+            heapify(n, i, begin);
+            addTrace(46, {});
+        }
+        for (let i = n - 1; i > 0; i--) {
+            addTrace(48, { i });
+            [localArr[begin], localArr[begin + i]] = [localArr[begin + i], localArr[begin]];
+            addTrace(49, { arr: `[${localArr.join(',')}]` }, [begin, begin+i]);
+            heapify(i, 0, begin);
+            addTrace(50, {});
+        }
+    }
+
+    function partition(begin: number, end: number) {
+        addTrace(25, { begin, end });
+        let pivot = localArr[end];
+        addTrace(26, { pivot }, [end]);
+        let i = begin - 1;
+        addTrace(27, { i });
+        for (let j = begin; j < end; j++) {
+            addTrace(28, { j }, [j]);
+            addTrace(29, { condition: `${localArr[j]} <= ${pivot}`}, [j, end]);
+            if (localArr[j] <= pivot) {
+                i++;
+                addTrace(30, { i });
+                [localArr[i], localArr[j]] = [localArr[j], localArr[i]];
+                addTrace(31, { arr: `[${localArr.join(',')}]` }, [i, j]);
+            }
+        }
+        [localArr[i + 1], localArr[end]] = [localArr[end], localArr[i + 1]];
+        addTrace(34, { arr: `[${localArr.join(',')}]` }, [i+1, end]);
+        addTrace(35, { 'return value': i + 1 });
+        return i + 1;
+    }
+
+    function introsort_helper(begin: number, end: number, maxdepth: number) {
+        const partitionSize = end - begin;
+        addTrace(8, { begin, end, maxdepth, partitionSize });
+        if (partitionSize < 16) {
+            addTrace(9, { status: "Switching to Insertion Sort" });
+            insertionSort(begin, end);
+            addTrace(10, {});
+            return;
+        }
+        addTrace(12, { maxdepth, condition: `${maxdepth} === 0`});
+        if (maxdepth === 0) {
+            addTrace(13, { status: "Max depth reached. Switching to Heap Sort" });
+            heapSort(begin, end);
+            addTrace(14, {});
+            return;
+        }
+        addTrace(16, {});
+        let p = partition(begin, end);
+        addTrace(17, { p });
+        introsort_helper(begin, p - 1, maxdepth - 1);
+        addTrace(18, {});
+        introsort_helper(p + 1, end, maxdepth - 1);
+        addTrace(19, {});
+    }
+
+    addTrace(1, { arr: `[${localArr.join(',')}]` });
+    let maxdepth = Math.floor(Math.log2(localArr.length)) * 2;
+    addTrace(2, { maxdepth });
+    introsort_helper(0, localArr.length - 1, maxdepth);
+    addTrace(3, {});
+    addTrace(4, { 'return value': `[${localArr.join(',')}]` });
+    return trace;
+}
+
 
 const TRACE_GENERATORS = {
   bubbleSort: generateBubbleSortTrace,
@@ -955,7 +1143,7 @@ const TRACE_GENERATORS = {
   bucketSort: generateBucketSortTrace,
   pigeonholeSort: generatePigeonholeSortTrace,
   timSort: generateTimSortTrace,
-  introSort: (arr: number[]) => [],
+  introSort: generateIntroSortTrace,
   shellSort: (arr: number[]) => [],
   combSort: (arr: number[]) => [],
   cycleSort: (arr: number[]) => [],
