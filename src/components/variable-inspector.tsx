@@ -1,6 +1,8 @@
+
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { JsonHighlighter } from './json-highlighter';
 
 type VariableInspectorProps = {
   variables: Record<string, any>;
@@ -14,9 +16,7 @@ export function VariableInspector({ variables }: VariableInspectorProps) {
       </CardHeader>
       <CardContent>
         {Object.keys(variables).length > 0 ? (
-          <pre className="font-code text-sm bg-muted p-4 rounded-md overflow-x-auto">
-            <code>{JSON.stringify(variables, null, 2)}</code>
-          </pre>
+            <JsonHighlighter json={variables} />
         ) : (
           <p className="text-muted-foreground text-sm">No variables to display for this step.</p>
         )}

@@ -72,6 +72,13 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        syntax: {
+            string: 'hsl(var(--syntax-string))',
+            number: 'hsl(var(--syntax-number))',
+            boolean: 'hsl(var(--syntax-boolean))',
+            key: 'hsl(var(--syntax-key))',
+            null: 'hsl(var(--syntax-null))',
+        }
       },
       borderRadius: {
         lg: 'var(--radius)',
