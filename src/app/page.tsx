@@ -1,9 +1,9 @@
-
 import { AlgoViz } from '@/components/algo-viz';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/footer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Github } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function Home() {
   return (
@@ -71,12 +71,21 @@ export default function Home() {
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
-            <Button variant="ghost" size="icon" asChild>
-              <a href="https://github.com/negirox" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
-                <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
-              </a>
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" asChild>
+                    <a href="https://github.com/negirox" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
+                      <Github className="h-5 w-5" />
+                      <span className="sr-only">GitHub</span>
+                    </a>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>View on GitHub</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </header>

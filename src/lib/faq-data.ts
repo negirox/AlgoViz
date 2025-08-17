@@ -1,4 +1,3 @@
-
 import { AlgorithmType } from "@/components/algo-viz";
 
 type FaqItem = {
@@ -30,6 +29,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "When is it practical to use Bubble Sort?",
                 answer: "Due to its simplicity, Bubble Sort is often used as a teaching tool. However, its O(n^2) complexity makes it impractical for most real-world applications, especially for large datasets. It can be useful for small, nearly-sorted lists."
+            },
+            {
+                question: "What is the space complexity of Bubble Sort?",
+                answer: "The space complexity is O(1) because it is an in-place sorting algorithm, meaning it doesn't require extra memory proportional to the input size."
             }
         ]
     },
@@ -51,6 +54,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "What is a major advantage of Selection Sort?",
                 answer: "Its main advantage is that it performs a minimal number of swaps (at most n-1). This can be important if writing to memory is a very expensive operation."
+            },
+            {
+                question: "How does Selection Sort compare to Bubble Sort?",
+                answer: "Both have an O(n^2) time complexity, but Selection Sort almost always outperforms Bubble Sort because it makes fewer swaps. While Bubble Sort makes O(n^2) swaps in the worst case, Selection Sort makes only O(n) swaps."
             }
         ]
     },
@@ -72,6 +79,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Is Insertion Sort an in-place, stable algorithm?",
                 answer: "Yes, Insertion Sort is an in-place algorithm (it only requires a constant amount O(1) of extra memory space) and it is also a stable sorting algorithm."
+            },
+            {
+                question: "Why is Insertion Sort considered an 'online' algorithm?",
+                answer: "An online algorithm is one that can process its input piece-by-piece in a serial fashion. Insertion sort can sort a list as it receives it, making it suitable for situations where data arrives over time."
             }
         ]
     },
@@ -93,6 +104,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Is Merge Sort a stable algorithm?",
                 answer: "Yes, Merge Sort is a stable sorting algorithm. It preserves the relative order of equal elements, which is an important property for many applications."
+            },
+            {
+                question: "Is Merge Sort an external sort?",
+                answer: "Yes, Merge Sort is often used for external sorting, where the data to be sorted is too large to fit into memory. Its sequential access pattern makes it ideal for reading and writing large chunks of data from external storage like a hard drive."
             }
         ]
     },
@@ -114,6 +129,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Is Quick Sort stable?",
                 answer: "No, the standard implementation of Quick Sort is not stable. The partitioning step can change the relative order of equal elements."
+            },
+            {
+                question: "How can the worst-case scenario be avoided?",
+                answer: "The worst-case can be avoided by using a good pivot selection strategy. Common strategies include picking a random element, using the 'median-of-three' method, or using an algorithm like IntroSort which switches to HeapSort if recursion gets too deep."
             }
         ]
     },
@@ -135,6 +154,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Is Heap Sort stable?",
                 answer: "No, Heap Sort is not a stable algorithm because the heapifying process can change the relative order of equal elements."
+            },
+            {
+                question: "What is a 'heap' in this context?",
+                answer: "A heap is a specialized tree-based data structure that satisfies the heap property: in a max-heap, for any given node C, if P is a parent node of C, then the value of P is greater than or equal to the value of C. In a min-heap, the value of P is less than or equal to the value of C."
             }
         ]
     },
@@ -156,6 +179,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Is Counting Sort stable?",
                 answer: "Yes, Counting Sort can be implemented as a stable sort, which is a key advantage and allows it to be used as a subroutine in Radix Sort."
+            },
+            {
+                question: "Is Counting Sort a comparison-based sort?",
+                answer: "No, it is not. It sorts elements by counting their occurrences and calculating their positions, rather than by comparing elements to each other. This is why it can achieve a linear time complexity under the right conditions."
             }
         ]
     },
@@ -177,6 +204,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "When is Radix Sort a good choice?",
                 answer: "Radix Sort is excellent for sorting large lists of integers (or strings). It can be faster than comparison-based sorts like Quick Sort or Merge Sort if the keys have a limited number of digits."
+            },
+            {
+                question: "What does 'LSD' vs 'MSD' Radix Sort mean?",
+                answer: "'LSD' (Least Significant Digit) Radix Sort starts sorting from the rightmost digit and moves left. 'MSD' (Most Significant Digit) starts from the leftmost digit and moves right, typically using recursion. The implementation here is an LSD Radix Sort."
             }
         ]
     },
@@ -198,6 +229,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Is Bucket Sort stable?",
                 answer: "Yes, Bucket Sort can be implemented as a stable algorithm if the sorting algorithm used to sort the individual buckets is also stable (like Insertion Sort)."
+            },
+            {
+                question: "What is the difference between Bucket Sort and Counting Sort?",
+                answer: "Counting Sort is a specific type of Bucket Sort. In Bucket Sort, each bucket can hold more than one element and is sorted separately. In Counting Sort, each 'bucket' corresponds to a single value and just holds a count of that value's occurrences."
             }
         ]
     },
@@ -219,6 +254,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "What is the main limitation of Pigeonhole Sort?",
                 answer: "Its primary limitation is that it's only efficient if the range of values is small. If the range is very large compared to the number of elements, it becomes highly inefficient in terms of space and time."
+            },
+            {
+                question: "How is it related to Counting Sort?",
+                answer: "Pigeonhole sort and Counting sort are very similar. One can think of Counting sort as a variation of Pigeonhole sort where instead of storing the list of elements in each pigeonhole, we store only the count of elements."
             }
         ]
     },
@@ -240,6 +279,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Why is Tim Sort so popular in practice?",
                 answer: "It's highly efficient because it's adaptive. It takes advantage of the fact that real-world data is often partially sorted. Its use of Insertion Sort for small runs and its intelligent merging strategy make it faster than a pure Merge Sort for most practical datasets."
+            },
+            {
+                question: "What is a 'minrun'?",
+                answer: "A 'minrun' is a minimum size for a 'run' (a sorted subsequence). In TimSort, if a natural run is shorter than the minrun, it's extended using insertion sort until it reaches that minimum size. This helps to ensure that merging is efficient later on. The minrun size is calculated based on the size of the total array."
             }
         ]
     },
@@ -261,6 +304,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             {
                 question: "Is IntroSort stable?",
                 answer: "No, because its primary component, Quick Sort, is not stable, IntroSort is also not a stable algorithm."
+            },
+            {
+                question: "What triggers the switch to Heap Sort?",
+                answer: "The switch to Heap Sort is triggered when the recursion depth of Quick Sort reaches a certain limit. This limit is typically set to 2 * log2(n). This 'introspection' prevents the Quick Sort part of the algorithm from degrading to its O(n^2) worst-case performance on pathological inputs."
             }
         ]
     },
@@ -279,6 +326,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
                 question: "Is Shell Sort stable?",
                 answer: "No, Shell Sort is not a stable algorithm because elements with the same value might be swapped, changing their original relative order."
             },
+            {
+                question: "What is the 'gap' in Shell Sort?",
+                answer: "The 'gap' is the distance between the elements being compared. The algorithm starts with a large gap and then reduces it in each pass. A common gap sequence is Knuth's sequence (h = 3*h + 1), which provides good performance. The final pass always has a gap of 1, which is equivalent to a regular Insertion Sort, but on a nearly-sorted array."
+            }
         ]
     },
      combSort: {
@@ -296,6 +347,10 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
                 question: "Is Comb Sort stable?",
                 answer: "No, Comb Sort is not a stable sorting algorithm."
             },
+            {
+                question: "How is the gap calculated in Comb Sort?",
+                answer: "The gap starts as the length of the list and is shrunk by a 'shrink factor' (typically 1.3) in each iteration, until it reaches 1. This shrinking gap helps to quickly move items to their general correct positions before fine-tuning with a final gap of 1."
+            }
         ]
     },
      cycleSort: {
@@ -311,8 +366,12 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
             },
              {
                 question: "What is its main advantage?",
-                answer: "Its primary advantage is that it minimizes the number of writes to memory. This is very useful in situations where memory writes are expensive, such as with flash memory."
+                answer: "Its primary advantage is that it minimizes the number of writes to memory. This is very useful in situations where memory writes are expensive, such as with flash memory or when tracking changes to a large dataset."
             },
+            {
+                question: "What is the time complexity of Cycle Sort?",
+                answer: "Cycle Sort has a worst-case time complexity of O(n^2), which makes it impractical for general-purpose sorting. However, its unique property of minimizing writes gives it a niche application."
+            }
         ]
     },
     tree: {
@@ -326,6 +385,14 @@ export const FAQ_DATA: Record<AlgorithmType, FaqContent> = {
                 question: "What are common traversal methods?",
                 answer: "Common methods for trees are in-order (left, root, right), pre-order (root, left, right), and post-order (left, right, root) for binary trees. For general graphs, Breadth-First Search (BFS) and Depth-First Search (DFS) are the most common."
             },
+            {
+                question: "What is the difference between BFS and DFS?",
+                answer: "Breadth-First Search (BFS) explores the neighbor nodes first, before moving to the next level neighbors. It uses a queue. Depth-First Search (DFS) explores as far as possible along each branch before backtracking. It uses a stack (often the call stack via recursion)."
+            },
+            {
+                question: "When would you use one over the other?",
+                answer: "Use BFS to find the shortest path between two nodes in an unweighted graph. Use DFS if you need to check for the existence of a path, or to explore all parts of a graph or tree (e.g., in a maze-solving problem)."
+            }
         ]
     }
 };
