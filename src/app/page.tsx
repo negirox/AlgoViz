@@ -1,5 +1,6 @@
 import { AlgoViz } from '@/components/algo-viz';
 import { Button } from '@/components/ui/button';
+import { Footer } from '@/components/footer';
 import { Github } from 'lucide-react';
 
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
         <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
           <h1 className="text-xl font-bold font-headline text-primary">AlgoViz</h1>
           <Button variant="ghost" size="icon" asChild>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
+            <a href="https://github.com/negirox" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>
             </a>
@@ -19,6 +20,7 @@ export default function Home() {
       <main className="flex-1">
         <AlgoViz />
       </main>
+      <Footer />
     </div>
   );
 }
