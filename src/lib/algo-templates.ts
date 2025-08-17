@@ -635,7 +635,7 @@ function traverse(node) {
         return this.table[index];
     }
 }`,
-              input: "key1, value1; key2, value2",
+              input: "apple,red;banana,yellow;grape,purple;orange,orange;mango,yellow",
               visualizer: "hash-table",
               timeComplexity: "O(1) Average",
               spaceComplexity: "O(n)",

@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2 } from 'lucide-react';
 import { ArrayVisualizer } from '@/components/array-visualizer';
 import type { TraceStep } from './algo-viz';
+import { HashTableVisualizer } from "./hash-table-visualizer";
 
 type VisualizerProps = {
     isLoading: boolean;
@@ -14,7 +15,7 @@ type VisualizerProps = {
 
 export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
   return (
-    <Card className="bg-card/50">
+    <Card className="bg-card/50 min-h-[350px]">
       <CardHeader>
         <CardTitle>Visualization</CardTitle>
         <CardDescription>Visual representation of the data structure</CardDescription>
@@ -32,10 +33,13 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
                 highlightedIndices={traceStep?.highlighted ?? []}
               />
             )}
-            {/* Future visualizers will go here */}
+            {type === 'hash-table' && (
+                <HashTableVisualizer
+                    tableState={traceStep?.tableState}
+                    highlighted={traceStep?.highlighted}
+                />
+            )}
             {type === 'tree' && <div className="flex items-center justify-center h-64 text-muted-foreground">Tree visualizer coming soon!</div>}
-            {type === 'hash-table' && <div className="flex items-center justify-center h-64 text-muted-foreground">Hash Table visualizer coming soon!</div>}
-
           </>
         )}
       </CardContent>

@@ -19,6 +19,7 @@ export type TraceStep = {
   variables: Record<string, any>;
   data: any;
   highlighted: any;
+  tableState?: any;
 };
 
 // Trace generation functions for each sorting algorithm
@@ -964,8 +965,49 @@ function generateTernarySearchTrace(arr: number[], target: number): TraceStep[] 
     return trace;
 }
 
+function generateHashTableTrace(pairs: {key: string, value: string}[], size: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const table = Array.from({ length: size }, () => []);
 
-const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => TraceStep[]> = {
+    const hash = (key: string) => {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * i) % size;
+        }
+        return hash;
+    };
+
+    trace.push({ line: 1, variables: { status: 'Initializing hash table', size }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+    for (const pair of pairs) {
+        const { key, value } = pair;
+        trace.push({ line: 14, variables: { action: 'set', key, value }, data: [], highlighted: { key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+        const index = hash(key);
+        trace.push({ line: 15, variables: { key, value, index }, data: [], highlighted: { key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        
+        const bucket = table[index];
+        const existing = bucket.find(item => item.key === key);
+
+        if (existing) {
+             trace.push({ line: 16, variables: { key, value, index, status: 'Key exists, updating value'}, data: [], highlighted: { key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+            existing.value = value;
+        } else {
+            if (bucket.length > 0) {
+                 trace.push({ line: 17, variables: { key, value, index, status: 'Collision detected!' }, data: [], highlighted: { key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+            }
+            bucket.push({ key, value });
+             trace.push({ line: 18, variables: { key, value, index, status: 'Inserting new key-value pair' }, data: [], highlighted: { key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        }
+    }
+    
+    trace.push({ line: 20, variables: { status: 'Finished' }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+    return trace;
+}
+
+
+const TRACE_GENERATORS: Record<string, (arr: any, target?: any) => TraceStep[]> = {
   bubbleSort: generateBubbleSortTrace,
   selectionSort: generateSelectionSortTrace,
   insertionSort: generateInsertionSortTrace,
@@ -984,11 +1026,18 @@ const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => Trace
   interpolationSearch: (arr, target) => generateInterpolationSearchTrace(arr, target!),
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
+  hashing: (pairs) => generateHashTableTrace(pairs, 10), // Default size 10
   tree: (arr: any) => [],
-  hashing: (arr: any) => [],
 };
 
 const getDefaultAlgorithm = (category: AlgorithmCategoryKey) => {
+    if (!ALGO_CATEGORIES[category]) {
+        // Fallback to the first category if the provided one is invalid
+        const firstCategoryKey = Object.keys(ALGO_CATEGORIES)[0] as AlgorithmCategoryKey;
+        const firstCategory = ALGO_CATEGORIES[firstCategoryKey];
+        const defaultKey = Object.keys(firstCategory.algorithms)[0] as AlgorithmKey<typeof firstCategoryKey>;
+        return { key: defaultKey, ...firstCategory.algorithms[defaultKey] };
+    }
     const algorithms = ALGO_CATEGORIES[category]?.algorithms;
     const defaultKey = Object.keys(algorithms)[0] as AlgorithmKey<typeof category>;
     return { key: defaultKey, ...algorithms[defaultKey] };
@@ -1009,13 +1058,13 @@ export function AlgoViz() {
 
   const [code, setCode] = useState(selectedAlgorithm?.code || '');
   const [inputStr, setInputStr] = useState(() => {
-    if (algorithmCategory === 'searching') {
+    if (selectedAlgorithm?.input.includes(';')) {
         return selectedAlgorithm?.input.split(';')[0] || '';
     }
     return selectedAlgorithm?.input || '';
   });
   const [targetStr, setTargetStr] = useState(() => {
-      if (algorithmCategory === 'searching') {
+      if (selectedAlgorithm?.input.includes(';')) {
           return selectedAlgorithm?.input.split(';')[1] || '';
       }
       return '';
@@ -1041,7 +1090,7 @@ export function AlgoViz() {
       setAlgorithmKey(key);
       setCode(newAlgo.code);
 
-      if (category === 'searching') {
+      if (newAlgo.input.includes(';')) {
           const [arrayPart, targetPart] = newAlgo.input.split(';');
           setInputStr(arrayPart || '');
           setTargetStr(targetPart || '');
@@ -1060,7 +1109,7 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (selectedAlgorithm.visualizer === 'tree' || selectedAlgorithm.visualizer === 'hash-table') {
+    if (selectedAlgorithm.visualizer === 'tree') {
         toast({
             title: "Coming Soon!",
             description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
@@ -1072,26 +1121,6 @@ export function AlgoViz() {
     }
 
     try {
-      let parsedArray: number[];
-      let target: number | undefined;
-      
-      parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
-      
-      if (algorithmCategory === 'searching') {
-        target = Number(targetStr.trim());
-        if (isNaN(target)) throw new Error("Invalid target value.");
-      }
-      
-      if (parsedArray.some(isNaN)) {
-        toast({
-            variant: "destructive",
-            title: "Invalid Input",
-            description: "Please enter a comma-separated list of numbers.",
-        });
-        setIsLoading(false);
-        return;
-      }
-
       const traceGenerator = TRACE_GENERATORS[algorithmKey as keyof typeof TRACE_GENERATORS];
       if (!traceGenerator) {
           toast({
@@ -1101,8 +1130,31 @@ export function AlgoViz() {
           setIsLoading(false);
           return;
       }
+      
+      let trace: TraceStep[] = [];
 
-      const trace = traceGenerator(parsedArray, target);
+      if (algorithmCategory === 'searching') {
+        const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+        if (parsedArray.some(isNaN)) throw new Error("Invalid array input. Please enter comma-separated numbers.");
+        
+        const target = Number(targetStr.trim());
+        if (isNaN(target)) throw new Error("Invalid target value. Please enter a number.");
+        
+        trace = traceGenerator(parsedArray, target);
+
+      } else if (algorithmCategory === 'data-structures' && algorithmKey === 'hashing') {
+        const pairs = inputStr.split(';').map(s => {
+            const [key, value] = s.split(',').map(p => p.trim());
+            if (!key || !value) throw new Error("Invalid key-value pair format. Use 'key,value;key2,value2'.");
+            return { key, value };
+        });
+        trace = traceGenerator(pairs, undefined);
+      } else { // Sorting
+        const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+        if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
+        trace = traceGenerator(parsedArray, undefined);
+      }
+      
       if (trace && trace.length > 0) {
         setExecutionTrace(trace);
       } else if (trace) {
@@ -1272,7 +1324,11 @@ export function AlgoViz() {
                           id="input-data"
                           value={inputStr}
                           onChange={(e) => setInputStr(e.target.value)}
-                          placeholder={algorithmCategory === 'sorting' ? "e.g. 5, 3, 8, 4, 2" : "e.g. 2, 8, 5, 12"}
+                          placeholder={
+                            algorithmCategory === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
+                            algorithmCategory === 'searching' ? "e.g. 2, 8, 5, 12" :
+                            "e.g. key1,val1;key2,val2"
+                          }
                           className="flex-1"
                       />
                       {algorithmCategory === 'searching' && (
