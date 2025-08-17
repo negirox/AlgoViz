@@ -10,8 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Visualizer } from '@/components/visualizer';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AiExplainer } from './ai-explainer';
-import { explainStep } from '@/ai/flows/explain-step';
 
 const ALGO_TEMPLATES = {
   sorting: {
@@ -62,8 +60,8 @@ export type TraceStep = {
   highlighted: any;
 };
 
-// Simple execution trace generator for a specific bubble sort implementation
-function generateTrace(arr: number[]): TraceStep[] {
+// Simple client-side execution trace generator for a specific bubble sort implementation
+function generateClientTrace(arr: number[]): TraceStep[] {
     const trace: TraceStep[] = [];
     const localArr = [...arr];
 
@@ -77,24 +75,24 @@ function generateTrace(arr: number[]): TraceStep[] {
     };
 
     let n = localArr.length;
-    addTrace(2, { arr: localArr, n });
+    addTrace(2, { arr: `[${localArr.join(', ')}]`, n });
 
     for (let i = 0; i < n - 1; i++) {
-        addTrace(3, { arr: localArr, n, i });
+        addTrace(3, { arr: `[${localArr.join(', ')}]`, n, i });
         for (let j = 0; j < n - i - 1; j++) {
-            addTrace(4, { arr: localArr, n, i, j });
-            addTrace(5, { arr: localArr, n, i, j, comparison: `${localArr[j]} > ${localArr[j + 1]}` }, [j, j + 1]);
+            addTrace(4, { arr: `[${localArr.join(', ')}]`, n, i, j });
+            addTrace(5, { arr: `[${localArr.join(', ')}]`, n, i, j, comparison: `${localArr[j]} > ${localArr[j + 1]}` }, [j, j + 1]);
             if (localArr[j] > localArr[j + 1]) {
-                addTrace(6, { arr: localArr, n, i, j, temp: localArr[j] }, [j, j+1]);
                 let temp = localArr[j];
+                addTrace(6, { arr: `[${localArr.join(', ')}]`, n, i, j, temp }, [j, j+1]);
                 localArr[j] = localArr[j + 1];
-                addTrace(7, { arr: localArr, n, i, j, temp }, [j, j+1]);
+                addTrace(7, { arr: `[${localArr.join(', ')}]`, n, i, j, temp, arr_j: localArr[j] }, [j, j+1]);
                 localArr[j + 1] = temp;
-                addTrace(8, { arr: localArr, n, i, j, temp }, [j, j+1]);
+                addTrace(8, { arr: `[${localArr.join(', ')}]`, n, i, j, temp, arr_j_plus_1: localArr[j+1] }, [j, j+1]);
             }
         }
     }
-    addTrace(11, { arr: localArr, 'return value': localArr });
+    addTrace(11, { arr: `[${localArr.join(', ')}]`, 'return value': `[${localArr.join(', ')}]` });
     return trace;
 }
 
@@ -106,9 +104,7 @@ export function AlgoViz() {
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [explanation, setExplanation] = useState('');
-  const [isExplanationLoading, setIsExplanationLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { toast } = useToast();
 
@@ -130,8 +126,10 @@ export function AlgoViz() {
         toast({
             title: "Coming Soon!",
             description: `Visualization for ${algorithmType} algorithms is not yet implemented.`,
+            variant: 'default',
         });
         setIsLoading(false);
+        setExecutionTrace([]);
         return;
     }
 
@@ -143,10 +141,13 @@ export function AlgoViz() {
             title: "Invalid Input",
             description: "Please enter a comma-separated list of numbers for sorting.",
         });
+        setIsLoading(false);
         return;
       }
 
-      const trace = generateTrace(parsedArray);
+      // NOTE: This uses the simple client-side tracer.
+      // A more advanced implementation would involve a proper AST parser.
+      const trace = generateClientTrace(parsedArray);
       if (trace && trace.length > 0) {
         setExecutionTrace(trace);
       } else {
@@ -172,30 +173,9 @@ export function AlgoViz() {
   useEffect(() => {
     handleTraceGeneration();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [algorithmType]); // Re-run when algo type changes
+  }, []);
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
-
-  useEffect(() => {
-    if (currentTrace) {
-      setIsExplanationLoading(true);
-      explainStep({
-        code,
-        currentLine: currentTrace.line,
-        variables: JSON.stringify(currentTrace.variables),
-      })
-      .then(result => {
-        setExplanation(result.explanation);
-      })
-      .catch(error => {
-        console.error("Error fetching explanation:", error);
-        setExplanation("Could not load explanation for this step.");
-      })
-      .finally(() => {
-        setIsExplanationLoading(false);
-      });
-    }
-  }, [currentTrace, code]);
 
   const handleNext = useCallback(() => {
     setCurrentStep((prev) => Math.min(prev + 1, executionTrace.length - 1));
@@ -216,7 +196,10 @@ export function AlgoViz() {
   
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
-    handleReset();
+    // For now, we still need to press the button to re-run the client-side trace
+    setExecutionTrace([]);
+    setCurrentStep(0);
+    setIsPlaying(false);
   };
 
   useEffect(() => {
@@ -302,7 +285,6 @@ export function AlgoViz() {
         <div className="flex flex-col gap-8">
           {executionTrace.length > 0 && currentTrace && (
             <>
-              <AiExplainer explanation={explanation} isLoading={isExplanationLoading} />
               <VariableInspector variables={currentTrace.variables} />
             </>
           )}
