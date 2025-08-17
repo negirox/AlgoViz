@@ -16,7 +16,9 @@ export const ALGO_TEMPLATES = {
   return arr;
 }`,
     input: "5, 3, 8, 4, 2",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n^2)",
+    spaceComplexity: "O(1)",
   },
   selectionSort: {
     name: "Selection Sort",
@@ -36,7 +38,9 @@ export const ALGO_TEMPLATES = {
   return arr;
 }`,
     input: "64, 25, 12, 22, 11",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n^2)",
+    spaceComplexity: "O(1)",
   },
   insertionSort: {
     name: "Insertion Sort",
@@ -54,7 +58,9 @@ export const ALGO_TEMPLATES = {
   return arr;
 }`,
     input: "12, 11, 13, 5, 6",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n^2)",
+    spaceComplexity: "O(1)",
   },
   mergeSort: {
     name: "Merge Sort",
@@ -84,7 +90,9 @@ function merge(left, right) {
     .concat(right.slice(rightIndex));
 }`,
     input: "38, 27, 43, 3, 9, 82, 10",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n log n)",
+    spaceComplexity: "O(n)",
   },
   quickSort: {
     name: "Quick Sort",
@@ -110,7 +118,9 @@ function partition(arr, low, high) {
   return (i + 1);
 }`,
     input: "10, 7, 8, 9, 1, 5",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n log n)",
+    spaceComplexity: "O(log n)",
   },
   heapSort: {
     name: "Heap Sort",
@@ -142,7 +152,9 @@ function heapify(arr, n, i) {
     }
 }`,
     input: "12, 11, 13, 5, 6, 7",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n log n)",
+    spaceComplexity: "O(1)",
   },
   countingSort: {
     name: "Counting Sort",
@@ -168,7 +180,9 @@ function heapify(arr, n, i) {
   return arr;
 }`,
     input: "4, 2, 2, 8, 3, 3, 1",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n + k)",
+    spaceComplexity: "O(k)",
   },
   radixSort: {
     name: "Radix Sort",
@@ -199,7 +213,9 @@ function countingSort(arr, exp) {
     }
 }`,
     input: "170, 45, 75, 90, 802, 24, 2, 66",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(d * (n+k))",
+    spaceComplexity: "O(n + k)",
   },
   bucketSort: {
     name: "Bucket Sort",
@@ -221,7 +237,9 @@ function countingSort(arr, exp) {
     return result;
 }`,
     input: "0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n + k)",
+    spaceComplexity: "O(n)",
   },
   pigeonholeSort: {
       name: "Pigeonhole Sort",
@@ -245,7 +263,9 @@ function countingSort(arr, exp) {
     return arr;
 }`,
       input: "8, 3, 2, 7, 4, 6, 8",
-      visualizer: "array"
+      visualizer: "array",
+      timeComplexity: "O(n + N)",
+      spaceComplexity: "O(N)",
   },
   timSort: {
     name: "Tim Sort",
@@ -322,7 +342,9 @@ function timSort(arr) {
     return arr;
 }`,
     input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0, -1, 50",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n log n)",
+    spaceComplexity: "O(n)",
   },
   introSort: {
     name: "Intro Sort",
@@ -394,7 +416,9 @@ function insertionSort(arr, left, right) {
   }
 }`,
     input: "2, 1, 0, 5, 8, 3, 7, 4, 9, 6",
-    visualizer: "array"
+    visualizer: "array",
+    timeComplexity: "O(n log n)",
+    spaceComplexity: "O(log n)",
   },
   tree: {
     name: "Tree / Graph Traversal",
@@ -415,6 +439,8 @@ function traverse(node) {
   }
 }`,
     input: "{ \"value\": 10, \"left\": { \"value\": 5 }, \"right\": { \"value\": 15 } }",
-    visualizer: "tree"
+    visualizer: "tree",
+    timeComplexity: "N/A",
+    spaceComplexity: "N/A",
   }
 } as const;

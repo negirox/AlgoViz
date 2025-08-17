@@ -858,6 +858,7 @@ export function AlgoViz() {
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
   const visualizerType = ALGO_TEMPLATES[algorithmType].visualizer as 'array' | 'tree';
+  const selectedAlgo = ALGO_TEMPLATES[algorithmType];
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-8">
@@ -903,6 +904,18 @@ export function AlgoViz() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {selectedAlgo.timeComplexity && selectedAlgo.spaceComplexity && (
+                <div className="flex justify-between text-sm text-muted-foreground pt-2">
+                  <div className="font-mono text-xs">
+                      <strong>Time:</strong> {selectedAlgo.timeComplexity}
+                  </div>
+                  <div className="font-mono text-xs">
+                      <strong>Space:</strong> {selectedAlgo.spaceComplexity}
+                  </div>
+                </div>
+              )}
+
               <div>
                   <label htmlFor="input-data" className="text-sm font-medium mb-2 block">Input Data</label>
                   <div className="flex gap-2">
