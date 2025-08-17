@@ -984,7 +984,7 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
         trace.push({ line: 14, variables: { action: 'set', key, value }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
 
         const index = hash(key);
-        trace.push({ line: 8, variables: { key, value, calculation: `(hash + charCode * i) % ${size}`, result: index }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        trace.push({ line: 8, variables: { key, value, calculation: `(hash + charCode * i) % ${size}`, 'hash_value (index)': index }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         trace.push({ line: 15, variables: { key, value, index }, data: [], highlighted: { keyToInsert: key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         
         const bucket = table[index];
@@ -1009,7 +1009,7 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
     if(searchKey) {
         trace.push({ line: 22, variables: { action: 'get', key: searchKey }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         const index = hash(searchKey);
-        trace.push({ line: 8, variables: { key: searchKey, calculation: `(hash + charCode * i) % ${size}`, result: index }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        trace.push({ line: 8, variables: { key: searchKey, calculation: `(hash + charCode * i) % ${size}`, 'hash_value (index)': index }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         trace.push({ line: 23, variables: { key: searchKey, index }, data: [], highlighted: { keyToSearch: searchKey, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
 
         const bucket = table[index];
