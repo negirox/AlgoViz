@@ -766,6 +766,204 @@ function generateBinarySearchTrace(arr: number[], target: number): TraceStep[] {
     return trace;
 }
 
+function generateJumpSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+    
+    const n = localArr.length;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, n });
+    let step = Math.floor(Math.sqrt(n));
+    addTrace(2, { n, step });
+    let prev = 0;
+    addTrace(3, { n, step, prev });
+
+    addTrace(4, { condition: `${localArr[Math.min(step, n) - 1]} < ${target}` }, [Math.min(step, n) - 1]);
+    while (localArr[Math.min(step, n) - 1] < target) {
+        prev = step;
+        addTrace(5, { prev }, [prev]);
+        step += Math.floor(Math.sqrt(n));
+        addTrace(6, { prev, step }, [step]);
+        addTrace(7, { prev, n, condition: `${prev} >= ${n}` });
+        if (prev >= n) {
+            addTrace(8, { 'return value': -1 });
+            return trace;
+        }
+        addTrace(4, { condition: `${localArr[Math.min(step, n) - 1]} < ${target}` }, [Math.min(step, n) - 1]);
+    }
+    
+    addTrace(11, { prev, condition: `${localArr[prev]} < ${target}` }, [prev]);
+    while (localArr[prev] < target) {
+        prev++;
+        addTrace(12, { prev }, [prev]);
+        addTrace(13, { prev, step, n, condition: `${prev} == ${Math.min(step, n)}` });
+        if (prev === Math.min(step, n)) {
+            addTrace(14, { 'return value': -1 });
+            return trace;
+        }
+        addTrace(11, { prev, condition: `${localArr[prev]} < ${target}` }, [prev]);
+    }
+
+    addTrace(17, { prev, condition: `${localArr[prev]} === ${target}` }, [prev]);
+    if (localArr[prev] === target) {
+        addTrace(18, { 'return value': prev }, [prev]);
+        return trace;
+    }
+    addTrace(20, { 'return value': -1 });
+    return trace;
+}
+
+function generateInterpolationSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a, b) => a - b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let n = localArr.length;
+    let lo = 0, hi = n - 1;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, n });
+    addTrace(2, { lo, hi });
+
+    addTrace(3, { lo, hi, target, condition: `${lo} <= ${hi} && ${target} >= ${localArr[lo]} && ${target} <= ${localArr[hi]}` });
+    while (lo <= hi && target >= localArr[lo] && target <= localArr[hi]) {
+        if (lo === hi) {
+            addTrace(4, { condition: `${lo} === ${hi}`});
+            if (localArr[lo] === target) {
+                 addTrace(5, { 'return value': lo }, [lo]);
+                 return trace;
+            }
+            addTrace(6, { 'return value': -1 });
+            return trace;
+        }
+        
+        let pos = lo + Math.floor(((hi - lo) / (localArr[hi] - localArr[lo])) * (target - localArr[lo]));
+        addTrace(9, { lo, hi, pos, formula: `pos = ${lo} + floor((${hi}-${lo}) / (${localArr[hi]}-${localArr[lo]})) * (${target}-${localArr[lo]})` }, [pos, lo, hi]);
+
+        addTrace(10, { pos, condition: `${localArr[pos]} == ${target}` }, [pos]);
+        if (localArr[pos] === target) {
+            addTrace(11, { 'return value': pos }, [pos]);
+            return trace;
+        }
+
+        addTrace(13, { pos, condition: `${localArr[pos]} < ${target}` }, [pos]);
+        if (localArr[pos] < target) {
+            lo = pos + 1;
+            addTrace(14, { lo }, [lo, hi]);
+        } else {
+            hi = pos - 1;
+            addTrace(16, { hi }, [lo, hi]);
+        }
+        addTrace(3, { lo, hi, target, condition: `${lo} <= ${hi} && ${target} >= ${localArr[lo]} && ${target} <= ${localArr[hi]}` });
+    }
+    addTrace(19, { 'return value': -1 });
+    return trace;
+}
+
+function generateExponentialSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let n = localArr.length;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, n });
+
+    addTrace(2, { condition: `${localArr[0]} == ${target}` }, [0]);
+    if (localArr[0] === target) {
+        addTrace(3, { 'return value': 0 }, [0]);
+        return trace;
+    }
+
+    let i = 1;
+    addTrace(5, { i });
+    addTrace(6, { i, n, condition: `${i} < ${n} && ${localArr[i]} <= ${target}` }, [i]);
+    while (i < n && localArr[i] <= target) {
+        i = i * 2;
+        addTrace(7, { i }, [i < n ? i : n-1]);
+        addTrace(6, { i, n, condition: `${i} < ${n} && ${localArr[i]} <= ${target}` }, [i < n ? i : n-1]);
+    }
+    
+    // Binary Search part
+    let low = i / 2;
+    let high = Math.min(i, n - 1);
+    addTrace(10, { from: low, to: high, status: "Calling Binary Search" }, Array.from({length: high-low+1}, (_, k) => low + k));
+
+    while (low <= high) {
+        addTrace(16, { low, high, condition: `${low} <= ${high}`}, [low, high]);
+        let mid = Math.floor(low + (high - low) / 2);
+        addTrace(17, { low, high, mid }, [low, high, mid]);
+        addTrace(18, { mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} === ${target}` }, [mid]);
+        if (localArr[mid] === target) {
+            addTrace(19, { 'return value': mid }, [mid]);
+            return trace;
+        }
+        addTrace(20, { mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} < ${target}` }, [mid]);
+        if (localArr[mid] < target) {
+            low = mid + 1;
+            addTrace(21, { low }, [low, high]);
+        } else {
+            high = mid - 1;
+            addTrace(23, { high }, [low, high]);
+        }
+    }
+    addTrace(16, { low, high, condition: `${low} <= ${high}`}, []);
+
+    addTrace(26, { 'return value': -1 });
+    return trace;
+}
+
+function generateTernarySearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let l = 0, r = localArr.length - 1;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, l, r });
+    
+    addTrace(2, { l, r, condition: `${r} >= ${l}`}, [l,r]);
+    while (r >= l) {
+        let mid1 = l + Math.floor((r - l) / 3);
+        addTrace(3, { l, r, mid1 }, [l,r,mid1]);
+        let mid2 = r - Math.floor((r - l) / 3);
+        addTrace(4, { l, r, mid1, mid2 }, [l,r,mid1,mid2]);
+
+        addTrace(6, { mid1, condition: `${localArr[mid1]} == ${target}` }, [mid1]);
+        if (localArr[mid1] === target) {
+            addTrace(7, { 'return value': mid1 }, [mid1]);
+            return trace;
+        }
+        addTrace(8, { mid2, condition: `${localArr[mid2]} == ${target}` }, [mid2]);
+        if (localArr[mid2] === target) {
+            addTrace(9, { 'return value': mid2 }, [mid2]);
+            return trace;
+        }
+        
+        addTrace(11, { target, mid1, condition: `${target} < ${localArr[mid1]}` }, [mid1]);
+        if (target < localArr[mid1]) {
+            r = mid1 - 1;
+            addTrace(12, { r }, [l,r]);
+        } else if (target > localArr[mid2]) {
+            addTrace(13, { target, mid2, condition: `${target} > ${localArr[mid2]}` }, [mid2]);
+            l = mid2 + 1;
+            addTrace(14, { l }, [l,r]);
+        } else {
+            l = mid1 + 1;
+            r = mid2 - 1;
+            addTrace(16, { l, r }, [l,r]);
+        }
+        addTrace(2, { l, r, condition: `${r} >= ${l}`}, [l,r]);
+    }
+    
+    addTrace(19, { 'return value': -1 });
+    return trace;
+}
+
 
 const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => TraceStep[]> = {
   bubbleSort: generateBubbleSortTrace,
@@ -782,6 +980,10 @@ const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => Trace
   introSort: generateIntroSortTrace,
   linearSearch: (arr, target) => generateLinearSearchTrace(arr, target!),
   binarySearch: (arr, target) => generateBinarySearchTrace(arr, target!),
+  jumpSearch: (arr, target) => generateJumpSearchTrace(arr, target!),
+  interpolationSearch: (arr, target) => generateInterpolationSearchTrace(arr, target!),
+  exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
+  ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   tree: (arr: any) => [],
 };
 
@@ -804,8 +1006,8 @@ export function AlgoViz() {
   
   const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory]?.algorithms[algorithmKey as any] || getDefaultAlgorithm(algorithmCategory);
 
-  const [code, setCode] = useState(selectedAlgorithm.code);
-  const [inputStr, setInputStr] = useState(selectedAlgorithm.input);
+  const [code, setCode] = useState(selectedAlgorithm?.code || '');
+  const [inputStr, setInputStr] = useState(selectedAlgorithm?.input || '');
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -1013,6 +1215,10 @@ export function AlgoViz() {
                           <SelectLabel>Searching</SelectLabel>
                           <SelectItem value="linearSearch">Linear Search</SelectItem>
                           <SelectItem value="binarySearch">Binary Search</SelectItem>
+                          <SelectItem value="jumpSearch">Jump Search</SelectItem>
+                          <SelectItem value="interpolationSearch">Interpolation Search</SelectItem>
+                          <SelectItem value="exponentialSearch">Exponential Search</SelectItem>
+                          <SelectItem value="ternarySearch">Ternary Search</SelectItem>
                         </SelectGroup>
                        )}
                        {algorithmCategory === 'tree' && (

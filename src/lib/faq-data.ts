@@ -655,6 +655,66 @@ export const FAQ_DATA: FaqData = {
                         answer: "You would use a linear search if the data is unsorted, as sorting it first would take O(n log n) time, which is slower than a simple O(n) linear scan. Linear search is also preferable for very small arrays where its simplicity and good cache performance might make it faster in practice."
                     }
                 ]
+            },
+            jumpSearch: {
+                title: "Jump Search",
+                faqs: [
+                    { question: "What is Jump Search?", answer: "Jump Search is a searching algorithm for sorted arrays. The basic idea is to check fewer elements than linear search by jumping ahead by fixed steps and then doing a linear search in the identified block." },
+                    { question: "How does Jump Search work?", answer: "It works by jumping ahead by a fixed step size (typically √n). It compares the element at the jumped position. If it's smaller than the target, it jumps again. If it's larger, it performs a linear search in the block between the previous and current jump positions." },
+                    { question: "What is the optimal jump size?", answer: "The optimal jump size is √n, where n is the number of elements in the array. This provides the best worst-case performance." },
+                    { question: "What is the time complexity of Jump Search?", answer: "The time complexity is O(√n). In the worst case, we perform n/√n jumps and then √n comparisons for the linear search, making it √n + √n = 2√n operations." },
+                    { question: "When is Jump Search better than Binary Search?", answer: "Binary Search is generally better (O(log n) vs O(√n)). However, Jump Search can be advantageous when jumping back is expensive. In some systems, memory access patterns might favor jumping forward only." },
+                    { question: "Does Jump Search require a sorted array?", answer: "Yes, just like Binary Search, Jump Search requires the array to be sorted." },
+                    { question: "What is the space complexity of Jump Search?", answer: "The space complexity is O(1) because it operates in-place on the given array." },
+                    { question: "How does it compare to Linear Search?", answer: "It is much faster than Linear Search (O(√n) vs O(n)) for large arrays." },
+                    { question: "Can Jump Search be used for linked lists?", answer: "It's not practical for standard linked lists due to the lack of random access needed to perform the 'jumps' efficiently." },
+                    { question: "What happens if the element is not found?", answer: "If the linear search phase completes without finding the element, or if the initial jumps go past the end of the array without finding a block that could contain the element, it is concluded that the element is not present." },
+                ]
+            },
+            interpolationSearch: {
+                title: "Interpolation Search",
+                faqs: [
+                    { question: "What is Interpolation Search?", answer: "Interpolation Search is an improvement over Binary Search for instances where the values in a sorted array are uniformly distributed. It estimates the position of the target value rather than always checking the middle." },
+                    { question: "How does the position probing work?", answer: "It uses an interpolation formula to guess the position. The formula is `pos = low + ((x - arr[low]) * (high - low)) / (arr[high] - arr[low])`. This estimates where the target `x` would be, assuming a linear distribution of values between `arr[low]` and `arr[high]`." },
+                    { question: "What is the time complexity of Interpolation Search?", answer: "For a uniformly distributed array, the average time complexity is O(log log n), which is faster than Binary Search. However, the worst-case complexity is O(n), which occurs with non-uniform data (e.g., exponentially increasing values)." },
+                    { question: "What is the main requirement for using Interpolation Search?", answer: "The array must be sorted, and the values should be uniformly distributed for the algorithm to be efficient." },
+                    { question: "What is the space complexity?", answer: "The space complexity is O(1) for the iterative version." },
+                    { question: "Why is it called 'Interpolation' Search?", answer: "The name comes from the term 'interpolation,' which is a method of constructing new data points within the range of a discrete set of known data points. The algorithm estimates the position of the key by interpolating its value." },
+                    { question: "When would Binary Search be preferred over Interpolation Search?", answer: "Binary Search is preferred when the data is not uniformly distributed or when the distribution is unknown. Its O(log n) performance is guaranteed, whereas Interpolation Search can degrade to O(n)." },
+                    { question: "Can it handle non-integer data types?", answer: "The interpolation formula relies on arithmetic operations, so it's primarily designed for numeric data types that can be operated on in this way." },
+                    { question: "How does it compare to Jump Search?", answer: "For uniformly distributed data, Interpolation Search is much faster. However, Jump Search has a more reliable O(√n) worst-case performance, which is better than Interpolation Search's O(n) worst case." },
+                    { question: "Is it difficult to implement?", answer: "The logic is similar to Binary Search, but involves a more complex calculation for the probe position, which can be prone to implementation errors like division by zero if not handled carefully." },
+                ]
+            },
+            exponentialSearch: {
+                title: "Exponential Search",
+                faqs: [
+                    { question: "What is Exponential Search?", answer: "Exponential Search is an algorithm used to find an element in a sorted, unbounded or infinite array. It can also be more efficient than Binary Search on bounded arrays when the target element is near the beginning." },
+                    { question: "How does Exponential Search work?", answer: "It works in two steps. First, it finds a range where the element could be present. It starts with a sub-array of size 1, compares the last element with the target, and then doubles the sub-array size until the last element is greater than the target. Second, it performs a Binary Search within that final identified range." },
+                    { question: "What is the time complexity?", answer: "The time complexity is O(log n). Finding the range takes O(log i) where i is the index of the target element, and the subsequent binary search takes O(log i). In the worst case, i can be n, so the complexity is O(log n)." },
+                    { question: "Why is it useful for unbounded arrays?", answer: "It's useful for unbounded (or infinite) arrays because it doesn't need to know the size of the array to start. It finds a suitable range first and then performs a bounded binary search." },
+                    { question: "What is the space complexity?", answer: "If the final binary search is iterative, the space complexity is O(1). If it's recursive, it's O(log n) for the call stack." },
+                    { question: "When is it faster than Binary Search on a bounded array?", answer: "It can be faster if the target element is located near the beginning of the array. Binary Search always starts at the middle, while Exponential Search starts its range-finding at the beginning, so it can find a small range and finish its binary search much faster." },
+                    { question: "Is a sorted array required?", answer: "Yes, the array must be sorted for both the range-finding step and the final binary search to work correctly." },
+                    { question: "How does it differ from Interpolation Search?", answer: "Exponential Search's strategy is based on finding a range by doubling, while Interpolation Search's strategy is based on probing a likely position using a formula. Exponential Search does not require uniformly distributed data." },
+                    { question: "Can it be implemented without recursion?", answer: "Yes, the final binary search step can be implemented iteratively to avoid recursion and reduce space complexity." },
+                    { question: "What is another name for Exponential Search?", answer: "It is also sometimes known as Galloping Search or Doubling Search." },
+                ]
+            },
+            ternarySearch: {
+                title: "Ternary Search",
+                faqs: [
+                    { question: "What is Ternary Search?", answer: "Ternary Search is a divide-and-conquer search algorithm that finds an element in a sorted array by repeatedly dividing the search space into three parts instead of two." },
+                    { question: "How does Ternary Search work?", answer: "It calculates two middle points, `mid1` and `mid2`, which divide the array into three equal parts. It then compares the target with the elements at `mid1` and `mid2` to decide which of the three sub-arrays to continue searching in." },
+                    { question: "What is its primary use case?", answer: "While it can be used on sorted arrays, its most common application is to find the minimum or maximum of a unimodal function (a function that strictly increases and then strictly decreases, or vice versa)." },
+                    { question: "What is the time complexity of Ternary Search?", answer: "The time complexity is O(log3 n). While the base of the logarithm is larger than in Binary Search (log2 n), this does not represent a significant performance improvement. In fact, it is often slower." },
+                    { question: "Why is Ternary Search often slower than Binary Search?", answer: "Although the number of recursive calls is smaller (log3 n vs log2 n), Ternary Search requires two comparisons per iteration, while Binary Search only needs one. The extra comparison per step makes it less efficient than Binary Search for array searching." },
+                    { question: "What is the space complexity?", answer: "The space complexity is O(1) for the iterative version and O(log n) for the recursive version." },
+                    { question: "Does the array need to be sorted?", answer: "Yes, for finding an element in an array, the array must be sorted." },
+                    { question: "How does it compare to Jump Search?", answer: "Binary Search is almost always better than both, but comparing the two, their performance depends on the array size and data distribution. Jump Search's O(√n) is generally worse than Ternary Search's O(log3 n)." },
+                    { question: "When should one absolutely use Ternary Search?", answer: "The main practical application is for finding the extremum (min/max) of a unimodal function, where you cannot simply check the middle and decide which half to discard. In this scenario, it is a very effective algorithm." },
+                    { question: "How many comparisons are made in the worst case per iteration?", answer: "In the worst case, two comparisons are made: one against `ar[mid1]` and another against `ar[mid2]`." },
+                ]
             }
         }
     },

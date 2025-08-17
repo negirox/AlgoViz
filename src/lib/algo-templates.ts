@@ -465,6 +465,115 @@ function insertionSort(arr, left, right) {
         timeComplexity: "O(log n)",
         spaceComplexity: "O(1)",
       },
+      jumpSearch: {
+        name: "Jump Search",
+        code: `function jumpSearch(arr, x) {
+    let n = arr.length;
+    let step = Math.floor(Math.sqrt(n));
+    let prev = 0;
+    while (arr[Math.min(step, n) - 1] < x) {
+        prev = step;
+        step += Math.floor(Math.sqrt(n));
+        if (prev >= n)
+            return -1;
+    }
+    while (arr[prev] < x) {
+        prev++;
+        if (prev == Math.min(step, n))
+            return -1;
+    }
+    if (arr[prev] == x)
+        return prev;
+    return -1;
+}`,
+        input: "0,1,1,2,3,5,8,13,21,34,55,89,144,233,377,610;55",
+        visualizer: "array",
+        timeComplexity: "O(√n)",
+        spaceComplexity: "O(1)",
+      },
+      interpolationSearch: {
+        name: "Interpolation Search",
+        code: `function interpolationSearch(arr, x) {
+    let n = arr.length;
+    let lo = 0, hi = n - 1;
+    while (lo <= hi && x >= arr[lo] && x <= arr[hi]) {
+        if (lo == hi) {
+            if (arr[lo] == x) return lo;
+            return -1;
+        }
+        let pos = lo + Math.floor(((hi - lo) / (arr[hi] - arr[lo])) * (x - arr[lo]));
+        if (arr[pos] == x)
+            return pos;
+        if (arr[pos] < x)
+            lo = pos + 1;
+        else
+            hi = pos - 1;
+    }
+    return -1;
+}`,
+        input: "10,12,13,16,18,19,20,21,22,23,24,33,35,42,47;18",
+        visualizer: "array",
+        timeComplexity: "O(log log n)",
+        spaceComplexity: "O(1)",
+      },
+      exponentialSearch: {
+        name: "Exponential Search",
+        code: `function exponentialSearch(arr, x) {
+    let n = arr.length;
+    if (arr[0] == x)
+        return 0;
+    let i = 1;
+    while (i < n && arr[i] <= x)
+        i = i * 2;
+    return binarySearch(arr, i / 2, Math.min(i, n - 1), x);
+}
+
+function binarySearch(arr, l, r, x) {
+    if (r >= l) {
+        let mid = l + Math.floor((r - l) / 2);
+        if (arr[mid] == x)
+            return mid;
+        if (arr[mid] > x)
+            return binarySearch(arr, l, mid - 1, x);
+        return binarySearch(arr, mid + 1, r, x);
+    }
+    return -1;
+}`,
+        input: "2,3,4,10,40;10",
+        visualizer: "array",
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(1)",
+      },
+      ternarySearch: {
+        name: "Ternary Search",
+        code: `function ternarySearch(l, r, key, ar) {
+    while (r >= l) {
+        let mid1 = l + Math.floor((r - l) / 3);
+        let mid2 = r - Math.floor((r - l) / 3);
+
+        if (ar[mid1] == key) {
+            return mid1;
+        }
+        if (ar[mid2] == key) {
+            return mid2;
+        }
+
+        if (key < ar[mid1]) {
+            r = mid1 - 1;
+        } else if (key > ar[mid2]) {
+            l = mid2 + 1;
+        } else {
+            l = mid1 + 1;
+            r = mid2 - 1;
+        }
+    }
+    return -1;
+}`,
+        input: "1,2,3,4,5,6,7,8,9,10;5",
+        visualizer: "array",
+        timeComplexity: "O(log3 n)",
+        spaceComplexity: "O(1)",
+      },
     }
   },
   tree: {
