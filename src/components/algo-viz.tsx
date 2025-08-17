@@ -9,11 +9,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Visualizer } from '@/components/visualizer';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const ALGO_TEMPLATES = {
-  sorting: {
-    code: `function sort(arr) {
+  bubbleSort: {
+    name: "Bubble Sort",
+    code: `function bubbleSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
@@ -29,7 +30,134 @@ const ALGO_TEMPLATES = {
     input: "5, 3, 8, 4, 2",
     visualizer: "array"
   },
+  selectionSort: {
+    name: "Selection Sort",
+    code: `function selectionSort(arr) {
+  let n = arr.length;
+  for (let i = 0; i < n - 1; i++) {
+    let min_idx = i;
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[min_idx]) {
+        min_idx = j;
+      }
+    }
+    let temp = arr[min_idx];
+    arr[min_idx] = arr[i];
+    arr[i] = temp;
+  }
+  return arr;
+}`,
+    input: "64, 25, 12, 22, 11",
+    visualizer: "array"
+  },
+  insertionSort: {
+    name: "Insertion Sort",
+    code: `function insertionSort(arr) {
+  let n = arr.length;
+  for (let i = 1; i < n; i++) {
+    let key = arr[i];
+    let j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+    arr[j + 1] = key;
+  }
+  return arr;
+}`,
+    input: "12, 11, 13, 5, 6",
+    visualizer: "array"
+  },
+  mergeSort: {
+    name: "Merge Sort",
+    code: `function mergeSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+  return merge(left, right);
+}
+
+function merge(left, right) {
+  let resultArray = [], leftIndex = 0, rightIndex = 0;
+  while (leftIndex < left.length && rightIndex < right.length) {
+    if (left[leftIndex] < right[rightIndex]) {
+      resultArray.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      resultArray.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+  return resultArray
+    .concat(left.slice(leftIndex))
+    .concat(right.slice(rightIndex));
+}`,
+    input: "38, 27, 43, 3, 9, 82, 10",
+    visualizer: "array"
+  },
+  quickSort: {
+    name: "Quick Sort",
+    code: `function quickSort(arr, low, high) {
+  if (low < high) {
+    let pi = partition(arr, low, high);
+    quickSort(arr, low, pi - 1);
+    quickSort(arr, pi + 1, high);
+  }
+  return arr;
+}
+
+function partition(arr, low, high) {
+  let pivot = arr[high];
+  let i = (low - 1);
+  for (let j = low; j <= high - 1; j++) {
+    if (arr[j] < pivot) {
+      i++;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+  return (i + 1);
+}`,
+    input: "10, 7, 8, 9, 1, 5",
+    visualizer: "array"
+  },
+  heapSort: {
+    name: "Heap Sort",
+    code: `function heapSort(arr) {
+    var n = arr.length;
+    for (var i = Math.floor(n / 2) - 1; i >= 0; i--)
+        heapify(arr, n, i);
+    for (var i = n - 1; i > 0; i--) {
+        var temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+        heapify(arr, i, 0);
+    }
+    return arr;
+}
+function heapify(arr, n, i) {
+    var largest = i;
+    var l = 2 * i + 1;
+    var r = 2 * i + 2;
+    if (l < n && arr[l] > arr[largest])
+        largest = l;
+    if (r < n && arr[r] > arr[largest])
+        largest = r;
+    if (largest != i) {
+        var swap = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = swap;
+        heapify(arr, n, largest);
+    }
+}`,
+    input: "12, 11, 13, 5, 6, 7",
+    visualizer: "array"
+  },
   tree: {
+    name: "Tree / Graph Traversal",
     code: `class TreeNode {
   constructor(value) {
     this.value = value;
@@ -60,23 +188,15 @@ export type TraceStep = {
   highlighted: any;
 };
 
-// Simple client-side execution trace generator for a specific bubble sort implementation
-function generateClientTrace(arr: number[]): TraceStep[] {
+// Trace generation functions for each sorting algorithm
+function generateBubbleSortTrace(arr: number[]): TraceStep[] {
     const trace: TraceStep[] = [];
     const localArr = [...arr];
-
     const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
-        trace.push({
-            line,
-            variables: { ...variables },
-            data: [...localArr],
-            highlighted,
-        });
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
     };
-
     let n = localArr.length;
     addTrace(2, { arr: `[${localArr.join(', ')}]`, n });
-
     for (let i = 0; i < n - 1; i++) {
         addTrace(3, { arr: `[${localArr.join(', ')}]`, n, i });
         for (let j = 0; j < n - i - 1; j++) {
@@ -86,9 +206,9 @@ function generateClientTrace(arr: number[]): TraceStep[] {
                 let temp = localArr[j];
                 addTrace(6, { arr: `[${localArr.join(', ')}]`, n, i, j, temp }, [j, j+1]);
                 localArr[j] = localArr[j + 1];
-                addTrace(7, { arr: `[${localArr.join(', ')}]`, n, i, j, temp, arr_j: localArr[j] }, [j, j+1]);
+                addTrace(7, { arr: `[${localArr.join(', ')}]`, n, i, j, temp, 'arr[j]': localArr[j] }, [j, j+1]);
                 localArr[j + 1] = temp;
-                addTrace(8, { arr: `[${localArr.join(', ')}]`, n, i, j, temp, arr_j_plus_1: localArr[j+1] }, [j, j+1]);
+                addTrace(8, { arr: `[${localArr.join(', ')}]`, n, i, j, temp, 'arr[j+1]': localArr[j+1] }, [j, j+1]);
             }
         }
     }
@@ -96,11 +216,103 @@ function generateClientTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateSelectionSortTrace(arr: number[]): TraceStep[] {
+  const trace: TraceStep[] = [];
+  const localArr = [...arr];
+  const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+      trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+  };
+  let n = localArr.length;
+  addTrace(2, { arr: `[${localArr.join(', ')}]`, n });
+  for (let i = 0; i < n - 1; i++) {
+    addTrace(3, { arr: `[${localArr.join(', ')}]`, n, i });
+    let min_idx = i;
+    addTrace(4, { arr: `[${localArr.join(', ')}]`, n, i, min_idx }, [i]);
+    for (let j = i + 1; j < n; j++) {
+      addTrace(5, { arr: `[${localArr.join(', ')}]`, n, i, min_idx, j });
+      addTrace(6, { arr: `[${localArr.join(', ')}]`, n, i, min_idx, j, comparison: `${localArr[j]} < ${localArr[min_idx]}` }, [j, min_idx]);
+      if (localArr[j] < localArr[min_idx]) {
+        min_idx = j;
+        addTrace(7, { arr: `[${localArr.join(', ')}]`, n, i, min_idx, j }, [j, min_idx]);
+      }
+    }
+    let temp = localArr[min_idx];
+    addTrace(10, { arr: `[${localArr.join(', ')}]`, n, i, min_idx, temp }, [min_idx, i]);
+    localArr[min_idx] = localArr[i];
+    addTrace(11, { arr: `[${localArr.join(', ')}]`, n, i, min_idx, temp, 'arr[min_idx]': localArr[min_idx] }, [min_idx, i]);
+    localArr[i] = temp;
+    addTrace(12, { arr: `[${localArr.join(', ')}]`, n, i, min_idx, temp, 'arr[i]': localArr[i] }, [min_idx, i]);
+  }
+  addTrace(14, { arr: `[${localArr.join(', ')}]`, 'return value': `[${localArr.join(', ')}]` });
+  return trace;
+}
+
+function generateInsertionSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+    let n = localArr.length;
+    addTrace(2, { arr: `[${localArr.join(', ')}]`, n });
+    for (let i = 1; i < n; i++) {
+        addTrace(3, { arr: `[${localArr.join(', ')}]`, n, i });
+        let key = localArr[i];
+        addTrace(4, { arr: `[${localArr.join(', ')}]`, n, i, key }, [i]);
+        let j = i - 1;
+        addTrace(5, { arr: `[${localArr.join(', ')}]`, n, i, key, j }, [i, j]);
+        while (j >= 0 && localArr[j] > key) {
+            addTrace(6, { arr: `[${localArr.join(', ')}]`, n, i, key, j, condition: `${j} >= 0 && ${localArr[j]} > ${key}` }, [j, i]);
+            localArr[j + 1] = localArr[j];
+            addTrace(7, { arr: `[${localArr.join(', ')}]`, n, i, key, j, 'arr[j+1]': localArr[j+1] }, [j+1, j]);
+            j = j - 1;
+            addTrace(8, { arr: `[${localArr.join(', ')}]`, n, i, key, j }, [j+1]);
+        }
+        addTrace(6, { arr: `[${localArr.join(', ')}]`, n, i, key, j, condition: j < 0 ? 'false' : `${j} >= 0 && ${localArr[j]} > ${key}` }, [j < 0 ? i : j, i]);
+        localArr[j + 1] = key;
+        addTrace(10, { arr: `[${localArr.join(', ')}]`, n, i, key, j, 'arr[j+1]': key }, [j+1]);
+    }
+    addTrace(12, { arr: `[${localArr.join(', ')}]`, 'return value': `[${localArr.join(', ')}]` });
+    return trace;
+}
+
+const TRACE_GENERATORS = {
+  bubbleSort: generateBubbleSortTrace,
+  selectionSort: generateSelectionSortTrace,
+  insertionSort: generateInsertionSortTrace,
+  mergeSort: (arr: number[]) => { 
+    // Simplified trace for complex recursive algorithms
+    const trace: TraceStep[] = [];
+    const sorted = [...arr].sort((a,b) => a - b);
+    trace.push({line: 1, variables: {arr: `[${arr.join(', ')}]`}, data: arr, highlighted: []});
+    trace.push({line: 15, variables: {'return value': `[${sorted.join(', ')}]`}, data: sorted, highlighted: []});
+    return trace;
+  },
+   quickSort: (arr: number[]) => { 
+    const trace: TraceStep[] = [];
+    const sorted = [...arr].sort((a,b) => a - b);
+    trace.push({line: 1, variables: {arr: `[${arr.join(', ')}]`}, data: arr, highlighted: []});
+    trace.push({line: 18, variables: {'return value': `[${sorted.join(', ')}]`}, data: sorted, highlighted: []});
+    return trace;
+  },
+  heapSort: (arr: number[]) => { 
+    const trace: TraceStep[] = [];
+    const sorted = [...arr].sort((a,b) => a - b);
+    trace.push({line: 1, variables: {arr: `[${arr.join(', ')}]`}, data: arr, highlighted: []});
+    trace.push({line: 13, variables: {'return value': `[${sorted.join(', ')}]`}, data: sorted, highlighted: []});
+    return trace;
+  },
+  // Placeholders for other algorithms
+  shellSort: (arr: number[]) => [],
+  combSort: (arr: number[]) => [],
+  cycleSort: (arr: number[]) => [],
+  tree: (arr: any) => [],
+};
 
 export function AlgoViz() {
-  const [algorithmType, setAlgorithmType] = useState<AlgorithmType>("sorting");
-  const [code, setCode] = useState(ALGO_TEMPLATES.sorting.code);
-  const [inputStr, setInputStr] = useState(ALGO_TEMPLATES.sorting.input);
+  const [algorithmType, setAlgorithmType] = useState<AlgorithmType>("bubbleSort");
+  const [code, setCode] = useState(ALGO_TEMPLATES.bubbleSort.code);
+  const [inputStr, setInputStr] = useState(ALGO_TEMPLATES.bubbleSort.input);
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -109,6 +321,7 @@ export function AlgoViz() {
   const { toast } = useToast();
 
   const handleAlgorithmChange = (type: AlgorithmType) => {
+    if (!type || !ALGO_TEMPLATES[type]) return;
     setAlgorithmType(type);
     setCode(ALGO_TEMPLATES[type].code);
     setInputStr(ALGO_TEMPLATES[type].input);
@@ -122,10 +335,10 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (algorithmType !== 'sorting') {
+    if (ALGO_TEMPLATES[algorithmType].visualizer === 'tree') {
         toast({
             title: "Coming Soon!",
-            description: `Visualization for ${algorithmType} algorithms is not yet implemented.`,
+            description: `Visualization for ${ALGO_TEMPLATES[algorithmType].name} is not yet implemented.`,
             variant: 'default',
         });
         setIsLoading(false);
@@ -145,16 +358,23 @@ export function AlgoViz() {
         return;
       }
 
-      // NOTE: This uses the simple client-side tracer.
-      // A more advanced implementation would involve a proper AST parser.
-      const trace = generateClientTrace(parsedArray);
+      const traceGenerator = TRACE_GENERATORS[algorithmType as keyof typeof TRACE_GENERATORS] as (arr: number[]) => TraceStep[];
+      if (!traceGenerator) {
+          toast({
+              title: "Not Implemented",
+              description: `The visualizer for ${ALGO_TEMPLATES[algorithmType].name} is not yet implemented.`,
+          });
+          setIsLoading(false);
+          return;
+      }
+
+      const trace = traceGenerator(parsedArray);
       if (trace && trace.length > 0) {
         setExecutionTrace(trace);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Error Generating Trace",
-          description: "Could not generate execution trace from the code.",
+      } else if (trace) {
+         toast({
+          title: "Visualization Not Ready",
+          description: `The visualizer for ${ALGO_TEMPLATES[algorithmType].name} is coming soon.`,
         });
       }
     } catch (error: any) {
@@ -173,7 +393,7 @@ export function AlgoViz() {
   useEffect(() => {
     handleTraceGeneration();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [algorithmType]);
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
 
@@ -196,7 +416,6 @@ export function AlgoViz() {
   
   const handleCodeChange = (newCode: string) => {
     setCode(newCode);
-    // For now, we still need to press the button to re-run the client-side trace
     setExecutionTrace([]);
     setCurrentStep(0);
     setIsPlaying(false);
@@ -239,8 +458,19 @@ export function AlgoViz() {
                       <SelectValue placeholder="Select algorithm type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="sorting">Sorting</SelectItem>
-                      <SelectItem value="tree">Tree / Graph</SelectItem>
+                      <SelectGroup>
+                        <SelectLabel>Sorting Algorithms</SelectLabel>
+                        <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
+                        <SelectItem value="selectionSort">Selection Sort</SelectItem>
+                        <SelectItem value="insertionSort">Insertion Sort</SelectItem>
+                        <SelectItem value="mergeSort">Merge Sort</SelectItem>
+                        <SelectItem value="quickSort">Quick Sort</SelectItem>
+                        <SelectItem value="heapSort">Heap Sort</SelectItem>
+                      </SelectGroup>
+                      <SelectGroup>
+                         <SelectLabel>Other Data Structures</SelectLabel>
+                         <SelectItem value="tree">Tree / Graph</SelectItem>
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
@@ -251,7 +481,7 @@ export function AlgoViz() {
                             id="input-data"
                             value={inputStr}
                             onChange={(e) => setInputStr(e.target.value)}
-                            placeholder={algorithmType === 'sorting' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
+                            placeholder={ALGO_TEMPLATES[algorithmType].visualizer === 'array' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
                         />
                         <Button onClick={handleTraceGeneration}>Visualize</Button>
                     </div>
@@ -261,13 +491,14 @@ export function AlgoViz() {
           <Card className="w-full bg-card/50">
             <CardHeader>
               <CardTitle>Code Editor</CardTitle>
-              <CardDescription>Enter your algorithm in JavaScript.</CardDescription>
+              <CardDescription>The code is for reference. Editing it won't affect the visualization yet.</CardDescription>
             </CardHeader>
             <CardContent>
               <CodeEditor
                 code={code}
                 onCodeChange={handleCodeChange}
-                highlightedLine={currentTrace?.line} />
+                highlightedLine={currentTrace?.line}
+                readOnly={true} />
             </CardContent>
           </Card>
            {executionTrace.length > 0 && (

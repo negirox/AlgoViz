@@ -20,12 +20,13 @@ export function CodeEditor({ code, onCodeChange, highlightedLine, readOnly = fal
         <div className="flex">
             <pre className="text-right p-4 pr-2 text-muted-foreground select-none leading-relaxed">{lineNumbers}</pre>
             <div className="relative flex-1">
-                <div className="absolute top-0 left-0 h-full w-full p-4 pointer-events-none">
+                 <div className="absolute top-0 left-0 h-full w-full p-4 pointer-events-none">
                     {lines.map((line, index) => (
                     <div
                         key={index}
                         className={cn(
-                        "flex items-start transition-colors duration-300 rounded-sm -ml-4 -mr-4 pl-4 pr-4 border-l-4 h-[24px]",
+                        "flex items-start transition-colors duration-300 rounded-sm -ml-4 -mr-4 pl-4 pr-4 border-l-4",
+                        "h-[24px]", // Use a fixed height that matches the line-height of the textarea
                         index + 1 === highlightedLine
                             ? "bg-primary/20 border-primary"
                             : "border-transparent"
