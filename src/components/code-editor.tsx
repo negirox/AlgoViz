@@ -1,3 +1,4 @@
+
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -36,6 +37,7 @@ export function CodeEditor({ code, onCodeChange, highlightedLine, readOnly = fal
                     style={{ 
                       transform: `translateY(${(highlightedLine - 1) * LINE_HEIGHT}px)`,
                       height: `${LINE_HEIGHT}px`,
+                      top: `7px`
                      }}
                   >
                     <div className="bg-primary/20 border-l-4 border-primary h-full ml-4" />
