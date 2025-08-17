@@ -32,7 +32,9 @@ export function Faq({ category, algorithm }: FaqProps) {
                     {faqContent.faqs.map((faq, index) => (
                         <AccordionItem value={`item-${index}`} key={index}>
                             <AccordionTrigger>{faq.question}</AccordionTrigger>
-                            <AccordionContent dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                            <AccordionContent>
+                                <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                            </AccordionContent>
                         </AccordionItem>
                     ))}
                 </Accordion>
