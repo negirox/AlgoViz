@@ -984,14 +984,15 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
         trace.push({ line: 14, variables: { action: 'set', key, value }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
 
         const index = hash(key);
+        trace.push({ line: 8, variables: { key, value, calculation: `(hash + charCode * i) % ${size}`, result: index }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         trace.push({ line: 15, variables: { key, value, index }, data: [], highlighted: { keyToInsert: key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         
         const bucket = table[index];
-        const existing = bucket.find(item => item.key === key);
+        const existingIndex = bucket.findIndex(item => item.key === key);
 
-        if (existing) {
+        if (existingIndex !== -1) {
              trace.push({ line: 16, variables: { key, value, index, status: 'Key exists, updating value'}, data: [], highlighted: { keyToInsert: key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
-            existing.value = value;
+            bucket[existingIndex].value = value;
         } else {
             if (bucket.length > 0) {
                  trace.push({ line: 17, variables: { key, value, index, status: 'Collision detected!' }, data: [], highlighted: { keyToInsert: key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
@@ -999,13 +1000,16 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
             bucket.push({ key, value });
              trace.push({ line: 18, variables: { key, value, index, status: 'Inserting new key-value pair' }, data: [], highlighted: { keyToInsert: key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         }
+        // Add a final state for this insertion
+        trace.push({ line: 20, variables: { status: `Finished inserting '${key}'` }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
     }
     
-    trace.push({ line: 20, variables: { status: 'Finished insertions' }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+    trace.push({ line: 20, variables: { status: 'Finished all insertions.' }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
 
     if(searchKey) {
         trace.push({ line: 22, variables: { action: 'get', key: searchKey }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         const index = hash(searchKey);
+        trace.push({ line: 8, variables: { key: searchKey, calculation: `(hash + charCode * i) % ${size}`, result: index }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         trace.push({ line: 23, variables: { key: searchKey, index }, data: [], highlighted: { keyToSearch: searchKey, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
 
         const bucket = table[index];
@@ -1087,7 +1091,8 @@ export function AlgoViz() {
 
   const [targetStr, setTargetStr] = useState(() => {
       if (selectedAlgorithm?.input.includes(';')) {
-          return selectedAlgorithm?.input.split(';')[1] || '';
+          const parts = selectedAlgorithm.input.split(';');
+          return parts.length > 1 ? parts[1] : '';
       }
       return '';
   });
@@ -1115,7 +1120,7 @@ export function AlgoViz() {
       setAlgorithmKey(key);
       setCode(newAlgo.code);
 
-      if (newAlgo.input.includes(';')) {
+      if (category === 'searching' && newAlgo.input.includes(';')) {
           const [arrayPart, targetPart] = newAlgo.input.split(';');
           setInputStr(arrayPart || '');
           setTargetStr(targetPart || '');
