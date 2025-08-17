@@ -763,11 +763,18 @@ const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => Trace
   tree: (arr: any) => [],
 };
 
+const getDefaultAlgorithm = (category: AlgorithmCategoryKey) => {
+    const algorithms = ALGO_CATEGORIES[category]?.algorithms;
+    const defaultKey = Object.keys(algorithms)[0] as AlgorithmKey<typeof category>;
+    return { key: defaultKey, ...algorithms[defaultKey] };
+};
+
+
 export function AlgoViz() {
   const [algorithmCategory, setAlgorithmCategory] = useState<AlgorithmCategoryKey>('sorting');
   const [algorithmKey, setAlgorithmKey] = useState<AlgorithmKey<typeof algorithmCategory>>('bubbleSort');
   
-  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory].algorithms[algorithmKey as any];
+  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory].algorithms[algorithmKey as any] || getDefaultAlgorithm(algorithmCategory);
 
   const [code, setCode] = useState(selectedAlgorithm.code);
   const [inputStr, setInputStr] = useState(selectedAlgorithm.input);
@@ -779,22 +786,22 @@ export function AlgoViz() {
   const { toast } = useToast();
 
   const handleAlgorithmCategoryChange = (category: AlgorithmCategoryKey) => {
-    if (!category || !ALGO_CATEGORIES[category]) return;
-    setAlgorithmCategory(category);
-    // Select the first algorithm in the new category
-    const firstAlgoKey = Object.keys(ALGO_CATEGORIES[category].algorithms)[0] as AlgorithmKey<typeof category>;
-    handleAlgorithmChange(firstAlgoKey);
+      if (!category || !ALGO_CATEGORIES[category]) return;
+      const firstAlgoKey = Object.keys(ALGO_CATEGORIES[category].algorithms)[0] as AlgorithmKey<typeof category>;
+      setAlgorithmCategory(category);
+      handleAlgorithmChange(firstAlgoKey, category);
   }
 
-  const handleAlgorithmChange = (key: AlgorithmKey<typeof algorithmCategory>) => {
-    if (!key || !ALGO_CATEGORIES[algorithmCategory].algorithms[key as any]) return;
-    setAlgorithmKey(key);
-    const newAlgo = ALGO_CATEGORIES[algorithmCategory].algorithms[key as any];
-    setCode(newAlgo.code);
-    setInputStr(newAlgo.input);
-    setExecutionTrace([]);
-    setCurrentStep(0);
-    setIsPlaying(false);
+  const handleAlgorithmChange = (key: AlgorithmKey<any>, category = algorithmCategory) => {
+      if (!key || !ALGO_CATEGORIES[category]?.algorithms[key]) return;
+      
+      const newAlgo = ALGO_CATEGORIES[category].algorithms[key];
+      setAlgorithmKey(key);
+      setCode(newAlgo.code);
+      setInputStr(newAlgo.input);
+      setExecutionTrace([]);
+      setCurrentStep(0);
+      setIsPlaying(false);
   }
 
   const handleTraceGeneration = useCallback(() => {
