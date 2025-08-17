@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -606,7 +607,7 @@ export function AlgoViz() {
         <Card className="w-full bg-card/50">
           <CardHeader>
             <CardTitle>Configuration</CardTitle>
-            <CardDescription>Select algorithm type and provide input data.</CardDescription>
+            <CardDescription>Select algorithm, provide input, and control playback.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
               <div>
@@ -644,6 +645,19 @@ export function AlgoViz() {
                       <Button onClick={handleTraceGeneration}>Visualize</Button>
                   </div>
               </div>
+              {executionTrace.length > 0 && (
+                <div className="flex justify-center pt-4">
+                  <PlaybackControls
+                    onPrev={handlePrev}
+                    onNext={handleNext}
+                    onPlayPause={handlePlayPause}
+                    onReset={handleReset}
+                    isPlaying={isPlaying}
+                    canStepPrev={currentStep > 0}
+                    canStepNext={currentStep < executionTrace.length - 1}
+                  />
+                </div>
+              )}
           </CardContent>
         </Card>
         
@@ -653,20 +667,6 @@ export function AlgoViz() {
             type={visualizerType}
         />
       </div>
-
-      {executionTrace.length > 0 && (
-        <div className="sticky bottom-4 z-10 flex justify-center">
-          <PlaybackControls
-            onPrev={handlePrev}
-            onNext={handleNext}
-            onPlayPause={handlePlayPause}
-            onReset={handleReset}
-            isPlaying={isPlaying}
-            canStepPrev={currentStep > 0}
-            canStepNext={currentStep < executionTrace.length - 1}
-          />
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <Card className="w-full bg-card/50">
@@ -690,3 +690,5 @@ export function AlgoViz() {
     </div>
   );
 }
+
+    
