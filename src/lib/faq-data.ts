@@ -566,6 +566,51 @@ export const FAQ_DATA: FaqData = {
     },
     searching: {
         algorithms: {
+            linearSearch: {
+                title: "Linear Search",
+                faqs: [
+                    {
+                        question: "What is Linear Search?",
+                        answer: "Linear Search is the most basic search algorithm. It sequentially checks each element of a list until a match is found or the whole list has been searched. It is simple to implement but often inefficient for large datasets."
+                    },
+                    {
+                        question: "What is the time complexity of Linear Search?",
+                        answer: "The time complexity is O(n) in the worst and average cases, as it may need to check every element. The best-case complexity is O(1), which occurs if the target element is the first one in the list."
+                    },
+                    {
+                        question: "What is the space complexity of Linear Search?",
+                        answer: "The space complexity is O(1) because it operates directly on the input list without requiring any additional memory proportional to the input size."
+                    },
+                    {
+                        question: "Does Linear Search require the array to be sorted?",
+                        answer: "No, a major advantage of Linear Search is that it does not require the data to be sorted. It can be used on any sequence of elements, regardless of their order."
+                    },
+                    {
+                        question: "How does Linear Search compare to Binary Search?",
+                        answer: "Linear Search is simpler but slower (O(n)) than Binary Search (O(log n)). However, Binary Search has a strict requirement that the array must be sorted, whereas Linear Search does not. For unsorted or very small arrays, Linear Search is often the more practical choice."
+                    },
+                    {
+                        question: "Can Linear Search be improved?",
+                        answer: "For unsorted data, it cannot be fundamentally improved. However, if the same elements are searched for frequently, you can use a technique like 'move-to-front', where a found item is moved to the beginning of the list to speed up subsequent searches for that same item."
+                    },
+                    {
+                        question: "Is Linear Search a good choice for linked lists?",
+                        answer: "Yes, Linear Search is the standard way to search a linked list, as linked lists do not support the random access required by more advanced algorithms like Binary Search. The time complexity remains O(n)."
+                    },
+                    {
+                        question: "How do you handle a 'not found' scenario?",
+                        answer: "If the algorithm iterates through the entire list without finding the target element, it concludes that the element is not present. It typically signals this by returning a special value like -1, null, or false."
+                    },
+                    {
+                        question: "Can you implement Linear Search recursively?",
+                        answer: "Yes, it can be implemented recursively. A recursive function would check the current element, and if it's not a match, it would call itself on the rest of the list. However, the iterative approach is generally preferred as it is more space-efficient."
+                    },
+                    {
+                        question: "What is a sentinel Linear Search?",
+                        answer: "A sentinel Linear Search is a small optimization where the target element is added to the end of the list (as a 'sentinel'). This removes the need to check for the end of the array in each iteration of the loop, slightly reducing the number of comparisons per loop, although the overall complexity remains O(n)."
+                    }
+                ]
+            },
             binarySearch: {
                 title: "Binary Search",
                 faqs: [

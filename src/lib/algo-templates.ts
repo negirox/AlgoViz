@@ -428,6 +428,21 @@ function insertionSort(arr, left, right) {
   searching: {
     name: "Searching",
     algorithms: {
+      linearSearch: {
+        name: "Linear Search",
+        code: `function linearSearch(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) {
+      return i; // Found
+    }
+  }
+  return -1; // Not found
+}`,
+        input: "2,8,5,12,16,23,38,56,72,91;16",
+        visualizer: "array",
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(1)",
+      },
       binarySearch: {
         name: "Binary Search",
         code: `function binarySearch(arr, target) {

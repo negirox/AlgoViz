@@ -710,6 +710,27 @@ function generateIntroSortTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateLinearSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target });
+    for (let i = 0; i < localArr.length; i++) {
+        addTrace(2, { i }, [i]);
+        addTrace(3, { i, "arr[i]": localArr[i], target, condition: `${localArr[i]} === ${target}` }, [i]);
+        if (localArr[i] === target) {
+            addTrace(4, { 'return value': i }, [i]);
+            return trace;
+        }
+    }
+    addTrace(7, { 'return value': -1 });
+    return trace;
+}
+
+
 function generateBinarySearchTrace(arr: number[], target: number): TraceStep[] {
     const trace: TraceStep[] = [];
     const localArr = [...arr].sort((a,b) => a-b); // Binary search needs sorted array
@@ -759,6 +780,7 @@ const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => Trace
   pigeonholeSort: generatePigeonholeSortTrace,
   timSort: generateTimSortTrace,
   introSort: generateIntroSortTrace,
+  linearSearch: (arr, target) => generateLinearSearchTrace(arr, target!),
   binarySearch: (arr, target) => generateBinarySearchTrace(arr, target!),
   tree: (arr: any) => [],
 };
@@ -772,9 +794,15 @@ const getDefaultAlgorithm = (category: AlgorithmCategoryKey) => {
 
 export function AlgoViz() {
   const [algorithmCategory, setAlgorithmCategory] = useState<AlgorithmCategoryKey>('sorting');
-  const [algorithmKey, setAlgorithmKey] = useState<AlgorithmKey<typeof algorithmCategory>>('bubbleSort');
   
-  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory].algorithms[algorithmKey as any] || getDefaultAlgorithm(algorithmCategory);
+  const getDefaultAlgoKey = useCallback((category: AlgorithmCategoryKey) => {
+    if (!ALGO_CATEGORIES[category]) return 'bubbleSort' as any;
+    return Object.keys(ALGO_CATEGORIES[category].algorithms)[0] as AlgorithmKey<typeof category>;
+  }, []);
+
+  const [algorithmKey, setAlgorithmKey] = useState<AlgorithmKey<typeof algorithmCategory>>(getDefaultAlgoKey(algorithmCategory));
+  
+  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory]?.algorithms[algorithmKey as any] || getDefaultAlgorithm(algorithmCategory);
 
   const [code, setCode] = useState(selectedAlgorithm.code);
   const [inputStr, setInputStr] = useState(selectedAlgorithm.input);
@@ -787,9 +815,9 @@ export function AlgoViz() {
 
   const handleAlgorithmCategoryChange = (category: AlgorithmCategoryKey) => {
       if (!category || !ALGO_CATEGORIES[category]) return;
-      const firstAlgoKey = Object.keys(ALGO_CATEGORIES[category].algorithms)[0] as AlgorithmKey<typeof category>;
+      const newAlgorithmKey = getDefaultAlgoKey(category);
       setAlgorithmCategory(category);
-      handleAlgorithmChange(firstAlgoKey, category);
+      handleAlgorithmChange(newAlgorithmKey, category);
   }
 
   const handleAlgorithmChange = (key: AlgorithmKey<any>, category = algorithmCategory) => {
@@ -983,6 +1011,7 @@ export function AlgoViz() {
                        {algorithmCategory === 'searching' && (
                          <SelectGroup>
                           <SelectLabel>Searching</SelectLabel>
+                          <SelectItem value="linearSearch">Linear Search</SelectItem>
                           <SelectItem value="binarySearch">Binary Search</SelectItem>
                         </SelectGroup>
                        )}
