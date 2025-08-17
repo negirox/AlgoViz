@@ -965,9 +965,9 @@ function generateTernarySearchTrace(arr: number[], target: number): TraceStep[] 
     return trace;
 }
 
-function generateHashTableTrace(pairs: {key: string, value: string}[], size: number): TraceStep[] {
+function generateHashTableTrace(pairs: {key: string, value: string}[], size: number, searchKey?: string): TraceStep[] {
     const trace: TraceStep[] = [];
-    const table = Array.from({ length: size }, () => []);
+    const table: {key: string, value: string}[][] = Array.from({ length: size }, () => []);
 
     const hash = (key: string) => {
         let hash = 0;
@@ -981,33 +981,54 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
 
     for (const pair of pairs) {
         const { key, value } = pair;
-        trace.push({ line: 14, variables: { action: 'set', key, value }, data: [], highlighted: { key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        trace.push({ line: 14, variables: { action: 'set', key, value }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
 
         const index = hash(key);
-        trace.push({ line: 15, variables: { key, value, index }, data: [], highlighted: { key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        trace.push({ line: 15, variables: { key, value, index }, data: [], highlighted: { keyToInsert: key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         
         const bucket = table[index];
         const existing = bucket.find(item => item.key === key);
 
         if (existing) {
-             trace.push({ line: 16, variables: { key, value, index, status: 'Key exists, updating value'}, data: [], highlighted: { key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+             trace.push({ line: 16, variables: { key, value, index, status: 'Key exists, updating value'}, data: [], highlighted: { keyToInsert: key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
             existing.value = value;
         } else {
             if (bucket.length > 0) {
-                 trace.push({ line: 17, variables: { key, value, index, status: 'Collision detected!' }, data: [], highlighted: { key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+                 trace.push({ line: 17, variables: { key, value, index, status: 'Collision detected!' }, data: [], highlighted: { keyToInsert: key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
             }
             bucket.push({ key, value });
-             trace.push({ line: 18, variables: { key, value, index, status: 'Inserting new key-value pair' }, data: [], highlighted: { key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+             trace.push({ line: 18, variables: { key, value, index, status: 'Inserting new key-value pair' }, data: [], highlighted: { keyToInsert: key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
         }
     }
     
-    trace.push({ line: 20, variables: { status: 'Finished' }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+    trace.push({ line: 20, variables: { status: 'Finished insertions' }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+    if(searchKey) {
+        trace.push({ line: 22, variables: { action: 'get', key: searchKey }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        const index = hash(searchKey);
+        trace.push({ line: 23, variables: { key: searchKey, index }, data: [], highlighted: { keyToSearch: searchKey, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+        const bucket = table[index];
+        let foundItem = null;
+        for(let i = 0; i < bucket.length; i++) {
+            const item = bucket[i];
+            trace.push({ line: 24, variables: { key: searchKey, status: `Checking item in bucket...` }, data: [], highlighted: { keyToSearch: searchKey, bucket: index, foundKey: item.key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+            if(item.key === searchKey) {
+                foundItem = item;
+                trace.push({ line: 25, variables: { key: searchKey, status: 'Key found!', value: item.value }, data: [], highlighted: { keyToSearch: searchKey, bucket: index, foundKey: item.key, success: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+                break;
+            }
+        }
+        if (!foundItem) {
+             trace.push({ line: 26, variables: { key: searchKey, status: 'Key not found in bucket.' }, data: [], highlighted: { keyToSearch: searchKey, bucket: index, fail: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        }
+    }
 
     return trace;
 }
 
 
-const TRACE_GENERATORS: Record<string, (arr: any, target?: any) => TraceStep[]> = {
+const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
   bubbleSort: generateBubbleSortTrace,
   selectionSort: generateSelectionSortTrace,
   insertionSort: generateInsertionSortTrace,
@@ -1026,7 +1047,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any) => TraceStep[]> 
   interpolationSearch: (arr, target) => generateInterpolationSearchTrace(arr, target!),
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
-  hashing: (pairs) => generateHashTableTrace(pairs, 10), // Default size 10
+  hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
   tree: (arr: any) => [],
 };
 
@@ -1063,12 +1084,16 @@ export function AlgoViz() {
     }
     return selectedAlgorithm?.input || '';
   });
+
   const [targetStr, setTargetStr] = useState(() => {
       if (selectedAlgorithm?.input.includes(';')) {
           return selectedAlgorithm?.input.split(';')[1] || '';
       }
       return '';
   });
+
+  const [searchKeyStr, setSearchKeyStr] = useState('grape');
+
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -1148,7 +1173,7 @@ export function AlgoViz() {
             if (!key || !value) throw new Error("Invalid key-value pair format. Use 'key,value;key2,value2'.");
             return { key, value };
         });
-        trace = traceGenerator(pairs, undefined);
+        trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
       } else { // Sorting
         const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
         if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
@@ -1173,7 +1198,7 @@ export function AlgoViz() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, inputStr, targetStr, algorithmKey, selectedAlgorithm, algorithmCategory]);
+  }, [toast, inputStr, targetStr, searchKeyStr, algorithmKey, selectedAlgorithm, algorithmCategory]);
   
   // Initial trace generation
   useEffect(() => {
@@ -1342,6 +1367,17 @@ export function AlgoViz() {
                       )}
                       <Button onClick={handleTraceGeneration}>Visualize</Button>
                   </div>
+                  {algorithmCategory === 'data-structures' && algorithmKey === 'hashing' && (
+                    <div className='flex gap-2 mt-2'>
+                        <Input
+                            id="search-key"
+                            value={searchKeyStr}
+                            onChange={(e) => setSearchKeyStr(e.target.value)}
+                            placeholder="Key to search"
+                            className="flex-1"
+                        />
+                    </div>
+                  )}
               </div>
               {executionTrace.length > 0 && (
                 <div className="flex justify-center pt-4">

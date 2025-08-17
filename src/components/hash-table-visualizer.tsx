@@ -14,9 +14,13 @@ type TableState = {
 };
 
 type HighlightedState = {
-    key?: string;
+    keyToInsert?: string;
+    keyToSearch?: string;
+    foundKey?: string;
     bucket?: number;
     collision?: boolean;
+    success?: boolean;
+    fail?: boolean;
 };
 
 type HashTableVisualizerProps = {
@@ -34,7 +38,25 @@ export function HashTableVisualizer({ tableState, highlighted }: HashTableVisual
     }
 
     const { table } = tableState;
-    const { key: highlightedKey, bucket: highlightedBucket, collision } = highlighted || {};
+    const { bucket: highlightedBucket, collision, keyToInsert, keyToSearch, foundKey, success, fail } = highlighted || {};
+
+    const getHighlightClass = (index: number) => {
+        if (highlightedBucket !== index) return "border-border";
+        if (success) return "border-green-500 bg-green-500/10";
+        if (fail) return "border-red-500 bg-red-500/10";
+        if (collision) return "border-destructive bg-destructive/10";
+        return "border-primary bg-primary/10";
+    }
+
+    const getItemClass = (itemKey: string) => {
+        if (keyToSearch && itemKey === foundKey) {
+            if (success) return "bg-green-500 text-white";
+            if (fail) return "bg-red-500 text-white";
+            return "bg-blue-500 text-white";
+        }
+        if (itemKey === keyToInsert || itemKey === keyToSearch) return "bg-primary text-primary-foreground";
+        return "bg-accent/50";
+    }
 
     return (
         <TooltipProvider>
@@ -45,8 +67,7 @@ export function HashTableVisualizer({ tableState, highlighted }: HashTableVisual
                         <div
                             className={cn(
                                 "flex-1 flex items-center border rounded-md min-h-[40px] p-2 transition-colors duration-300",
-                                highlightedBucket === index ? "border-primary bg-primary/10" : "border-border",
-                                highlightedBucket === index && collision ? "border-destructive bg-destructive/10" : ""
+                                getHighlightClass(index)
                             )}
                         >
                             {bucket.length === 0 ? (
@@ -58,7 +79,7 @@ export function HashTableVisualizer({ tableState, highlighted }: HashTableVisual
                                             <div
                                                 className={cn(
                                                     "flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-300",
-                                                    item.key === highlightedKey ? "bg-primary text-primary-foreground" : "bg-accent/50"
+                                                    getItemClass(item.key)
                                                 )}
                                             >
                                                 <span>{item.key}:</span>
@@ -80,4 +101,3 @@ export function HashTableVisualizer({ tableState, highlighted }: HashTableVisual
         </TooltipProvider>
     );
 }
-
