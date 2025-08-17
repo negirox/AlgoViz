@@ -1,7 +1,8 @@
+
 import { AlgoViz } from '@/components/algo-viz';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/footer';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Github } from 'lucide-react';
 
 export default function Home() {
@@ -18,7 +19,7 @@ export default function Home() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>About AlgoViz</DialogTitle>
-                        <DialogDescription>
+                        <div className="text-sm text-muted-foreground">
                             <div className="space-y-4 mt-4 text-left">
                                 <p>
                                     AlgoViz is an interactive educational tool designed to help students, developers, and computer science enthusiasts visualize and understand a wide range of sorting algorithms. Our mission is to make complex algorithms simple and intuitive through step-by-step animations.
@@ -27,7 +28,7 @@ export default function Home() {
                                     Whether you're preparing for a technical interview, studying for an exam, or just curious about how algorithms work, AlgoViz provides a hands-on experience to solidify your knowledge.
                                 </p>
                             </div>
-                        </DialogDescription>
+                        </div>
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
@@ -38,7 +39,7 @@ export default function Home() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Privacy Policy</DialogTitle>
-                        <DialogDescription>
+                        <div className="text-sm text-muted-foreground">
                             <div className="space-y-4 mt-4 text-left text-sm max-h-[400px] overflow-y-auto pr-4">
                                 <p><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
                                 <p>
@@ -66,7 +67,7 @@ export default function Home() {
                                     If you have any questions about this Privacy Policy, please contact us through our GitHub page.
                                 </p>
                             </div>
-                        </DialogDescription>
+                        </div>
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
