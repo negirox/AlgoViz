@@ -18,15 +18,42 @@ export default function Home() {
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>About AlgoViz</DialogTitle>
+                        <DialogTitle>About Us – AlgoViz</DialogTitle>
                         <div className="text-sm text-muted-foreground">
-                            <div className="space-y-4 mt-4 text-left">
+                            <div className="space-y-4 mt-4 text-left max-h-[400px] overflow-y-auto pr-4">
                                 <p>
-                                    AlgoViz is an interactive educational tool designed to help students, developers, and computer science enthusiasts visualize and understand a wide range of sorting algorithms. Our mission is to make complex algorithms simple and intuitive through step-by-step animations.
+                                    AlgoViz is an interactive algorithm visualization tool designed to help students, developers, and computer science enthusiasts learn algorithms step by step.
                                 </p>
                                 <p>
-                                    Whether you're preparing for a technical interview, studying for an exam, or just curious about how algorithms work, AlgoViz provides a hands-on experience to solidify your knowledge.
+                                    Our platform makes complex sorting algorithms and data structures simple through engaging animations and visual explanations. Instead of just reading theory, you can see how algorithms work in real time, making it easier to understand and remember.
                                 </p>
+                                <h3 className="font-bold">Why AlgoViz?</h3>
+                                <ul className="list-disc pl-5 space-y-2">
+                                    <li><strong>🚀 Learn Faster:</strong> Visualize algorithms like Bubble Sort, Merge Sort, Quick Sort, and more.</li>
+                                    <li><strong>🎯 Interview Prep:</strong> Master algorithm concepts for coding interviews and competitive programming.</li>
+                                    <li><strong>📚 Study Smarter:</strong> Perfect for computer science students preparing for exams.</li>
+                                    <li><strong>🧑‍💻 Hands-On Learning:</strong> Interactive experience designed for all skill levels.</li>
+                                </ul>
+                                <p>
+                                    Whether you’re preparing for FAANG interviews, studying in college, or just curious about how computers solve problems, AlgoViz bridges the gap between theory and practice.
+                                </p>
+                                <h3 className="font-bold">Explore More Projects</h3>
+                                <ul className="list-disc pl-5 space-y-2">
+                                    <li><a href="https://mytoolhub.vercel.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">mytoolhub.vercel.app</a></li>
+                                    <li><a href="https://neon-ime.vercel.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">neon-ime.vercel.app</a></li>
+                                    <li><a href="https://atmosphere-iq.vercel.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">atmosphere-iq.vercel.app</a></li>
+                                </ul>
+                                <h3 className="font-bold">Our Mission</h3>
+                                <p>
+                                    To democratize algorithm learning by providing a free, accessible, and interactive way to explore computer science concepts. AlgoViz is built for learners who want to master algorithms visually and strengthen their problem-solving skills.
+                                </p>
+                                <h3 className="font-bold">Connect with Us</h3>
+                                <ul className="list-disc pl-5 space-y-2">
+                                  <li><strong>📧 Email:</strong> mukeshsingh.negi07@gmail.com</li>
+                                  <li><strong>💻 GitHub:</strong> <a href="https://github.com/negirox" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">github.com/negirox</a></li>
+                                  <li><strong>🧑‍💻 Stack Overflow:</strong> Negi-Rox</li>
+                                  <li><strong>📦 NuGet Package:</strong> XLExtension</li>
+                                </ul>
                             </div>
                         </div>
                     </DialogHeader>
