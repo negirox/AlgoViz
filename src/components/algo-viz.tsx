@@ -8,6 +8,9 @@ import { PlaybackControls } from "@/components/playback-controls";
 import { ArrayVisualizer } from "@/components/array-visualizer";
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 
 const BUBBLE_SORT_CODE = `function sort(arr) {
   let n = arr.length;
@@ -23,7 +26,6 @@ const BUBBLE_SORT_CODE = `function sort(arr) {
   return arr;
 }`;
 
-const INITIAL_ARRAY = [5, 3, 8, 4, 2];
 
 type TraceStep = {
   line: number;
@@ -71,6 +73,7 @@ function generateTrace(arr: number[]): TraceStep[] {
 
 export function AlgoViz() {
   const [code, setCode] = useState(BUBBLE_SORT_CODE);
+  const [inputStr, setInputStr] = useState("5, 3, 8, 4, 2");
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -82,9 +85,18 @@ export function AlgoViz() {
     setIsLoading(true);
     setCurrentStep(0);
     try {
-      // For this example, we'll always use the initial array.
-      // A full implementation would parse the input array from a text field.
-      const trace = generateTrace(INITIAL_ARRAY);
+      const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+      if (parsedArray.some(isNaN)) {
+        toast({
+            variant: "destructive",
+            title: "Invalid Input",
+            description: "Please enter a comma-separated list of numbers.",
+        });
+        setExecutionTrace([]);
+        return;
+      }
+
+      const trace = generateTrace(parsedArray);
       if (trace && trace.length > 0) {
         setExecutionTrace(trace);
       } else {
@@ -106,20 +118,10 @@ export function AlgoViz() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, [toast, inputStr]);
   
   useEffect(() => {
-    // Re-generate trace when code changes, with a debounce
-    const handler = setTimeout(() => {
-        // NOTE: For this version, we are not parsing the user's code.
-        // We will always run the hardcoded bubble sort trace generator.
-        // A more advanced implementation would parse and execute the `code` string.
-        handleTraceGeneration();
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    handleTraceGeneration();
   }, [code, handleTraceGeneration]);
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
@@ -181,6 +183,23 @@ export function AlgoViz() {
       </Card>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <div className="flex flex-col gap-8 lg:sticky lg:top-20">
+          <Card className="w-full bg-card/50">
+            <CardHeader>
+              <CardTitle>Input Array</CardTitle>
+              <CardDescription>Enter a comma-separated list of numbers.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex gap-2">
+                    <Input 
+                        id="input-array"
+                        value={inputStr}
+                        onChange={(e) => setInputStr(e.target.value)}
+                        placeholder="e.g. 5, 3, 8, 4, 2"
+                    />
+                    <Button onClick={handleTraceGeneration}>Visualize</Button>
+                </div>
+            </CardContent>
+          </Card>
           <Card className="w-full bg-card/50">
             <CardHeader>
               <CardTitle>Code Editor</CardTitle>
