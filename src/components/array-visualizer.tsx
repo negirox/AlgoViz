@@ -1,3 +1,4 @@
+
 "use client";
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -29,11 +30,15 @@ export function ArrayVisualizer({ data, highlightedIndices = [] }: ArrayVisualiz
           <YAxis domain={[0, maxValue + 2]} stroke="hsl(var(--muted-foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
           <Tooltip
             contentStyle={{
-              background: "hsl(var(--background))",
-              borderColor: "hsl(var(--border))",
-              color: "hsl(var(--foreground))"
+              background: "hsl(var(--card))",
+              borderColor: "hsl(var(--primary))",
+              color: "hsl(var(--card-foreground))",
+              borderRadius: "var(--radius)",
+              borderWidth: "2px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
             }}
-            cursor={{ fill: 'hsl(var(--accent) / 0.2)' }}
+            labelStyle={{ fontWeight: 'bold', color: 'hsl(var(--primary))' }}
+            cursor={{ fill: 'hsl(var(--primary) / 0.15)' }}
           />
           <Bar dataKey="value" barSize={30}>
             {chartData.map((entry, index) => (
