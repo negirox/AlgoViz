@@ -580,24 +580,24 @@ function binarySearch(arr, l, r, x) {
     name: "Tree / Graph",
     algorithms: {
       treeTraversal: {
-        name: "Tree Traversal",
+        name: "In-order Traversal",
         code: `class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Example: In-order traversal
 function traverse(node) {
   if (node) {
     traverse(node.left);
     // visit(node)
     traverse(node.right);
   }
+  return visitedPath;
 }`,
-        input: "{ \"value\": 10, \"left\": { \"value\": 5 }, \"right\": { \"value\": 15 } }",
+        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
         visualizer: "tree",
         timeComplexity: "O(n)",
         spaceComplexity: "O(h)",
@@ -689,8 +689,11 @@ function insert(node, key) {
 
     set(key, value) {
         const index = this.hash(key);
+        if(!this.table[index]) {
+            this.table[index] = [];
+        }
         // ... collision handling ...
-        this.table[index] = { key, value };
+        this.table[index].push({ key, value });
     }
 
     get(key) {

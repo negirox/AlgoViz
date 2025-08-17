@@ -20,7 +20,16 @@ export type TraceStep = {
   data: any;
   highlighted: any;
   tableState?: any;
+  treeData?: any;
+  traversalPath?: number[];
 };
+
+type TreeNode = {
+  value: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+};
+
 
 // Trace generation functions for each sorting algorithm
 function generateBubbleSortTrace(arr: number[]): TraceStep[] {
@@ -1031,6 +1040,39 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
     return trace;
 }
 
+function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const traversalPath: number[] = [];
+
+    function traverse(node: TreeNode | null, path: string) {
+        if (!node) {
+            trace.push({ line: 9, variables: { 'node': 'null' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            return;
+        }
+
+        trace.push({ line: 7, variables: { 'current_node': node.value }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        
+        trace.push({ line: 8, variables: { 'current_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.left, path + 'L');
+
+        trace.push({ line: 10, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traversalPath.push(node.value);
+        trace.push({ line: 11, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        
+        trace.push({ line: 12, variables: { 'current_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.right, path + 'R');
+
+        trace.push({ line: 13, variables: { 'current_node': node.value, 'action': 'finished subtree' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+    }
+    
+    trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
+    traverse(tree, 'R');
+    trace.push({ line: 15, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    
+    return trace;
+}
+
+
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
   bubbleSort: generateBubbleSortTrace,
@@ -1052,7 +1094,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
-  treeTraversal: (arr: any) => [],
+  treeTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   binarySearchTree: (arr: any) => [],
   avlTree: (arr: any) => [],
 };
@@ -1141,7 +1183,7 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (selectedAlgorithm.visualizer === 'tree') {
+    if (selectedAlgorithm.visualizer === 'tree' && algorithmKey !== 'treeTraversal') {
         toast({
             title: "Coming Soon!",
             description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
@@ -1181,6 +1223,13 @@ export function AlgoViz() {
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
+      } else if (algorithmCategory === 'tree') {
+          try {
+              const parsedTree = JSON.parse(inputStr);
+              trace = traceGenerator(parsedTree);
+          } catch (e) {
+              throw new Error("Invalid JSON input for the tree structure.");
+          }
       } else { // Sorting
         const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
         if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
@@ -1324,7 +1373,7 @@ export function AlgoViz() {
                        {algorithmCategory === 'tree' && (
                          <SelectGroup>
                           <SelectLabel>Tree / Graph</SelectLabel>
-                          <SelectItem value="treeTraversal">Tree Traversal</SelectItem>
+                          <SelectItem value="treeTraversal">In-order Traversal</SelectItem>
                           <SelectItem value="binarySearchTree">Binary Search Tree</SelectItem>
                           <SelectItem value="avlTree">AVL Tree</SelectItem>
                         </SelectGroup>
@@ -1361,6 +1410,7 @@ export function AlgoViz() {
                           placeholder={
                             algorithmCategory === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             algorithmCategory === 'searching' ? "e.g. 2, 8, 5, 12" :
+                            algorithmCategory === 'tree' ? "e.g. { \"value\": 10, ... }" :
                             "e.g. key1,val1;key2,val2"
                           }
                           className="flex-1"

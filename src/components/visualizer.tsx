@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react';
 import { ArrayVisualizer } from '@/components/array-visualizer';
 import type { TraceStep } from './algo-viz';
 import { HashTableVisualizer } from "./hash-table-visualizer";
+import { TreeVisualizer } from "./tree-visualizer";
 
 type VisualizerProps = {
     isLoading: boolean;
@@ -39,7 +40,16 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
                     highlighted={traceStep?.highlighted}
                 />
             )}
-            {type === 'tree' && <div className="flex items-center justify-center h-64 text-muted-foreground">Tree visualizer coming soon!</div>}
+            {type === 'tree' && (
+              <TreeVisualizer 
+                treeData={traceStep?.treeData} 
+                highlightedNode={traceStep?.highlighted}
+                traversalPath={traceStep?.traversalPath}
+              />
+            )}
+            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && (
+                 <div className="flex items-center justify-center h-64 text-muted-foreground">{type} visualizer coming soon!</div>
+            )}
           </>
         )}
       </CardContent>
