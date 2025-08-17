@@ -710,8 +710,43 @@ function generateIntroSortTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateBinarySearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b); // Binary search needs sorted array
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
 
-const TRACE_GENERATORS = {
+    let low = 0;
+    addTrace(2, { arr: `[${localArr.join(', ')}]`, target, low });
+    let high = localArr.length - 1;
+    addTrace(3, { arr: `[${localArr.join(', ')}]`, target, low, high });
+
+    while (low <= high) {
+        addTrace(4, { low, high, condition: `${low} <= ${high}`}, [low, high]);
+        let mid = Math.floor(low + (high - low) / 2);
+        addTrace(5, { low, high, mid }, [low, high, mid]);
+        addTrace(6, { low, high, mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} === ${target}` }, [mid]);
+        if (localArr[mid] === target) {
+            addTrace(7, { 'return value': mid }, [mid]);
+            return trace;
+        }
+        addTrace(8, { low, high, mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} < ${target}` }, [mid]);
+        if (localArr[mid] < target) {
+            low = mid + 1;
+            addTrace(9, { low }, [low, high]);
+        } else {
+            high = mid - 1;
+            addTrace(11, { high }, [low, high]);
+        }
+    }
+    addTrace(4, { low, high, condition: `${low} <= ${high}`}, []);
+    addTrace(14, { 'return value': -1 });
+    return trace;
+}
+
+
+const TRACE_GENERATORS: Record<string, (arr: number[], target?: number) => TraceStep[]> = {
   bubbleSort: generateBubbleSortTrace,
   selectionSort: generateSelectionSortTrace,
   insertionSort: generateInsertionSortTrace,
@@ -724,6 +759,7 @@ const TRACE_GENERATORS = {
   pigeonholeSort: generatePigeonholeSortTrace,
   timSort: generateTimSortTrace,
   introSort: generateIntroSortTrace,
+  binarySearch: (arr, target) => generateBinarySearchTrace(arr, target!),
   tree: (arr: any) => [],
 };
 
@@ -731,7 +767,7 @@ export function AlgoViz() {
   const [algorithmCategory, setAlgorithmCategory] = useState<AlgorithmCategoryKey>('sorting');
   const [algorithmKey, setAlgorithmKey] = useState<AlgorithmKey<typeof algorithmCategory>>('bubbleSort');
   
-  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory].algorithms[algorithmKey];
+  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory].algorithms[algorithmKey as any];
 
   const [code, setCode] = useState(selectedAlgorithm.code);
   const [inputStr, setInputStr] = useState(selectedAlgorithm.input);
@@ -751,9 +787,9 @@ export function AlgoViz() {
   }
 
   const handleAlgorithmChange = (key: AlgorithmKey<typeof algorithmCategory>) => {
-    if (!key || !ALGO_CATEGORIES[algorithmCategory].algorithms[key]) return;
+    if (!key || !ALGO_CATEGORIES[algorithmCategory].algorithms[key as any]) return;
     setAlgorithmKey(key);
-    const newAlgo = ALGO_CATEGORIES[algorithmCategory].algorithms[key];
+    const newAlgo = ALGO_CATEGORIES[algorithmCategory].algorithms[key as any];
     setCode(newAlgo.code);
     setInputStr(newAlgo.input);
     setExecutionTrace([]);
@@ -778,18 +814,32 @@ export function AlgoViz() {
     }
 
     try {
-      const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
-      if (parsedArray.some(isNaN) && algorithmKey !== 'bucketSort') { // Bucket sort can handle floats
+      let parsedArray: number[];
+      let target: number | undefined;
+
+      if (algorithmCategory === 'searching') {
+        const parts = inputStr.split(';');
+        if (parts.length !== 2) throw new Error("Input for searching must be in 'array;target' format (e.g., '1,2,3;2').");
+        
+        parsedArray = parts[0].split(',').map(s => s.trim()).filter(Boolean).map(Number);
+        target = Number(parts[1].trim());
+        if (isNaN(target)) throw new Error("Invalid target value.");
+
+      } else {
+        parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+      }
+      
+      if (parsedArray.some(isNaN)) {
         toast({
             variant: "destructive",
             title: "Invalid Input",
-            description: "Please enter a comma-separated list of numbers for sorting.",
+            description: "Please enter a comma-separated list of numbers.",
         });
         setIsLoading(false);
         return;
       }
 
-      const traceGenerator = TRACE_GENERATORS[algorithmKey as keyof typeof TRACE_GENERATORS] as (arr: number[]) => TraceStep[];
+      const traceGenerator = TRACE_GENERATORS[algorithmKey as keyof typeof TRACE_GENERATORS];
       if (!traceGenerator) {
           toast({
               title: "Not Implemented",
@@ -799,7 +849,7 @@ export function AlgoViz() {
           return;
       }
 
-      const trace = traceGenerator(parsedArray);
+      const trace = traceGenerator(parsedArray, target);
       if (trace && trace.length > 0) {
         setExecutionTrace(trace);
       } else if (trace) {
@@ -818,7 +868,7 @@ export function AlgoViz() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, inputStr, algorithmKey, selectedAlgorithm]);
+  }, [toast, inputStr, algorithmKey, selectedAlgorithm, algorithmCategory]);
   
   // Initial trace generation
   useEffect(() => {
@@ -923,6 +973,12 @@ export function AlgoViz() {
                           </SelectGroup>
                         </>
                       )}
+                       {algorithmCategory === 'searching' && (
+                         <SelectGroup>
+                          <SelectLabel>Searching</SelectLabel>
+                          <SelectItem value="binarySearch">Binary Search</SelectItem>
+                        </SelectGroup>
+                       )}
                        {algorithmCategory === 'tree' && (
                          <SelectGroup>
                           <SelectLabel>Tree/Graph</SelectLabel>

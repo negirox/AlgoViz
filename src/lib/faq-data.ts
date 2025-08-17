@@ -12,9 +12,9 @@ type FaqContent = {
 };
 
 type FaqData = {
-    [CategoryKey in keyof typeof ALGO_CATEGORIES]: {
+    [CategoryKey in keyof typeof ALGO_CATEGORIES]?: {
         algorithms: {
-            [AlgoKey in keyof (typeof ALGO_CATEGORIES)[CategoryKey]['algorithms']]: FaqContent;
+            [AlgoKey in keyof (typeof ALGO_CATEGORIES)[CategoryKey]['algorithms']]?: FaqContent;
         };
     };
 };
@@ -559,6 +559,55 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Why is it called 'Introspective' Sort?",
                         answer: "It is named 'Introspective' because the algorithm 'watches' its own performance during the Quick Sort phase. If the recursion becomes too deep (an indicator of a potential worst-case scenario), it reflects on this and switches its strategy to Heap Sort to guarantee O(n log n) performance."
+                    }
+                ]
+            }
+        }
+    },
+    searching: {
+        algorithms: {
+            binarySearch: {
+                title: "Binary Search",
+                faqs: [
+                    {
+                        question: "What is Binary Search?",
+                        answer: "Binary Search is a highly efficient searching algorithm that works on sorted arrays. It operates by repeatedly dividing the search interval in half. If the value of the search key is less than the item in the middle of the interval, it narrows the interval to the lower half. Otherwise, it narrows it to the upper half."
+                    },
+                    {
+                        question: "What is the main prerequisite for Binary Search?",
+                        answer: "The single most important prerequisite for Binary Search is that the array or list must be sorted. If the data is not sorted, the algorithm will not work correctly."
+                    },
+                    {
+                        question: "What is the time complexity of Binary Search?",
+                        answer: "The time complexity is O(log n). With each comparison, the algorithm eliminates half of the remaining elements, which makes it extremely fast for large datasets."
+                    },
+                    {
+                        question: "What is the space complexity of Binary Search?",
+                        answer: "The iterative version of Binary Search has a space complexity of O(1) (in-place). The recursive version has a space complexity of O(log n) due to the recursion call stack."
+                    },
+                    {
+                        question: "How does Binary Search handle an element that is not in the array?",
+                        answer: "The search continues until the search interval is empty (i.e., when the `low` pointer crosses the `high` pointer). At this point, the algorithm terminates and typically returns a special value, like -1 or null, to indicate that the element was not found."
+                    },
+                    {
+                        question: "Can Binary Search be used on a linked list?",
+                        answer: "No, it is not efficient for standard linked lists. Binary Search relies on direct, O(1) random access to the middle element, but in a linked list, finding the middle element takes O(n) time. This negates the O(log n) advantage."
+                    },
+                    {
+                        question: "What happens if there are duplicate elements in the array?",
+                        answer: "A standard Binary Search will find *an* occurrence of the target element, but it doesn't guarantee which one (e.g., the first or the last). Modified versions are needed to find the first or last occurrence of a duplicate element."
+                    },
+                    {
+                        question: "Describe the iterative vs. recursive approach.",
+                        answer: "The iterative approach uses a `while` loop to manage the `low` and `high` pointers, which is generally more space-efficient and avoids potential stack overflow. The recursive approach defines a function that calls itself with the updated `low` or `high` boundaries, which can be more intuitive to read but uses more memory on the stack."
+                    },
+                    {
+                        question: "What is an 'interpolation search' and how does it compare?",
+                        answer: "Interpolation search is a variation that, instead of always checking the middle element, makes an educated guess about where the target might be, based on its value relative to the start and end values. It can be faster (O(log log n)) for uniformly distributed data but degrades to O(n) for non-uniform data."
+                    },
+                    {
+                        question: "When would you prefer a linear search over a binary search?",
+                        answer: "You would use a linear search if the data is unsorted, as sorting it first would take O(n log n) time, which is slower than a simple O(n) linear scan. Linear search is also preferable for very small arrays where its simplicity and good cache performance might make it faster in practice."
                     }
                 ]
             }

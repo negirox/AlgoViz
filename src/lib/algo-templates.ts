@@ -425,6 +425,33 @@ function insertionSort(arr, left, right) {
       },
     },
   },
+  searching: {
+    name: "Searching",
+    algorithms: {
+      binarySearch: {
+        name: "Binary Search",
+        code: `function binarySearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+  while (low <= high) {
+    let mid = Math.floor(low + (high - low) / 2);
+    if (arr[mid] === target) {
+      return mid; // Found
+    } else if (arr[mid] < target) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return -1; // Not found
+}`,
+        input: "2,5,8,12,16,23,38,56,72,91;23",
+        visualizer: "array",
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(1)",
+      },
+    }
+  },
   tree: {
     name: "Tree / Graph",
     algorithms: {
@@ -457,4 +484,3 @@ function traverse(node) {
 
 export type AlgorithmCategoryKey = keyof typeof ALGO_CATEGORIES;
 export type AlgorithmKey<T extends AlgorithmCategoryKey> = keyof (typeof ALGO_CATEGORIES)[T]['algorithms'];
-
