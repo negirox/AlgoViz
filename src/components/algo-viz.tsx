@@ -262,14 +262,79 @@ function countingSort(arr, exp) {
   },
   timSort: {
     name: "Tim Sort",
-    code: `// Tim Sort implementation will go here
-// Combines Insertion Sort and Merge Sort
+    code: `const RUN = 32;
+
+// Insertion sort for sub-arrays
+function insertionSort(arr, left, right) {
+    for (let i = left + 1; i <= right; i++) {
+        let temp = arr[i];
+        let j = i - 1;
+        while (j >= left && arr[j] > temp) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = temp;
+    }
+}
+
+// Merge function to merge sorted runs
+function merge(arr, l, m, r) {
+    let len1 = m - l + 1, len2 = r - m;
+    let left = new Array(len1);
+    let right = new Array(len2);
+    for (let i = 0; i < len1; i++)
+        left[i] = arr[l + i];
+    for (let i = 0; i < len2; i++)
+        right[i] = arr[m + 1 + i];
+
+    let i = 0, j = 0, k = l;
+
+    while (i < len1 && j < len2) {
+        if (left[i] <= right[j]) {
+            arr[k] = left[i];
+            i++;
+        } else {
+            arr[k] = right[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < len1) {
+        arr[k] = left[i];
+        k++;
+        i++;
+    }
+
+    while (j < len2) {
+        arr[k] = right[j];
+        k++;
+        j++;
+    }
+}
+
+// Main Tim Sort function
 function timSort(arr) {
-  // Placeholder for implementation
-  arr.sort((a, b) => a - b); // Use native sort for now
-  return arr;
+    let n = arr.length;
+    // Sort individual sub-arrays of size RUN
+    for (let i = 0; i < n; i += RUN) {
+        insertionSort(arr, i, Math.min((i + RUN - 1), (n - 1)));
+    }
+
+    // Start merging from size RUN. It will merge
+    // to form size 2*RUN, then 4*RUN, 8*RUN and so on
+    for (let size = RUN; size < n; size = 2 * size) {
+        for (let left = 0; left < n; left += 2 * size) {
+            let mid = left + size - 1;
+            let right = Math.min((left + 2 * size - 1), (n - 1));
+            if(mid < right) {
+              merge(arr, left, mid, right);
+            }
+        }
+    }
+    return arr;
 }`,
-    input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0",
+    input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0, -1, 50",
     visualizer: "array"
   },
   introSort: {
@@ -758,6 +823,125 @@ function generatePigeonholeSortTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateTimSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+    const RUN = 32;
+
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    function insertionSortForTim(arr: number[], left: number, right: number) {
+        addTrace(4, { arr: `[${localArr.join(',')}]`, left, right }, Array.from({length: right - left + 1}, (_, i) => left + i));
+        for (let i = left + 1; i <= right; i++) {
+            addTrace(5, { i }, [i]);
+            let temp = arr[i];
+            addTrace(6, { i, temp }, [i]);
+            let j = i - 1;
+            addTrace(7, { i, temp, j }, [j]);
+            while (j >= left && arr[j] > temp) {
+                addTrace(8, { j, temp, condition: `${arr[j]} > ${temp}` }, [j, j + 1]);
+                arr[j + 1] = arr[j];
+                localArr[j + 1] = arr[j+1];
+                addTrace(9, { arr: `[${localArr.join(',')}]` }, [j + 1]);
+                j--;
+                addTrace(10, { j }, [j+1]);
+            }
+            arr[j + 1] = temp;
+            localArr[j + 1] = temp;
+            addTrace(12, { arr: `[${localArr.join(',')}]` }, [j + 1]);
+        }
+    }
+
+    function mergeForTim(arr: number[], l: number, m: number, r: number) {
+        addTrace(16, { arr: `[${localArr.join(',')}]`, l, m, r }, Array.from({length: r - l + 1}, (_, i) => l + i));
+        let len1 = m - l + 1, len2 = r - m;
+        let left = new Array(len1);
+        let right = new Array(len2);
+        addTrace(17, { len1, len2 });
+        addTrace(18, { left: '[]' });
+        addTrace(19, { right: '[]' });
+
+        for (let i = 0; i < len1; i++) {
+            left[i] = arr[l + i];
+            addTrace(21, { i, left: `[${left.slice(0, i+1).join(',')}]` }, [l+i]);
+        }
+        for (let i = 0; i < len2; i++) {
+            right[i] = arr[m + 1 + i];
+            addTrace(23, { i, right: `[${right.slice(0, i+1).join(',')}]` }, [m+1+i]);
+        }
+        
+        let i = 0, j = 0, k = l;
+        addTrace(25, { i, j, k });
+
+        while (i < len1 && j < len2) {
+            addTrace(27, { condition: `${left[i]} <= ${right[j]}` }, [l + i, m + 1 + j]);
+            if (left[i] <= right[j]) {
+                arr[k] = left[i];
+                localArr[k] = left[i];
+                addTrace(29, { arr: `[${localArr.join(',')}]`, k, value: left[i] }, [k]);
+                i++;
+                addTrace(30, { i }, []);
+            } else {
+                arr[k] = right[j];
+                localArr[k] = right[j];
+                addTrace(32, { arr: `[${localArr.join(',')}]`, k, value: right[j] }, [k]);
+                j++;
+                addTrace(33, { j }, []);
+            }
+            k++;
+            addTrace(35, { k }, []);
+        }
+
+        while (i < len1) {
+            addTrace(38, { i, len1 }, [l+i]);
+            arr[k] = left[i];
+            localArr[k] = left[i];
+            addTrace(39, { arr: `[${localArr.join(',')}]`, k, value: left[i] }, [k]);
+            k++; i++;
+            addTrace(40, { k, i }, []);
+        }
+
+        while (j < len2) {
+            addTrace(44, { j, len2 }, [m+1+j]);
+            arr[k] = right[j];
+            localArr[k] = right[j];
+            addTrace(45, { arr: `[${localArr.join(',')}]`, k, value: right[j] }, [k]);
+            k++; j++;
+            addTrace(46, { k, j }, []);
+        }
+    }
+
+    let n = localArr.length;
+    addTrace(51, { n });
+
+    for (let i = 0; i < n; i += RUN) {
+        addTrace(53, { i, RUN });
+        const right = Math.min(i + RUN - 1, n - 1);
+        insertionSortForTim(localArr, i, right);
+        addTrace(54, { arr: `[${localArr.join(',')}]` }, Array.from({length: right - i + 1}, (_, k) => i + k));
+    }
+
+    for (let size = RUN; size < n; size = 2 * size) {
+        addTrace(58, { size });
+        for (let left = 0; left < n; left += 2 * size) {
+            addTrace(59, { left });
+            let mid = left + size - 1;
+            addTrace(60, { mid });
+            let right = Math.min((left + 2 * size - 1), (n - 1));
+            addTrace(61, { right });
+            addTrace(62, { condition: `${mid} < ${right}` });
+            if (mid < right) {
+                mergeForTim(localArr, left, mid, right);
+                addTrace(63, { arr: `[${localArr.join(',')}]` }, Array.from({length: right - left + 1}, (_, k) => left + k));
+            }
+        }
+    }
+    addTrace(67, { 'return value': `[${localArr.join(',')}]` });
+    return trace;
+}
+
 
 const TRACE_GENERATORS = {
   bubbleSort: generateBubbleSortTrace,
@@ -770,8 +954,7 @@ const TRACE_GENERATORS = {
   radixSort: generateRadixSortTrace,
   bucketSort: generateBucketSortTrace,
   pigeonholeSort: generatePigeonholeSortTrace,
-  // Placeholders for other algorithms
-  timSort: (arr: number[]) => [],
+  timSort: generateTimSortTrace,
   introSort: (arr: number[]) => [],
   shellSort: (arr: number[]) => [],
   combSort: (arr: number[]) => [],
@@ -1007,5 +1190,3 @@ export function AlgoViz() {
     </div>
   );
 }
-
-    
