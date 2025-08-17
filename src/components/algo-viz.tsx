@@ -12,9 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Visualizer } from '@/components/visualizer';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Faq } from '@/components/faq';
-import { ALGO_TEMPLATES } from '@/lib/algo-templates';
-
-export type AlgorithmType = keyof typeof ALGO_TEMPLATES;
+import { ALGO_CATEGORIES, AlgorithmCategoryKey, AlgorithmKey } from '@/lib/algo-templates';
 
 export type TraceStep = {
   line: number;
@@ -726,16 +724,17 @@ const TRACE_GENERATORS = {
   pigeonholeSort: generatePigeonholeSortTrace,
   timSort: generateTimSortTrace,
   introSort: generateIntroSortTrace,
-  shellSort: (arr: number[]) => [],
-  combSort: (arr: number[]) => [],
-  cycleSort: (arr: number[]) => [],
   tree: (arr: any) => [],
 };
 
 export function AlgoViz() {
-  const [algorithmType, setAlgorithmType] = useState<AlgorithmType>("bubbleSort");
-  const [code, setCode] = useState(ALGO_TEMPLATES.bubbleSort.code);
-  const [inputStr, setInputStr] = useState(ALGO_TEMPLATES.bubbleSort.input);
+  const [algorithmCategory, setAlgorithmCategory] = useState<AlgorithmCategoryKey>('sorting');
+  const [algorithmKey, setAlgorithmKey] = useState<AlgorithmKey<typeof algorithmCategory>>('bubbleSort');
+  
+  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory].algorithms[algorithmKey];
+
+  const [code, setCode] = useState(selectedAlgorithm.code);
+  const [inputStr, setInputStr] = useState(selectedAlgorithm.input);
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -743,11 +742,20 @@ export function AlgoViz() {
 
   const { toast } = useToast();
 
-  const handleAlgorithmChange = (type: AlgorithmType) => {
-    if (!type || !ALGO_TEMPLATES[type]) return;
-    setAlgorithmType(type);
-    setCode(ALGO_TEMPLATES[type].code);
-    setInputStr(ALGO_TEMPLATES[type].input);
+  const handleAlgorithmCategoryChange = (category: AlgorithmCategoryKey) => {
+    if (!category || !ALGO_CATEGORIES[category]) return;
+    setAlgorithmCategory(category);
+    // Select the first algorithm in the new category
+    const firstAlgoKey = Object.keys(ALGO_CATEGORIES[category].algorithms)[0] as AlgorithmKey<typeof category>;
+    handleAlgorithmChange(firstAlgoKey);
+  }
+
+  const handleAlgorithmChange = (key: AlgorithmKey<typeof algorithmCategory>) => {
+    if (!key || !ALGO_CATEGORIES[algorithmCategory].algorithms[key]) return;
+    setAlgorithmKey(key);
+    const newAlgo = ALGO_CATEGORIES[algorithmCategory].algorithms[key];
+    setCode(newAlgo.code);
+    setInputStr(newAlgo.input);
     setExecutionTrace([]);
     setCurrentStep(0);
     setIsPlaying(false);
@@ -758,10 +766,10 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (ALGO_TEMPLATES[algorithmType].visualizer === 'tree') {
+    if (selectedAlgorithm.visualizer === 'tree') {
         toast({
             title: "Coming Soon!",
-            description: `Visualization for ${ALGO_TEMPLATES[algorithmType].name} is not yet implemented.`,
+            description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
             variant: 'default',
         });
         setIsLoading(false);
@@ -771,7 +779,7 @@ export function AlgoViz() {
 
     try {
       const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
-      if (parsedArray.some(isNaN) && algorithmType !== 'bucketSort') { // Bucket sort can handle floats
+      if (parsedArray.some(isNaN) && algorithmKey !== 'bucketSort') { // Bucket sort can handle floats
         toast({
             variant: "destructive",
             title: "Invalid Input",
@@ -781,11 +789,11 @@ export function AlgoViz() {
         return;
       }
 
-      const traceGenerator = TRACE_GENERATORS[algorithmType as keyof typeof TRACE_GENERATORS] as (arr: number[]) => TraceStep[];
+      const traceGenerator = TRACE_GENERATORS[algorithmKey as keyof typeof TRACE_GENERATORS] as (arr: number[]) => TraceStep[];
       if (!traceGenerator) {
           toast({
               title: "Not Implemented",
-              description: `The visualizer for ${ALGO_TEMPLATES[algorithmType].name} is not yet implemented.`,
+              description: `The visualizer for ${selectedAlgorithm.name} is not yet implemented.`,
           });
           setIsLoading(false);
           return;
@@ -797,7 +805,7 @@ export function AlgoViz() {
       } else if (trace) {
          toast({
           title: "Visualization Not Ready",
-          description: `The visualizer for ${ALGO_TEMPLATES[algorithmType].name} is coming soon.`,
+          description: `The visualizer for ${selectedAlgorithm.name} is coming soon.`,
         });
       }
     } catch (error: any) {
@@ -810,13 +818,13 @@ export function AlgoViz() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, inputStr, algorithmType]);
+  }, [toast, inputStr, algorithmKey, selectedAlgorithm]);
   
   // Initial trace generation
   useEffect(() => {
     handleTraceGeneration();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [algorithmType]);
+  }, [algorithmKey]);
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
 
@@ -857,8 +865,7 @@ export function AlgoViz() {
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = ALGO_TEMPLATES[algorithmType].visualizer as 'array' | 'tree';
-  const selectedAlgo = ALGO_TEMPLATES[algorithmType];
+  const visualizerType = selectedAlgorithm.visualizer as 'array' | 'tree';
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-8">
@@ -869,49 +876,71 @@ export function AlgoViz() {
             <CardDescription>Select algorithm, provide input, and control playback.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-              <div>
-                <label htmlFor="algo-type" className="text-sm font-medium mb-2 block">Algorithm Type</label>
-                <Select value={algorithmType} onValueChange={(value) => handleAlgorithmChange(value as AlgorithmType)}>
-                  <SelectTrigger id="algo-type">
-                    <SelectValue placeholder="Select algorithm type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Comparison Sorting</SelectLabel>
-                      <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
-                      <SelectItem value="selectionSort">Selection Sort</SelectItem>
-                      <SelectItem value="insertionSort">Insertion Sort</SelectItem>
-                      <SelectItem value="mergeSort">Merge Sort</SelectItem>
-                      <SelectItem value="quickSort">Quick Sort</SelectItem>
-                      <SelectItem value="heapSort">Heap Sort</SelectItem>
-                    </SelectGroup>
-                     <SelectGroup>
-                      <SelectLabel>Non-Comparison Sorting</SelectLabel>
-                      <SelectItem value="countingSort">Counting Sort</SelectItem>
-                      <SelectItem value="radixSort">Radix Sort</SelectItem>
-                      <SelectItem value="bucketSort">Bucket Sort</SelectItem>
-                      <SelectItem value="pigeonholeSort">Pigeonhole Sort</SelectItem>
-                    </SelectGroup>
-                    <SelectGroup>
-                      <SelectLabel>Hybrid Sorting</SelectLabel>
-                      <SelectItem value="timSort">Tim Sort</SelectItem>
-                      <SelectItem value="introSort">Intro Sort</SelectItem>
-                    </SelectGroup>
-                    <SelectGroup>
-                        <SelectLabel>Other Data Structures</SelectLabel>
-                        <SelectItem value="tree">Tree / Graph</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="algo-category" className="text-sm font-medium mb-2 block">Category</label>
+                  <Select value={algorithmCategory} onValueChange={(value) => handleAlgorithmCategoryChange(value as AlgorithmCategoryKey)}>
+                    <SelectTrigger id="algo-category">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(ALGO_CATEGORIES).map(([key, category]) => (
+                        <SelectItem key={key} value={key}>{category.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label htmlFor="algo-type" className="text-sm font-medium mb-2 block">Algorithm</label>
+                  <Select value={algorithmKey} onValueChange={(value) => handleAlgorithmChange(value as AlgorithmKey<typeof algorithmCategory>)}>
+                    <SelectTrigger id="algo-type">
+                      <SelectValue placeholder="Select algorithm" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {algorithmCategory === 'sorting' && (
+                        <>
+                          <SelectGroup>
+                            <SelectLabel>Comparison Sorting</SelectLabel>
+                            <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
+                            <SelectItem value="selectionSort">Selection Sort</SelectItem>
+                            <SelectItem value="insertionSort">Insertion Sort</SelectItem>
+                            <SelectItem value="mergeSort">Merge Sort</SelectItem>
+                            <SelectItem value="quickSort">Quick Sort</SelectItem>
+                            <SelectItem value="heapSort">Heap Sort</SelectItem>
+                          </SelectGroup>
+                          <SelectGroup>
+                            <SelectLabel>Non-Comparison Sorting</SelectLabel>
+                            <SelectItem value="countingSort">Counting Sort</SelectItem>
+                            <SelectItem value="radixSort">Radix Sort</SelectItem>
+                            <SelectItem value="bucketSort">Bucket Sort</SelectItem>
+                            <SelectItem value="pigeonholeSort">Pigeonhole Sort</SelectItem>
+                          </SelectGroup>
+                          <SelectGroup>
+                            <SelectLabel>Hybrid Sorting</SelectLabel>
+                            <SelectItem value="timSort">Tim Sort</SelectItem>
+                            <SelectItem value="introSort">Intro Sort</SelectItem>
+                          </SelectGroup>
+                        </>
+                      )}
+                       {algorithmCategory === 'tree' && (
+                         <SelectGroup>
+                          <SelectLabel>Tree/Graph</SelectLabel>
+                          <SelectItem value="tree">Tree / Graph Traversal</SelectItem>
+                        </SelectGroup>
+                       )}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              {selectedAlgo.timeComplexity && selectedAlgo.spaceComplexity && (
+              {selectedAlgorithm.timeComplexity && selectedAlgorithm.spaceComplexity && (
                 <div className="flex justify-between text-sm text-muted-foreground pt-2">
                   <div className="font-mono text-xs">
-                      <strong>Time:</strong> {selectedAlgo.timeComplexity}
+                      <strong>Time:</strong> {selectedAlgorithm.timeComplexity}
                   </div>
                   <div className="font-mono text-xs">
-                      <strong>Space:</strong> {selectedAlgo.spaceComplexity}
+                      <strong>Space:</strong> {selectedAlgorithm.spaceComplexity}
                   </div>
                 </div>
               )}
@@ -923,7 +952,7 @@ export function AlgoViz() {
                           id="input-data"
                           value={inputStr}
                           onChange={(e) => setInputStr(e.target.value)}
-                          placeholder={ALGO_TEMPLATES[algorithmType].visualizer === 'array' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
+                          placeholder={selectedAlgorithm.visualizer === 'array' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
                       />
                       <Button onClick={handleTraceGeneration}>Visualize</Button>
                   </div>
@@ -971,7 +1000,7 @@ export function AlgoViz() {
         )}
       </div>
 
-      <Faq algorithm={algorithmType} />
+      <Faq algorithm={algorithmKey} category={algorithmCategory} />
     </div>
   );
 }

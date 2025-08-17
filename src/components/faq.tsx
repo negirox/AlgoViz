@@ -3,15 +3,19 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { AlgorithmType } from "./algo-viz";
+import { AlgorithmCategoryKey, AlgorithmKey } from "@/lib/algo-templates";
 import { FAQ_DATA } from "@/lib/faq-data";
 
 type FaqProps = {
-    algorithm: AlgorithmType;
+    category: AlgorithmCategoryKey;
+    algorithm: AlgorithmKey<any>;
 };
 
-export function Faq({ algorithm }: FaqProps) {
-    const faqContent = FAQ_DATA[algorithm];
+export function Faq({ category, algorithm }: FaqProps) {
+    const faqCategory = FAQ_DATA[category];
+    if (!faqCategory) return null;
+
+    const faqContent = faqCategory.algorithms[algorithm as keyof typeof faqCategory.algorithms];
 
     if (!faqContent) {
         return null;

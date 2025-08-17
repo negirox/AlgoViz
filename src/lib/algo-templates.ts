@@ -1,8 +1,11 @@
 
-export const ALGO_TEMPLATES = {
-  bubbleSort: {
-    name: "Bubble Sort",
-    code: `function bubbleSort(arr) {
+export const ALGO_CATEGORIES = {
+  sorting: {
+    name: "Sorting",
+    algorithms: {
+      bubbleSort: {
+        name: "Bubble Sort",
+        code: `function bubbleSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
@@ -15,14 +18,14 @@ export const ALGO_TEMPLATES = {
   }
   return arr;
 }`,
-    input: "5, 3, 8, 4, 2",
-    visualizer: "array",
-    timeComplexity: "O(n^2)",
-    spaceComplexity: "O(1)",
-  },
-  selectionSort: {
-    name: "Selection Sort",
-    code: `function selectionSort(arr) {
+        input: "5, 3, 8, 4, 2",
+        visualizer: "array",
+        timeComplexity: "O(n^2)",
+        spaceComplexity: "O(1)",
+      },
+      selectionSort: {
+        name: "Selection Sort",
+        code: `function selectionSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     let min_idx = i;
@@ -37,14 +40,14 @@ export const ALGO_TEMPLATES = {
   }
   return arr;
 }`,
-    input: "64, 25, 12, 22, 11",
-    visualizer: "array",
-    timeComplexity: "O(n^2)",
-    spaceComplexity: "O(1)",
-  },
-  insertionSort: {
-    name: "Insertion Sort",
-    code: `function insertionSort(arr) {
+        input: "64, 25, 12, 22, 11",
+        visualizer: "array",
+        timeComplexity: "O(n^2)",
+        spaceComplexity: "O(1)",
+      },
+      insertionSort: {
+        name: "Insertion Sort",
+        code: `function insertionSort(arr) {
   let n = arr.length;
   for (let i = 1; i < n; i++) {
     let key = arr[i];
@@ -57,14 +60,14 @@ export const ALGO_TEMPLATES = {
   }
   return arr;
 }`,
-    input: "12, 11, 13, 5, 6",
-    visualizer: "array",
-    timeComplexity: "O(n^2)",
-    spaceComplexity: "O(1)",
-  },
-  mergeSort: {
-    name: "Merge Sort",
-    code: `function mergeSort(arr) {
+        input: "12, 11, 13, 5, 6",
+        visualizer: "array",
+        timeComplexity: "O(n^2)",
+        spaceComplexity: "O(1)",
+      },
+      mergeSort: {
+        name: "Merge Sort",
+        code: `function mergeSort(arr) {
   if (arr.length <= 1) {
     return arr;
   }
@@ -89,14 +92,14 @@ function merge(left, right) {
     .concat(left.slice(leftIndex))
     .concat(right.slice(rightIndex));
 }`,
-    input: "38, 27, 43, 3, 9, 82, 10",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(n)",
-  },
-  quickSort: {
-    name: "Quick Sort",
-    code: `function quickSort(arr, low, high) {
+        input: "38, 27, 43, 3, 9, 82, 10",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+      },
+      quickSort: {
+        name: "Quick Sort",
+        code: `function quickSort(arr, low, high) {
   if (low < high) {
     let pi = partition(arr, low, high);
     quickSort(arr, low, pi - 1);
@@ -117,14 +120,14 @@ function partition(arr, low, high) {
   [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
   return (i + 1);
 }`,
-    input: "10, 7, 8, 9, 1, 5",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(log n)",
-  },
-  heapSort: {
-    name: "Heap Sort",
-    code: `function heapSort(arr) {
+        input: "10, 7, 8, 9, 1, 5",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(log n)",
+      },
+      heapSort: {
+        name: "Heap Sort",
+        code: `function heapSort(arr) {
     var n = arr.length;
     for (var i = Math.floor(n / 2) - 1; i >= 0; i--)
         heapify(arr, n, i);
@@ -151,14 +154,14 @@ function heapify(arr, n, i) {
         heapify(arr, n, largest);
     }
 }`,
-    input: "12, 11, 13, 5, 6, 7",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(1)",
-  },
-  countingSort: {
-    name: "Counting Sort",
-    code: `function countingSort(arr) {
+        input: "12, 11, 13, 5, 6, 7",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(1)",
+      },
+      countingSort: {
+        name: "Counting Sort",
+        code: `function countingSort(arr) {
   const max = Math.max(...arr);
   const min = Math.min(...arr);
   const range = max - min + 1;
@@ -179,14 +182,14 @@ function heapify(arr, n, i) {
   }
   return arr;
 }`,
-    input: "4, 2, 2, 8, 3, 3, 1",
-    visualizer: "array",
-    timeComplexity: "O(n + k)",
-    spaceComplexity: "O(k)",
-  },
-  radixSort: {
-    name: "Radix Sort",
-    code: `function radixSort(arr) {
+        input: "4, 2, 2, 8, 3, 3, 1",
+        visualizer: "array",
+        timeComplexity: "O(n + k)",
+        spaceComplexity: "O(k)",
+      },
+      radixSort: {
+        name: "Radix Sort",
+        code: `function radixSort(arr) {
     const max = Math.max(...arr);
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
         countingSort(arr, exp);
@@ -212,14 +215,14 @@ function countingSort(arr, exp) {
         arr[i] = output[i];
     }
 }`,
-    input: "170, 45, 75, 90, 802, 24, 2, 66",
-    visualizer: "array",
-    timeComplexity: "O(d * (n+k))",
-    spaceComplexity: "O(n + k)",
-  },
-  bucketSort: {
-    name: "Bucket Sort",
-    code: `function bucketSort(arr, n = 5) {
+        input: "170, 45, 75, 90, 802, 24, 2, 66",
+        visualizer: "array",
+        timeComplexity: "O(d * (n+k))",
+        spaceComplexity: "O(n + k)",
+      },
+      bucketSort: {
+        name: "Bucket Sort",
+        code: `function bucketSort(arr, n = 5) {
     if (arr.length === 0) {
         return arr;
     }
@@ -236,14 +239,14 @@ function countingSort(arr, exp) {
     let result = [].concat(...buckets);
     return result;
 }`,
-    input: "0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434",
-    visualizer: "array",
-    timeComplexity: "O(n + k)",
-    spaceComplexity: "O(n)",
-  },
-  pigeonholeSort: {
-      name: "Pigeonhole Sort",
-      code: `function pigeonholeSort(arr) {
+        input: "0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434",
+        visualizer: "array",
+        timeComplexity: "O(n + k)",
+        spaceComplexity: "O(n)",
+      },
+      pigeonholeSort: {
+        name: "Pigeonhole Sort",
+        code: `function pigeonholeSort(arr) {
     let min = Math.min(...arr);
     let max = Math.max(...arr);
     let range = max - min + 1;
@@ -262,14 +265,14 @@ function countingSort(arr, exp) {
     }
     return arr;
 }`,
-      input: "8, 3, 2, 7, 4, 6, 8",
-      visualizer: "array",
-      timeComplexity: "O(n + N)",
-      spaceComplexity: "O(N)",
-  },
-  timSort: {
-    name: "Tim Sort",
-    code: `const RUN = 32;
+        input: "8, 3, 2, 7, 4, 6, 8",
+        visualizer: "array",
+        timeComplexity: "O(n + N)",
+        spaceComplexity: "O(N)",
+      },
+      timSort: {
+        name: "Tim Sort",
+        code: `const RUN = 32;
 
 // Insertion sort for sub-arrays
 function insertionSort(arr, left, right) {
@@ -341,14 +344,14 @@ function timSort(arr) {
     }
     return arr;
 }`,
-    input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0, -1, 50",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(n)",
-  },
-  introSort: {
-    name: "Intro Sort",
-    code: `function introSort(arr) {
+        input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0, -1, 50",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+      },
+      introSort: {
+        name: "Intro Sort",
+        code: `function introSort(arr) {
   let maxdepth = Math.floor(Math.log2(arr.length)) * 2;
   introsort_helper(arr, 0, arr.length - 1, maxdepth);
   return arr;
@@ -415,14 +418,19 @@ function insertionSort(arr, left, right) {
     arr[j + 1] = key;
   }
 }`,
-    input: "2, 1, 0, 5, 8, 3, 7, 4, 9, 6",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(log n)",
+        input: "2, 1, 0, 5, 8, 3, 7, 4, 9, 6",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(log n)",
+      },
+    },
   },
   tree: {
-    name: "Tree / Graph Traversal",
-    code: `class TreeNode {
+    name: "Tree / Graph",
+    algorithms: {
+      tree: {
+        name: "Tree / Graph Traversal",
+        code: `class TreeNode {
   constructor(value) {
     this.value = value;
     this.left = null;
@@ -438,9 +446,15 @@ function traverse(node) {
     traverse(node.right);
   }
 }`,
-    input: "{ \"value\": 10, \"left\": { \"value\": 5 }, \"right\": { \"value\": 15 } }",
-    visualizer: "tree",
-    timeComplexity: "N/A",
-    spaceComplexity: "N/A",
+        input: "{ \"value\": 10, \"left\": { \"value\": 5 }, \"right\": { \"value\": 15 } }",
+        visualizer: "tree",
+        timeComplexity: "N/A",
+        spaceComplexity: "N/A",
+      }
+    }
   }
 } as const;
+
+export type AlgorithmCategoryKey = keyof typeof ALGO_CATEGORIES;
+export type AlgorithmKey<T extends AlgorithmCategoryKey> = keyof (typeof ALGO_CATEGORIES)[T]['algorithms'];
+
