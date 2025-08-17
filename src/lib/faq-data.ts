@@ -720,8 +720,8 @@ export const FAQ_DATA: FaqData = {
     },
     tree: {
         algorithms: {
-            tree: {
-                title: "Tree / Graph Traversal",
+            treeTraversal: {
+                title: "Tree Traversal",
                 faqs: [
                     {
                         question: "What is Tree Traversal?",
@@ -763,6 +763,96 @@ export const FAQ_DATA: FaqData = {
                         question: "What is a trivial use case for a post-order traversal?",
                         answer: "A classic use case for post-order traversal is to delete all nodes in a tree. You must delete the children (left and right) before you can delete the parent node itself. Post-order traversal (Left, Right, Root) ensures this correct order of operations."
                     }
+                ]
+            },
+            binarySearchTree: {
+                title: "Binary Search Tree (BST)",
+                faqs: [
+                    {
+                        question: "What is a Binary Search Tree (BST)?",
+                        answer: "A Binary Search Tree is a node-based binary tree data structure which has the following properties: The left subtree of a node contains only nodes with keys lesser than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be binary search trees."
+                    },
+                    {
+                        question: "What is the time complexity for search, insert, and delete in a BST?",
+                        answer: "For a balanced BST, the time complexity for search, insert, and delete operations is O(log n) on average. In the worst-case scenario (an unbalanced tree resembling a linked list), the complexity becomes O(n)."
+                    },
+                    {
+                        question: "What causes a BST to become unbalanced?",
+                        answer: "A BST becomes unbalanced if the input data is inserted in a sorted or nearly sorted order. This leads to a degenerate tree where each node has only one child, effectively turning it into a linked list."
+                    },
+                    {
+                        question: "How can you traverse a BST to get elements in sorted order?",
+                        answer: "An in-order traversal (Left, Root, Right) of a BST will visit the nodes in ascending order of their keys."
+                    },
+                    {
+                        question: "What is the difference between a BST and a regular Binary Tree?",
+                        answer: "A Binary Tree is a tree where each node has at most two children. A BST is a special type of Binary Tree that imposes the specific ordering property on its nodes (left child < root < right child), which allows for efficient searching."
+                    },
+                    {
+                        question: "How do you find the minimum and maximum value in a BST?",
+                        answer: "To find the minimum value, you traverse as far left as possible from the root. The leftmost node is the minimum. To find the maximum value, you traverse as far right as possible; the rightmost node is the maximum."
+                    },
+                    {
+                        question: "What is the space complexity of a BST?",
+                        answer: "The space complexity is O(n) to store the n nodes in the tree. The recursive operations (like search or insert) also take O(h) space on the call stack, where h is the height of the tree (which is O(log n) for a balanced tree and O(n) for an unbalanced one)."
+                    },
+                    {
+                        question: "How does the deletion of a node with two children work in a BST?",
+                        answer: "To delete a node with two children, you replace the node's value with its in-order successor (the smallest node in its right subtree) or its in-order predecessor (the largest node in its left subtree). Then, you recursively delete the successor/predecessor node, which will have at most one child."
+                    },
+                    {
+                        question: "Are BSTs stable for sorting?",
+                        answer: "If you build a BST and then perform an in-order traversal, the sorting is not stable. The tree structure does not inherently preserve the original order of equal elements."
+                    },
+                    {
+                        question: "What are self-balancing BSTs?",
+                        answer: "Self-balancing BSTs, such as AVL trees or Red-Black trees, are special types of BSTs that automatically perform rotations to keep their height as close to O(log n) as possible, thus guaranteeing O(log n) performance for all operations."
+                    },
+                ]
+            },
+            avlTree: {
+                title: "AVL Tree",
+                faqs: [
+                    {
+                        question: "What is an AVL Tree?",
+                        answer: "An AVL Tree is a self-balancing Binary Search Tree (BST). It maintains a 'balance factor' for each node, which is the difference between the heights of its left and right subtrees. The tree is considered balanced if every node's balance factor is -1, 0, or 1."
+                    },
+                    {
+                        question: "How does an AVL Tree maintain its balance?",
+                        answer: "After an insertion or deletion, the tree checks the balance factors of its nodes along the path back to the root. If a node becomes unbalanced (balance factor of -2 or 2), the tree performs one or more 'rotations' to restore the balance property."
+                    },
+                    {
+                        question: "What is a 'rotation' in an AVL Tree?",
+                        answer: "A rotation is a local transformation of a subtree that rearranges nodes to decrease the tree's height and restore balance, while still preserving the BST property. The two basic types are Left Rotation and Right Rotation."
+                    },
+                    {
+                        question: "What is the time complexity of operations in an AVL Tree?",
+                        answer: "The time complexity for search, insertion, and deletion is always O(log n) in the worst case. The self-balancing property guarantees that the tree's height never exceeds a certain limit, preventing the O(n) worst-case scenario of a standard BST."
+                    },
+                    {
+                        question: "What are the four cases of unbalance that require rotations?",
+                        answer: "The four cases are: 1) Left-Left (requires a single right rotation). 2) Right-Right (requires a single left rotation). 3) Left-Right (requires a left rotation followed by a right rotation). 4) Right-Left (requires a right rotation followed by a left rotation)."
+                    },
+                    {
+                        question: "How does an AVL Tree compare to a Red-Black Tree?",
+                        answer: "AVL trees are more strictly balanced than Red-Black trees. This means lookups in an AVL tree are slightly faster on average. However, this strictness requires more rotations during insertion and deletion, making Red-Black trees faster for write-heavy applications."
+                    },
+                    {
+                        question: "What is the space complexity of an AVL Tree?",
+                        answer: "The space complexity is O(n) to store the nodes. Each node also requires a small amount of extra space to store its height or balance factor."
+                    },
+                    {
+                        question: "Is building an AVL Tree from a sorted list of n items efficient?",
+                        answer: "If you insert items one by one from a sorted list, the tree will perform many rotations. A more efficient way to build an AVL tree from a sorted list is to recursively build it from the middle element, which takes O(n) time."
+                    },
+                    {
+                        question: "Are AVL trees used often in practice?",
+                        answer: "They are used in scenarios where lookups are much more frequent than insertions and deletions, and where a guaranteed O(log n) search time is critical. However, in many standard library implementations (like C++ STL maps), Red-Black trees are preferred due to their better insertion/deletion performance."
+                    },
+                    {
+                        question: "What is the 'balance factor'?",
+                        answer: "The balance factor of a node is calculated as `height(left subtree) - height(right subtree)`. This value must be in the range [-1, 1] for the tree to be considered balanced."
+                    },
                 ]
             }
         }
@@ -817,5 +907,3 @@ export const FAQ_DATA: FaqData = {
         }
     }
 };
-
-    

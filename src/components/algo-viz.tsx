@@ -1052,7 +1052,9 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
-  tree: (arr: any) => [],
+  treeTraversal: (arr: any) => [],
+  binarySearchTree: (arr: any) => [],
+  avlTree: (arr: any) => [],
 };
 
 const getDefaultAlgorithm = (category: AlgorithmCategoryKey) => {
@@ -1321,8 +1323,10 @@ export function AlgoViz() {
                        )}
                        {algorithmCategory === 'tree' && (
                          <SelectGroup>
-                          <SelectLabel>Tree/Graph</SelectLabel>
-                          <SelectItem value="tree">Tree / Graph Traversal</SelectItem>
+                          <SelectLabel>Tree / Graph</SelectLabel>
+                          <SelectItem value="treeTraversal">Tree Traversal</SelectItem>
+                          <SelectItem value="binarySearchTree">Binary Search Tree</SelectItem>
+                          <SelectItem value="avlTree">AVL Tree</SelectItem>
                         </SelectGroup>
                        )}
                         {algorithmCategory === 'data-structures' && (

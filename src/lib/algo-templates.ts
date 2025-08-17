@@ -579,8 +579,8 @@ function binarySearch(arr, l, r, x) {
   tree: {
     name: "Tree / Graph",
     algorithms: {
-      tree: {
-        name: "Tree / Graph Traversal",
+      treeTraversal: {
+        name: "Tree Traversal",
         code: `class TreeNode {
   constructor(value) {
     this.value = value;
@@ -599,8 +599,72 @@ function traverse(node) {
 }`,
         input: "{ \"value\": 10, \"left\": { \"value\": 5 }, \"right\": { \"value\": 15 } }",
         visualizer: "tree",
-        timeComplexity: "N/A",
-        spaceComplexity: "N/A",
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(h)",
+      },
+      binarySearchTree: {
+        name: "Binary Search Tree",
+        code: `class Node {
+    constructor(key) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+    }
+}
+// BST insert operation
+function insert(node, key) {
+    if (node === null) {
+        return new Node(key);
+    }
+    if (key < node.key) {
+        node.left = insert(node.left, key);
+    } else if (key > node.key) {
+        node.right = insert(node.right, key);
+    }
+    return node;
+}`,
+        input: "8,3,10,1,6,14,4,7,13",
+        visualizer: 'tree',
+        timeComplexity: "O(log n) Avg",
+        spaceComplexity: "O(log n) Avg",
+      },
+      avlTree: {
+        name: "AVL Tree",
+        code: `// AVL Tree insertion
+function insert(node, key) {
+    // 1. Perform standard BST insertion
+    if (node == null) return new Node(key);
+    if (key < node.key) node.left = insert(node.left, key);
+    else if (key > node.key) node.right = insert(node.right, key);
+    else return node;
+
+    // 2. Update height of this ancestor node
+    node.height = 1 + Math.max(height(node.left), height(node.right));
+
+    // 3. Get the balance factor
+    let balance = getBalance(node);
+
+    // 4. If unbalanced, then perform rotations
+    // Left Left Case
+    if (balance > 1 && key < node.left.key) return rightRotate(node);
+    // Right Right Case
+    if (balance < -1 && key > node.right.key) return leftRotate(node);
+    // Left Right Case
+    if (balance > 1 && key > node.left.key) {
+        node.left = leftRotate(node.left);
+        return rightRotate(node);
+    }
+    // Right Left Case
+    if (balance < -1 && key < node.right.key) {
+        node.right = rightRotate(node.right);
+        return leftRotate(node);
+    }
+    return node;
+}`,
+        input: "10,20,30,40,50,25",
+        visualizer: 'tree',
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(log n)",
       }
     }
   },
