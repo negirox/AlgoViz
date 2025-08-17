@@ -157,6 +157,109 @@ function heapify(arr, n, i) {
     input: "12, 11, 13, 5, 6, 7",
     visualizer: "array"
   },
+  countingSort: {
+    name: "Counting Sort",
+    code: `function countingSort(arr) {
+  const max = Math.max(...arr);
+  const min = Math.min(...arr);
+  const range = max - min + 1;
+  const count = new Array(range).fill(0);
+  const output = new Array(arr.length);
+  for (let i = 0; i < arr.length; i++) {
+    count[arr[i] - min]++;
+  }
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
+  }
+  for (let i = arr.length - 1; i >= 0; i--) {
+    output[count[arr[i] - min] - 1] = arr[i];
+    count[arr[i] - min]--;
+  }
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = output[i];
+  }
+  return arr;
+}`,
+    input: "4, 2, 2, 8, 3, 3, 1",
+    visualizer: "array"
+  },
+  radixSort: {
+    name: "Radix Sort",
+    code: `function radixSort(arr) {
+    const max = Math.max(...arr);
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countingSort(arr, exp);
+    }
+    return arr;
+}
+
+function countingSort(arr, exp) {
+    let n = arr.length;
+    let output = new Array(n);
+    let count = new Array(10).fill(0);
+    for (let i = 0; i < n; i++) {
+        count[Math.floor(arr[i] / exp) % 10]++;
+    }
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+    for (let i = n - 1; i >= 0; i--) {
+        output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
+        count[Math.floor(arr[i] / exp) % 10]--;
+    }
+    for (let i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
+}`,
+    input: "170, 45, 75, 90, 802, 24, 2, 66",
+    visualizer: "array"
+  },
+  bucketSort: {
+    name: "Bucket Sort",
+    code: `function bucketSort(arr, n = 5) {
+    if (arr.length === 0) {
+        return arr;
+    }
+    let min = Math.min(...arr);
+    let max = Math.max(...arr);
+    let buckets = Array.from({length: n}, () => []);
+    for (let i = 0; i < arr.length; i++) {
+        let bucketIndex = Math.floor(n * (arr[i] - min) / (max - min + 1));
+        buckets[bucketIndex].push(arr[i]);
+    }
+    for (let i = 0; i < buckets.length; i++) {
+        buckets[i].sort((a, b) => a - b);
+    }
+    let result = [].concat(...buckets);
+    return result;
+}`,
+    input: "0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434",
+    visualizer: "array"
+  },
+  pigeonholeSort: {
+      name: "Pigeonhole Sort",
+      code: `function pigeonholeSort(arr) {
+    let min = Math.min(...arr);
+    let max = Math.max(...arr);
+    let range = max - min + 1;
+    let holes = new Array(range).fill(0).map(() => []);
+
+    for (let i = 0; i < arr.length; i++) {
+        holes[arr[i] - min].push(arr[i]);
+    }
+
+    let index = 0;
+    for (let i = 0; i < range; i++) {
+        let hole = holes[i];
+        for (let j = 0; j < hole.length; j++) {
+            arr[index++] = hole[j];
+        }
+    }
+    return arr;
+}`,
+      input: "8, 3, 2, 7, 4, 6, 8",
+      visualizer: "array"
+  },
   tree: {
     name: "Tree / Graph Traversal",
     code: `class TreeNode {
@@ -459,6 +562,178 @@ function generateHeapSortTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateCountingSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    const max = Math.max(...localArr);
+    addTrace(2, { arr: `[${localArr.join(', ')}]`, max });
+    const min = Math.min(...localArr);
+    addTrace(3, { arr: `[${localArr.join(', ')}]`, max, min });
+    const range = max - min + 1;
+    addTrace(4, { arr: `[${localArr.join(', ')}]`, max, min, range });
+    const count = new Array(range).fill(0);
+    addTrace(5, { arr: `[${localArr.join(', ')}]`, count: `[${count.join(',')}]` });
+    const output = new Array(localArr.length);
+    addTrace(6, { arr: `[${localArr.join(', ')}]`, count: `[${count.join(',')}]`, output: `[${output.join(',')}]` });
+
+    for (let i = 0; i < localArr.length; i++) {
+        addTrace(7, { i }, [i]);
+        count[localArr[i] - min]++;
+        addTrace(8, { i, count: `[${count.join(',')}]` }, [i]);
+    }
+    
+    for (let i = 1; i < count.length; i++) {
+        addTrace(10, { i, count: `[${count.join(',')}]` });
+        count[i] += count[i - 1];
+        addTrace(11, { i, count: `[${count.join(',')}]` });
+    }
+
+    for (let i = localArr.length - 1; i >= 0; i--) {
+        addTrace(13, { i }, [i]);
+        output[count[localArr[i] - min] - 1] = localArr[i];
+        addTrace(14, { i, output: `[${output.join(',')}]` }, [i]);
+        count[localArr[i] - min]--;
+        addTrace(15, { i, count: `[${count.join(',')}]` }, [i]);
+    }
+
+    for (let i = 0; i < localArr.length; i++) {
+        addTrace(17, { i });
+        localArr[i] = output[i];
+        addTrace(18, { i, arr: `[${localArr.join(',')}]` }, [i]);
+    }
+    addTrace(20, { 'return value': `[${localArr.join(', ')}]` });
+    return trace;
+}
+
+function generateRadixSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    let localArr = [...arr];
+
+    const max = Math.max(...localArr);
+    trace.push({line: 2, variables: { arr: `[${localArr.join(',')}]`, max }, data: [...localArr], highlighted:[] });
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        trace.push({line: 3, variables: { arr: `[${localArr.join(',')}]`, exp }, data: [...localArr], highlighted:[] });
+        
+        let n = localArr.length;
+        let output = new Array(n);
+        let count = new Array(10).fill(0);
+        trace.push({line: 11, variables: { arr: `[${localArr.join(',')}]`, exp, n, output: `[${output.join(',')}]`, count: `[${count.join(',')}]`}, data: [...localArr], highlighted:[] });
+        for (let i = 0; i < n; i++) {
+            trace.push({line: 12, variables: {i}, data: [...localArr], highlighted:[i] });
+            count[Math.floor(localArr[i] / exp) % 10]++;
+            trace.push({line: 13, variables: {i, count: `[${count.join(',')}]` }, data: [...localArr], highlighted:[i] });
+        }
+        for (let i = 1; i < 10; i++) {
+             trace.push({line: 15, variables: {i}, data: [...localArr], highlighted:[] });
+            count[i] += count[i - 1];
+             trace.push({line: 16, variables: {i, count: `[${count.join(',')}]`}, data: [...localArr], highlighted:[] });
+        }
+        for (let i = n - 1; i >= 0; i--) {
+            trace.push({line: 18, variables: {i}, data: [...localArr], highlighted:[i] });
+            output[count[Math.floor(localArr[i] / exp) % 10] - 1] = localArr[i];
+            trace.push({line: 19, variables: {i, output: `[${output.join(',')}]`}, data: [...localArr], highlighted:[i] });
+            count[Math.floor(localArr[i] / exp) % 10]--;
+            trace.push({line: 20, variables: {i, count: `[${count.join(',')}]`}, data: [...localArr], highlighted:[i] });
+        }
+        for (let i = 0; i < n; i++) {
+            trace.push({line: 22, variables: {i}, data: [...localArr], highlighted:[i] });
+            localArr[i] = output[i];
+            trace.push({line: 23, variables: {i, arr: `[${localArr.join(',')}]`}, data: [...output], highlighted:[i] });
+        }
+        trace.push({line: 5, variables: { arr: `[${localArr.join(',')}]`, exp }, data: [...localArr], highlighted:[] });
+    }
+    trace.push({line: 7, variables: { 'return value': `[${localArr.join(', ')}]` }, data: [...localArr], highlighted:[] });
+
+    return trace;
+}
+
+function generateBucketSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    let localArr = [...arr];
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    const n = 5; // Number of buckets
+
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, n });
+    if (localArr.length === 0) {
+        addTrace(2, {});
+        addTrace(3, { 'return value': '[]' });
+        return trace;
+    }
+
+    addTrace(5, {});
+    let min = Math.min(...localArr);
+    addTrace(6, { min });
+    let max = Math.max(...localArr);
+    addTrace(7, { min, max });
+    let buckets = Array.from({length: n}, () => []);
+    addTrace(8, { buckets: JSON.stringify(buckets) });
+
+    for (let i = 0; i < localArr.length; i++) {
+        addTrace(9, { i }, [i]);
+        let bucketIndex = Math.floor(n * (localArr[i] - min) / (max - min + 1));
+        addTrace(10, { i, bucketIndex }, [i]);
+        buckets[bucketIndex].push(localArr[i]);
+        addTrace(11, { i, bucketIndex, buckets: JSON.stringify(buckets) }, [i]);
+    }
+
+    for (let i = 0; i < buckets.length; i++) {
+        addTrace(13, { i, buckets: JSON.stringify(buckets) });
+        buckets[i].sort((a, b) => a - b);
+        addTrace(14, { i, buckets: JSON.stringify(buckets) });
+    }
+
+    localArr = [].concat(...buckets);
+    addTrace(16, { result: `[${localArr.join(',')}]` });
+    addTrace(17, { 'return value': `[${localArr.join(',')}]` });
+
+    return trace;
+}
+
+function generatePigeonholeSortTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    let localArr = [...arr];
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let min = Math.min(...localArr);
+    addTrace(2, { arr: `[${localArr.join(',')}]`, min });
+    let max = Math.max(...localArr);
+    addTrace(3, { min, max });
+    let range = max - min + 1;
+    addTrace(4, { min, max, range });
+    let holes = new Array(range).fill(0).map(() => []);
+    addTrace(5, { holes: JSON.stringify(holes) });
+
+    for (let i = 0; i < localArr.length; i++) {
+        addTrace(7, { i }, [i]);
+        holes[localArr[i] - min].push(localArr[i]);
+        addTrace(8, { i, holes: JSON.stringify(holes) }, [i]);
+    }
+
+    let index = 0;
+    addTrace(11, { index });
+    for (let i = 0; i < range; i++) {
+        addTrace(12, { i, index });
+        let hole = holes[i];
+        addTrace(13, { i, index, hole: `[${hole.join(',')}]` });
+        for (let j = 0; j < hole.length; j++) {
+            addTrace(14, { i, j, index });
+            localArr[index++] = hole[j];
+            addTrace(15, { i, j, index, arr: `[${localArr.join(',')}]` }, [index - 1]);
+        }
+    }
+    addTrace(18, { 'return value': `[${localArr.join(',')}]` });
+    return trace;
+}
+
 
 const TRACE_GENERATORS = {
   bubbleSort: generateBubbleSortTrace,
@@ -467,6 +742,10 @@ const TRACE_GENERATORS = {
   mergeSort: generateMergeSortTrace,
   quickSort: generateQuickSortTrace,
   heapSort: generateHeapSortTrace,
+  countingSort: generateCountingSortTrace,
+  radixSort: generateRadixSortTrace,
+  bucketSort: generateBucketSortTrace,
+  pigeonholeSort: generatePigeonholeSortTrace,
   // Placeholders for other algorithms
   shellSort: (arr: number[]) => [],
   combSort: (arr: number[]) => [],
@@ -513,7 +792,7 @@ export function AlgoViz() {
 
     try {
       const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
-      if (parsedArray.some(isNaN)) {
+      if (parsedArray.some(isNaN) && algorithmType !== 'bucketSort') { // Bucket sort can handle floats
         toast({
             variant: "destructive",
             title: "Invalid Input",
@@ -618,13 +897,20 @@ export function AlgoViz() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Sorting Algorithms</SelectLabel>
+                      <SelectLabel>Comparison Sorting</SelectLabel>
                       <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
                       <SelectItem value="selectionSort">Selection Sort</SelectItem>
                       <SelectItem value="insertionSort">Insertion Sort</SelectItem>
                       <SelectItem value="mergeSort">Merge Sort</SelectItem>
                       <SelectItem value="quickSort">Quick Sort</SelectItem>
                       <SelectItem value="heapSort">Heap Sort</SelectItem>
+                    </SelectGroup>
+                     <SelectGroup>
+                      <SelectLabel>Non-Comparison Sorting</SelectLabel>
+                      <SelectItem value="countingSort">Counting Sort</SelectItem>
+                      <SelectItem value="radixSort">Radix Sort</SelectItem>
+                      <SelectItem value="bucketSort">Bucket Sort</SelectItem>
+                      <SelectItem value="pigeonholeSort">Pigeonhole Sort</SelectItem>
                     </SelectGroup>
                     <SelectGroup>
                         <SelectLabel>Other Data Structures</SelectLabel>
