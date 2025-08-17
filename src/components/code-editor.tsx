@@ -8,9 +8,10 @@ type CodeEditorProps = {
   code: string;
   onCodeChange: (newCode: string) => void;
   highlightedLine: number | null;
+  readOnly?: boolean;
 };
 
-export function CodeEditor({ code, onCodeChange, highlightedLine }: CodeEditorProps) {
+export function CodeEditor({ code, onCodeChange, highlightedLine, readOnly = false }: CodeEditorProps) {
   const lines = code.split('\n');
   
   return (
@@ -31,6 +32,7 @@ export function CodeEditor({ code, onCodeChange, highlightedLine }: CodeEditorPr
       <Textarea
         value={code}
         onChange={(e) => onCodeChange(e.target.value)}
+        readOnly={readOnly}
         className="font-code text-sm !bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none h-80 text-foreground"
         spellCheck="false"
         rows={lines.length}
