@@ -5,8 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CodeEditor } from "@/components/code-editor";
 import { VariableInspector } from "@/components/variable-inspector";
 import { PlaybackControls } from "@/components/playback-controls";
-import { AiExplainer } from "@/components/ai-explainer";
-import { explainStep } from "@/ai/flows/explain-step";
 import { ArrayVisualizer } from "@/components/array-visualizer";
 
 const BUBBLE_SORT_CODE = `function bubbleSort(arr) {
@@ -56,8 +54,6 @@ export function AlgoViz() {
   const [code, setCode] = useState(BUBBLE_SORT_CODE);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [explanation, setExplanation] = useState("");
-  const [isLoadingExplanation, setIsLoadingExplanation] = useState(true);
 
   const currentTrace = useMemo(() => EXECUTION_TRACE[currentStep], [currentStep]);
   const arrayData = useMemo(() => {
@@ -111,27 +107,6 @@ export function AlgoViz() {
     }
   }, [isPlaying, currentStep, handleNext]);
   
-  useEffect(() => {
-    const fetchExplanation = async () => {
-      if (!currentTrace) return;
-      setIsLoadingExplanation(true);
-      try {
-        const result = await explainStep({
-          code: code,
-          step: `Line ${currentTrace.line}: ${code.split('\\n')[currentTrace.line - 1]?.trim()}`,
-          variables: JSON.stringify(currentTrace.variables),
-        });
-        setExplanation(result.explanation);
-      } catch (error) {
-        console.error("Failed to fetch explanation:", error);
-        setExplanation("Could not generate explanation for this step.");
-      } finally {
-        setIsLoadingExplanation(false);
-      }
-    };
-    fetchExplanation();
-  }, [currentStep, currentTrace, code]);
-
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -175,7 +150,6 @@ export function AlgoViz() {
         </div>
         <div className="flex flex-col gap-8">
           <VariableInspector variables={currentTrace?.variables ?? {}} />
-          <AiExplainer explanation={explanation} isLoading={isLoadingExplanation} />
         </div>
       </div>
     </div>
