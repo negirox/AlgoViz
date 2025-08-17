@@ -6,12 +6,14 @@ import { CodeEditor } from "@/components/code-editor";
 import { VariableInspector } from "@/components/variable-inspector";
 import { PlaybackControls } from "@/components/playback-controls";
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Visualizer } from '@/components/visualizer';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const BUBBLE_SORT_CODE = `function sort(arr) {
+const ALGO_TEMPLATES = {
+  sorting: {
+    code: `function sort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
@@ -23,13 +25,39 @@ const BUBBLE_SORT_CODE = `function sort(arr) {
     }
   }
   return arr;
-}`;
+}`,
+    input: "5, 3, 8, 4, 2",
+    visualizer: "array"
+  },
+  tree: {
+    code: `class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+// Example: In-order traversal
+function traverse(node) {
+  if (node) {
+    traverse(node.left);
+    // visit(node)
+    traverse(node.right);
+  }
+}`,
+    input: "{ \"value\": 10, \"left\": { \"value\": 5 }, \"right\": { \"value\": 15 } }",
+    visualizer: "tree"
+  }
+} as const;
+
+type AlgorithmType = keyof typeof ALGO_TEMPLATES;
 
 export type TraceStep = {
   line: number;
   variables: Record<string, any>;
-  data: any; // Can be an array for sorting, or a tree structure, etc.
-  highlighted: any; // Can be indices for an array, node IDs for a tree, etc.
+  data: any;
+  highlighted: any;
 };
 
 // Simple execution trace generator for a specific bubble sort implementation
@@ -70,8 +98,9 @@ function generateTrace(arr: number[]): TraceStep[] {
 
 
 export function AlgoViz() {
-  const [code, setCode] = useState(BUBBLE_SORT_CODE);
-  const [inputStr, setInputStr] = useState("5, 3, 8, 4, 2");
+  const [algorithmType, setAlgorithmType] = useState<AlgorithmType>("sorting");
+  const [code, setCode] = useState(ALGO_TEMPLATES.sorting.code);
+  const [inputStr, setInputStr] = useState(ALGO_TEMPLATES.sorting.input);
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -79,18 +108,38 @@ export function AlgoViz() {
 
   const { toast } = useToast();
 
+  const handleAlgorithmChange = (type: AlgorithmType) => {
+    setAlgorithmType(type);
+    setCode(ALGO_TEMPLATES[type].code);
+    setInputStr(ALGO_TEMPLATES[type].input);
+    setExecutionTrace([]);
+    setCurrentStep(0);
+    setIsPlaying(false);
+  }
+
   const handleTraceGeneration = useCallback(() => {
     setIsLoading(true);
     setCurrentStep(0);
+    setExecutionTrace([]);
+    
+    if (algorithmType !== 'sorting') {
+        // Placeholder for other algorithm types
+        toast({
+            title: "Coming Soon!",
+            description: `Visualization for ${algorithmType} algorithms is not yet implemented.`,
+        });
+        setIsLoading(false);
+        return;
+    }
+
     try {
       const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
       if (parsedArray.some(isNaN)) {
         toast({
             variant: "destructive",
             title: "Invalid Input",
-            description: "Please enter a comma-separated list of numbers.",
+            description: "Please enter a comma-separated list of numbers for sorting.",
         });
-        setExecutionTrace([]);
         return;
       }
 
@@ -103,7 +152,6 @@ export function AlgoViz() {
           title: "Error Generating Trace",
           description: "Could not generate execution trace from the code.",
         });
-        setExecutionTrace([]);
       }
     } catch (error: any) {
       console.error(error);
@@ -112,17 +160,16 @@ export function AlgoViz() {
         title: "Execution Error",
         description: error.message || "An unexpected error occurred.",
       });
-       setExecutionTrace([]);
     } finally {
       setIsLoading(false);
     }
-  }, [toast, inputStr]);
+  }, [toast, inputStr, algorithmType]);
   
   // Initial trace generation
   useEffect(() => {
     handleTraceGeneration();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [algorithmType]); // Re-run when algo type changes
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
 
@@ -161,29 +208,46 @@ export function AlgoViz() {
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
+  const visualizerType = ALGO_TEMPLATES[algorithmType].visualizer as 'array' | 'tree';
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <Visualizer
           isLoading={isLoading}
           traceStep={currentTrace}
-          type="array" // This will become dynamic later
+          type={visualizerType}
       />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
         <div className="flex flex-col gap-8 lg:sticky lg:top-20">
           <Card className="w-full bg-card/50">
             <CardHeader>
-              <CardTitle>Input Data</CardTitle>
-              <CardDescription>Enter a comma-separated list of numbers for the array.</CardDescription>
+              <CardTitle>Configuration</CardTitle>
+              <CardDescription>Select algorithm type and provide input data.</CardDescription>
             </CardHeader>
-            <CardContent>
-                <div className="flex gap-2">
-                    <Input 
-                        id="input-array"
-                        value={inputStr}
-                        onChange={(e) => setInputStr(e.target.value)}
-                        placeholder="e.g. 5, 3, 8, 4, 2"
-                    />
-                    <Button onClick={handleTraceGeneration}>Visualize</Button>
+            <CardContent className="space-y-4">
+               <div>
+                  <label htmlFor="algo-type" className="text-sm font-medium mb-2 block">Algorithm Type</label>
+                  <Select value={algorithmType} onValueChange={(value) => handleAlgorithmChange(value as AlgorithmType)}>
+                    <SelectTrigger id="algo-type">
+                      <SelectValue placeholder="Select algorithm type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sorting">Sorting</SelectItem>
+                      <SelectItem value="tree">Tree / Graph</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                    <label htmlFor="input-data" className="text-sm font-medium mb-2 block">Input Data</label>
+                    <div className="flex gap-2">
+                        <Input 
+                            id="input-data"
+                            value={inputStr}
+                            onChange={(e) => setInputStr(e.target.value)}
+                            placeholder={algorithmType === 'sorting' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
+                        />
+                        <Button onClick={handleTraceGeneration}>Visualize</Button>
+                    </div>
                 </div>
             </CardContent>
           </Card>
