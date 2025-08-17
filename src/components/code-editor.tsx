@@ -1,36 +1,40 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import React from "react";
 
 type CodeEditorProps = {
   code: string;
+  onCodeChange: (newCode: string) => void;
   highlightedLine: number | null;
 };
 
-export function CodeEditor({ code, highlightedLine }: CodeEditorProps) {
+export function CodeEditor({ code, onCodeChange, highlightedLine }: CodeEditorProps) {
+  const lines = code.split('\n');
+  
   return (
-    <div className="bg-muted/50 rounded-b-lg overflow-hidden">
-      <pre className="font-code text-sm p-4 overflow-x-auto">
-        {code.split('\n').map((line, index) => (
+    <div className="relative bg-muted/50 rounded-b-lg">
+      <div className="absolute top-0 left-0 h-full w-full p-4 pointer-events-none">
+        {lines.map((line, index) => (
           <div
             key={index}
             className={cn(
-              "flex items-start transition-colors duration-300 rounded-md -ml-4 -mr-4 pl-4 pr-4 border-l-4",
+              "flex items-start transition-colors duration-300 rounded-md -ml-4 -mr-4 pl-4 pr-4 border-l-4 h-[21px]",
               index + 1 === highlightedLine
-                ? "bg-primary/10 border-primary"
+                ? "bg-primary/20 border-primary"
                 : "border-transparent"
             )}
-          >
-            <span
-              className="w-8 text-right pr-4 text-muted-foreground/50 select-none"
-              aria-hidden="true"
-            >
-              {index + 1}
-            </span>
-            <code className="flex-1">{line}</code>
-          </div>
+          />
         ))}
-      </pre>
+      </div>
+      <Textarea
+        value={code}
+        onChange={(e) => onCodeChange(e.target.value)}
+        className="font-code text-sm !bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 resize-none h-80 text-foreground"
+        spellCheck="false"
+        rows={lines.length}
+      />
     </div>
   );
 }
