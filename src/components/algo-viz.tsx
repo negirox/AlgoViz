@@ -260,6 +260,30 @@ function countingSort(arr, exp) {
       input: "8, 3, 2, 7, 4, 6, 8",
       visualizer: "array"
   },
+  timSort: {
+    name: "Tim Sort",
+    code: `// Tim Sort implementation will go here
+// Combines Insertion Sort and Merge Sort
+function timSort(arr) {
+  // Placeholder for implementation
+  arr.sort((a, b) => a - b); // Use native sort for now
+  return arr;
+}`,
+    input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0",
+    visualizer: "array"
+  },
+  introSort: {
+    name: "Intro Sort",
+    code: `// Intro Sort implementation will go here
+// Combines Quick Sort, Heap Sort, and Insertion Sort
+function introSort(arr) {
+  // Placeholder for implementation
+  arr.sort((a, b) => a - b); // Use native sort for now
+  return arr;
+}`,
+    input: "2, 1, 0, 5, 8, 3, 7, 4, 9, 6",
+    visualizer: "array"
+  },
   tree: {
     name: "Tree / Graph Traversal",
     code: `class TreeNode {
@@ -747,6 +771,8 @@ const TRACE_GENERATORS = {
   bucketSort: generateBucketSortTrace,
   pigeonholeSort: generatePigeonholeSortTrace,
   // Placeholders for other algorithms
+  timSort: (arr: number[]) => [],
+  introSort: (arr: number[]) => [],
   shellSort: (arr: number[]) => [],
   combSort: (arr: number[]) => [],
   cycleSort: (arr: number[]) => [],
@@ -911,6 +937,11 @@ export function AlgoViz() {
                       <SelectItem value="radixSort">Radix Sort</SelectItem>
                       <SelectItem value="bucketSort">Bucket Sort</SelectItem>
                       <SelectItem value="pigeonholeSort">Pigeonhole Sort</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel>Hybrid Sorting</SelectLabel>
+                      <SelectItem value="timSort">Tim Sort</SelectItem>
+                      <SelectItem value="introSort">Intro Sort</SelectItem>
                     </SelectGroup>
                     <SelectGroup>
                         <SelectLabel>Other Data Structures</SelectLabel>
