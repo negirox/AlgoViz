@@ -590,13 +590,16 @@ function binarySearch(arr, l, r, x) {
 }
 
 function traverse(node) {
-  if (node) {
+  if (node) { // if node is not null
     traverse(node.left);
     // visit(node)
+    // visited_path.push(node.value)
     traverse(node.right);
   }
-  return visitedPath;
-}`,
+  // return from recursion
+}
+
+// final_path = visited_path`,
         input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
         visualizer: "tree",
         timeComplexity: "O(n)",
@@ -692,13 +695,13 @@ function insert(node, key) {
         if(!this.table[index]) {
             this.table[index] = [];
         }
-        // ... collision handling ...
+        // ... collision handling to update or push ...
         this.table[index].push({ key, value });
     }
 
     get(key) {
         const index = this.hash(key);
-        // ... collision handling ...
+        // ... collision handling to find the correct item ...
         return this.table[index];
     }
 }`,
@@ -713,3 +716,5 @@ function insert(node, key) {
 
 export type AlgorithmCategoryKey = keyof typeof ALGO_CATEGORIES;
 export type AlgorithmKey<T extends AlgorithmCategoryKey> = keyof (typeof ALGO_CATEGORIES)[T]['algorithms'];
+
+    

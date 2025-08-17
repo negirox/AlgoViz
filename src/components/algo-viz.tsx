@@ -1044,30 +1044,30 @@ function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const trace: TraceStep[] = [];
     const traversalPath: number[] = [];
 
-    function traverse(node: TreeNode | null, path: string) {
+    function traverse(node: TreeNode | null) {
+        trace.push({ line: 7, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
+
         if (!node) {
-            trace.push({ line: 9, variables: { 'node': 'null' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            trace.push({ line: 8, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
             return;
         }
 
-        trace.push({ line: 7, variables: { 'current_node': node.value }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
-        
-        trace.push({ line: 8, variables: { 'current_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
-        traverse(node.left, path + 'L');
+        trace.push({ line: 9, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.left);
 
-        trace.push({ line: 10, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 11, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traversalPath.push(node.value);
-        trace.push({ line: 11, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 12, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         
-        trace.push({ line: 12, variables: { 'current_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
-        traverse(node.right, path + 'R');
-
-        trace.push({ line: 13, variables: { 'current_node': node.value, 'action': 'finished subtree' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 13, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.right);
+        
+        trace.push({ line: 15, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
     }
     
     trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
-    traverse(tree, 'R');
-    trace.push({ line: 15, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    traverse(tree);
+    trace.push({ line: 17, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
     
     return trace;
 }
@@ -1485,3 +1485,5 @@ export function AlgoViz() {
     </div>
   );
 }
+
+    
