@@ -5,12 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CodeEditor } from "@/components/code-editor";
 import { VariableInspector } from "@/components/variable-inspector";
 import { PlaybackControls } from "@/components/playback-controls";
-import { ArrayVisualizer } from "@/components/array-visualizer";
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Visualizer } from '@/components/visualizer';
 
 const BUBBLE_SORT_CODE = `function sort(arr) {
   let n = arr.length;
@@ -26,12 +25,11 @@ const BUBBLE_SORT_CODE = `function sort(arr) {
   return arr;
 }`;
 
-
-type TraceStep = {
+export type TraceStep = {
   line: number;
   variables: Record<string, any>;
-  array: number[];
-  highlighted: number[];
+  data: any; // Can be an array for sorting, or a tree structure, etc.
+  highlighted: any; // Can be indices for an array, node IDs for a tree, etc.
 };
 
 // Simple execution trace generator for a specific bubble sort implementation
@@ -43,7 +41,7 @@ function generateTrace(arr: number[]): TraceStep[] {
         trace.push({
             line,
             variables: { ...variables },
-            array: [...localArr],
+            data: [...localArr],
             highlighted,
         });
     };
@@ -120,9 +118,11 @@ export function AlgoViz() {
     }
   }, [toast, inputStr]);
   
+  // Initial trace generation
   useEffect(() => {
     handleTraceGeneration();
-  }, [code, handleTraceGeneration]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
 
@@ -156,37 +156,24 @@ export function AlgoViz() {
       }
       const interval = setInterval(() => {
         handleNext();
-      }, 800); // Slower speed for better visualization
+      }, 800);
       return () => clearInterval(interval);
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <Card className="mb-8 bg-card/50">
-        <CardHeader>
-          <CardTitle>Array Visualization</CardTitle>
-          <CardDescription>Visual representation of the array being sorted</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-             <div className="flex items-center justify-center h-64">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-             </div>
-          ) : (
-            <ArrayVisualizer
-              data={currentTrace?.array ?? []}
-              highlightedIndices={currentTrace?.highlighted ?? []}
-            />
-          )}
-        </CardContent>
-      </Card>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <Visualizer
+          isLoading={isLoading}
+          traceStep={currentTrace}
+          type="array" // This will become dynamic later
+      />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mt-8">
         <div className="flex flex-col gap-8 lg:sticky lg:top-20">
           <Card className="w-full bg-card/50">
             <CardHeader>
-              <CardTitle>Input Array</CardTitle>
-              <CardDescription>Enter a comma-separated list of numbers.</CardDescription>
+              <CardTitle>Input Data</CardTitle>
+              <CardDescription>Enter a comma-separated list of numbers for the array.</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="flex gap-2">
@@ -203,7 +190,7 @@ export function AlgoViz() {
           <Card className="w-full bg-card/50">
             <CardHeader>
               <CardTitle>Code Editor</CardTitle>
-              <CardDescription>Enter your sorting algorithm in JavaScript. The visualizer currently supports a specific bubble sort implementation.</CardDescription>
+              <CardDescription>Enter your algorithm in JavaScript.</CardDescription>
             </CardHeader>
             <CardContent>
               <CodeEditor
