@@ -44,6 +44,7 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
               <TreeVisualizer 
                 treeData={traceStep?.treeData} 
                 highlightedNode={traceStep?.highlighted}
+                secondaryHighlight={traceStep?.secondaryHighlight}
                 traversalPath={traceStep?.traversalPath}
               />
             )}
@@ -56,3 +57,5 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
     </Card>
   );
 }
+
+    

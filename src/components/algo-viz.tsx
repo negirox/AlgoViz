@@ -20,6 +20,7 @@ export type TraceStep = {
   variables: Record<string, any>;
   data: any;
   highlighted: any;
+  secondaryHighlight?: any;
   tableState?: any;
   treeData?: any;
   traversalPath?: number[];
@@ -29,6 +30,7 @@ type TreeNode = {
   value: number;
   left: TreeNode | null;
   right: TreeNode | null;
+  height?: number;
 };
 
 
@@ -1229,6 +1231,125 @@ function generateBinarySearchTreeTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateAVLTreeTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    let root: TreeNode | null = null;
+
+    const cloneTree = (node: TreeNode | null): TreeNode | null => {
+        if (!node) return null;
+        return { 
+            value: node.value, 
+            height: node.height, 
+            left: cloneTree(node.left), 
+            right: cloneTree(node.right) 
+        };
+    };
+
+    const getHeight = (node: TreeNode | null) => node ? node.height : 0;
+    const getBalanceFactor = (node: TreeNode | null) => node ? getHeight(node.left) - getHeight(node.right) : 0;
+
+    const rightRotate = (y: TreeNode) => {
+        trace.push({ line: 20, variables: { action: `Right-rotating around ${y.value}` }, data: [], highlighted: y.value, secondaryHighlight: [y.left!.value], treeData: cloneTree(root) });
+        const x = y.left!;
+        const T2 = x.right;
+        x.right = y;
+        y.left = T2;
+        y.height = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+        x.height = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+        trace.push({ line: 20, variables: { status: `Rotation complete` }, data: [], highlighted: x.value, secondaryHighlight: [y.value], treeData: cloneTree(x) });
+        return x;
+    };
+
+    const leftRotate = (x: TreeNode) => {
+        trace.push({ line: 22, variables: { action: `Left-rotating around ${x.value}` }, data: [], highlighted: x.value, secondaryHighlight: [x.right!.value], treeData: cloneTree(root) });
+        const y = x.right!;
+        const T2 = y.left;
+        y.left = x;
+        x.right = T2;
+        x.height = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+        y.height = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+        trace.push({ line: 22, variables: { status: `Rotation complete` }, data: [], highlighted: y.value, secondaryHighlight: [x.value], treeData: cloneTree(y) });
+        return y;
+    };
+
+    const insertNode = (node: TreeNode | null, key: number): TreeNode => {
+        // 1. Standard BST insertion
+        trace.push({ line: 5, variables: { action: "Standard BST Insert", node: node?.value ?? 'null', key }, data: [], highlighted: key, treeData: cloneTree(root) });
+        if (!node) {
+            trace.push({ line: 6, variables: { status: `Inserting new node ${key}` }, data: [], highlighted: key, treeData: cloneTree(root) });
+            return { value: key, left: null, right: null, height: 1 };
+        }
+        if (key < node.value) {
+            trace.push({ line: 7, variables: { status: `Going left from ${node.value}` }, data: [], highlighted: node.value, treeData: cloneTree(root) });
+            node.left = insertNode(node.left, key);
+        } else if (key > node.value) {
+            trace.push({ line: 8, variables: { status: `Going right from ${node.value}` }, data: [], highlighted: node.value, treeData: cloneTree(root) });
+            node.right = insertNode(node.right, key);
+        } else {
+            trace.push({ line: 9, variables: { status: `Key ${key} already exists` }, data: [], highlighted: node.value, treeData: cloneTree(root) });
+            return node;
+        }
+        
+        root = cloneTree(root); // Update root for consistent trace
+        if(node) {
+            const findAndReplace = (n: TreeNode | null, newNode: TreeNode) => {
+                if(!n) return null;
+                if(n.value === newNode.value) return newNode;
+                n.left = findAndReplace(n.left, newNode);
+                n.right = findAndReplace(n.right, newNode);
+                return n;
+            }
+            findAndReplace(root, node);
+        }
+
+        // 2. Update height
+        trace.push({ line: 12, variables: { action: `Update height for ${node.value}` }, data: [], highlighted: node.value, treeData: cloneTree(root) });
+        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        trace.push({ line: 12, variables: { status: `New height for ${node.value} is ${node.height}` }, data: [], highlighted: node.value, treeData: cloneTree(root) });
+
+        // 3. Get balance factor
+        const balance = getBalanceFactor(node);
+        trace.push({ line: 15, variables: { action: `Check balance for ${node.value}`, balance }, data: [], highlighted: node.value, treeData: cloneTree(root) });
+
+        // 4. Perform rotations if needed
+        // Left Left Case
+        if (balance > 1 && key < node.left!.value) {
+            trace.push({ line: 19, variables: { status: `Left-Left Case at ${node.value}`}, data: [], highlighted: node.value, secondaryHighlight: [node.left!.value], treeData: cloneTree(root) });
+            return rightRotate(node);
+        }
+        // Right Right Case
+        if (balance < -1 && key > node.right!.value) {
+            trace.push({ line: 21, variables: { status: `Right-Right Case at ${node.value}`}, data: [], highlighted: node.value, secondaryHighlight: [node.right!.value], treeData: cloneTree(root) });
+            return leftRotate(node);
+        }
+        // Left Right Case
+        if (balance > 1 && key > node.left!.value) {
+            trace.push({ line: 23, variables: { status: `Left-Right Case at ${node.value}`}, data: [], highlighted: node.value, secondaryHighlight: [node.left!.value, node.left!.right!.value], treeData: cloneTree(root) });
+            node.left = leftRotate(node.left!);
+            trace.push({ line: 24, variables: { status: `Intermediate state after left rotation on ${node.left!.value}`}, data: [], highlighted: node.value, treeData: cloneTree(root) });
+            return rightRotate(node);
+        }
+        // Right Left Case
+        if (balance < -1 && key < node.right!.value) {
+             trace.push({ line: 26, variables: { status: `Right-Left Case at ${node.value}`}, data: [], highlighted: node.value, secondaryHighlight: [node.right!.value, node.right!.left!.value], treeData: cloneTree(root) });
+            node.right = rightRotate(node.right!);
+            trace.push({ line: 27, variables: { status: `Intermediate state after right rotation on ${node.right!.value}`}, data: [], highlighted: node.value, treeData: cloneTree(root) });
+            return leftRotate(node);
+        }
+
+        trace.push({ line: 30, variables: { status: `Node ${node.value} is balanced` }, data: [], highlighted: node.value, treeData: cloneTree(root) });
+        return node;
+    };
+
+    trace.push({ line: 1, variables: { status: 'Building AVL tree...' }, data: [], highlighted: null, treeData: null });
+    arr.forEach(key => {
+        root = insertNode(root, key);
+        trace.push({ line: 2, variables: { status: `Finished inserting ${key}. Root is now ${root.value}` }, data: [], highlighted: null, treeData: cloneTree(root) });
+    });
+
+    return trace;
+}
+
 
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
@@ -1256,7 +1377,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
   bfsTraversal: (tree: any) => generateBFSTraversalTrace(tree),
   binarySearchTree: (arr: any) => generateBinarySearchTreeTrace(arr),
-  avlTree: (arr: any) => [],
+  avlTree: (arr: any) => generateAVLTreeTrace(arr),
 };
 
 const getDefaultAlgorithm = (category: AlgorithmCategoryKey) => {
@@ -1343,17 +1464,6 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (['avlTree'].includes(algorithmKey)) {
-        toast({
-            title: "Coming Soon!",
-            description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
-            variant: 'default',
-        });
-        setIsLoading(false);
-        setExecutionTrace([]);
-        return;
-    }
-
     try {
       const traceGenerator = TRACE_GENERATORS[algorithmKey as keyof typeof TRACE_GENERATORS];
       if (!traceGenerator) {
@@ -1390,7 +1500,7 @@ export function AlgoViz() {
           } catch (e) {
               throw new Error("Invalid JSON input for the tree structure.");
           }
-      } else { // Sorting or BST construction
+      } else { // Sorting or BST/AVL construction
         const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
         if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
         trace = traceGenerator(parsedArray, undefined);
@@ -1648,3 +1758,6 @@ export function AlgoViz() {
     </div>
   );
 }
+
+
+    
