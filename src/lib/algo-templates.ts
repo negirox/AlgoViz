@@ -579,7 +579,7 @@ function binarySearch(arr, l, r, x) {
   tree: {
     name: "Tree / Graph",
     algorithms: {
-      treeTraversal: {
+      inOrderTraversal: {
         name: "In-order Traversal",
         code: `class TreeNode {
     constructor(value) {
@@ -592,13 +592,59 @@ function binarySearch(arr, l, r, x) {
 function traverse(node) {
   if (node) { // if node is not null
     traverse(node.left);
+    
     // visit(node)
-    // visited_path.push(node.value)
+    visited_path.push(node.value);
+    
     traverse(node.right);
   }
   // return from recursion
 }
 
+// final_path = visited_path`,
+        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+        visualizer: "tree",
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(h)",
+      },
+      preOrderTraversal: {
+        name: "Pre-order Traversal",
+        code: `class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+function traverse(node) {
+  if (node) {
+    visited_path.push(node.value);
+    traverse(node.left);
+    traverse(node.right);
+  }
+}
+// final_path = visited_path`,
+        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+        visualizer: "tree",
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(h)",
+      },
+      postOrderTraversal: {
+        name: "Post-order Traversal",
+        code: `class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+function traverse(node) {
+  if (node) {
+    traverse(node.left);
+    traverse(node.right);
+    visited_path.push(node.value);
+  }
+}
 // final_path = visited_path`,
         input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
         visualizer: "tree",

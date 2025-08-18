@@ -1,4 +1,5 @@
 
+
 import { ALGO_CATEGORIES } from "./algo-templates";
 
 type FaqItem = {
@@ -792,8 +793,8 @@ export const FAQ_DATA: FaqData = {
     },
     tree: {
         algorithms: {
-            treeTraversal: {
-                title: "Tree Traversal",
+            inOrderTraversal: {
+                title: "In-order Traversal",
                 faqs: [
                     {
                         question: "What is Tree Traversal?",
@@ -838,6 +839,48 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Where can I learn more?",
                         answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/tree-traversal-inorder-preorder-postorder/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
+                ]
+            },
+             preOrderTraversal: {
+                title: "Pre-order Traversal",
+                faqs: [
+                    {
+                        question: "What is Pre-order Traversal?",
+                        answer: "Pre-order traversal is a depth-first traversal method for trees. The order of visiting nodes is: Root, Left subtree, Right subtree. It's often used to create a copy of a tree or to get a prefix expression of an expression tree."
+                    },
+                    {
+                        question: "How does Pre-order traversal work?",
+                        answer: "Starting from the root, the algorithm first visits the current node (e.g., prints its value or adds it to a list). Then, it recursively calls itself on the left child, and after the entire left subtree is traversed, it recursively calls itself on the right child."
+                    },
+                    {
+                        question: "What is a key use case for Pre-order traversal?",
+                        answer: "It is used to create a copy of a tree. By inserting nodes in pre-order sequence, you can replicate the exact structure of the original tree. It is also used to get a prefix expression from an expression tree (e.g., `+ A B`)."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
+                ]
+            },
+            postOrderTraversal: {
+                title: "Post-order Traversal",
+                faqs: [
+                    {
+                        question: "What is Post-order Traversal?",
+                        answer: "Post-order traversal is a depth-first traversal method for trees. The order of visiting nodes is: Left subtree, Right subtree, Root. Its most common use case is for deleting nodes from a tree."
+                    },
+                    {
+                        question: "How does Post-order traversal work?",
+                        answer: "The algorithm recursively traverses the left subtree, then recursively traverses the right subtree, and only after both subtrees are fully explored does it visit the current node."
+                    },
+                    {
+                        question: "Why is Post-order traversal used for deleting a tree?",
+                        answer: "To delete a tree, you must delete its children before you can delete the node itself. Post-order traversal ensures that a node is processed only after its children have been processed, making it perfect for this task."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -995,3 +1038,4 @@ export const FAQ_DATA: FaqData = {
         }
     }
 };
+

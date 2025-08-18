@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -1072,6 +1073,70 @@ function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     return trace;
 }
 
+function generatePreOrderTraversalTrace(tree: TreeNode): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const traversalPath: number[] = [];
+
+    function traverse(node: TreeNode | null) {
+        trace.push({ line: 7, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
+
+        if (!node) {
+            trace.push({ line: 8, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            return;
+        }
+        
+        trace.push({ line: 9, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traversalPath.push(node.value);
+        trace.push({ line: 10, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+
+        trace.push({ line: 11, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.left);
+        
+        trace.push({ line: 12, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.right);
+        
+        trace.push({ line: 14, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+    }
+    
+    trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
+    traverse(tree);
+    trace.push({ line: 16, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    
+    return trace;
+}
+
+function generatePostOrderTraversalTrace(tree: TreeNode): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const traversalPath: number[] = [];
+
+    function traverse(node: TreeNode | null) {
+        trace.push({ line: 7, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
+
+        if (!node) {
+            trace.push({ line: 8, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            return;
+        }
+
+        trace.push({ line: 9, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.left);
+        
+        trace.push({ line: 10, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.right);
+        
+        trace.push({ line: 12, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traversalPath.push(node.value);
+        trace.push({ line: 13, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+
+        trace.push({ line: 15, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+    }
+    
+    trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
+    traverse(tree);
+    trace.push({ line: 17, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    
+    return trace;
+}
+
 
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
@@ -1094,7 +1159,9 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
-  treeTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
+  inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
+  preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
+  postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
   binarySearchTree: (arr: any) => [],
   avlTree: (arr: any) => [],
 };
@@ -1183,7 +1250,7 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (selectedAlgorithm.visualizer === 'tree' && algorithmKey !== 'treeTraversal') {
+    if (selectedAlgorithm.visualizer === 'tree' && !['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal'].includes(algorithmKey)) {
         toast({
             title: "Coming Soon!",
             description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
@@ -1373,7 +1440,9 @@ export function AlgoViz() {
                        {algorithmCategory === 'tree' && (
                          <SelectGroup>
                           <SelectLabel>Tree / Graph</SelectLabel>
-                          <SelectItem value="treeTraversal">In-order Traversal</SelectItem>
+                          <SelectItem value="inOrderTraversal">In-order Traversal</SelectItem>
+                          <SelectItem value="preOrderTraversal">Pre-order Traversal</SelectItem>
+                          <SelectItem value="postOrderTraversal">Post-order Traversal</SelectItem>
                           <SelectItem value="binarySearchTree">Binary Search Tree</SelectItem>
                           <SelectItem value="avlTree">AVL Tree</SelectItem>
                         </SelectGroup>
