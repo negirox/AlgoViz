@@ -1038,4 +1038,3 @@ export const FAQ_DATA: FaqData = {
         }
     }
 };
-

@@ -1137,6 +1137,57 @@ function generatePostOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     return trace;
 }
 
+function generateBinarySearchTreeTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    let tree: TreeNode | null = null;
+    
+    const cloneTree = (node: TreeNode | null): TreeNode | null => {
+        if (!node) return null;
+        return { value: node.value, left: cloneTree(node.left), right: cloneTree(node.right) };
+    }
+
+    const insertNode = (key: number) => {
+        const newNode = { value: key, left: null, right: null };
+        trace.push({ line: 6, variables: { status: `Inserting ${key}`}, data: [], highlighted: key, treeData: cloneTree(tree) });
+
+        if (tree === null) {
+            trace.push({ line: 7, variables: { status: 'Tree is empty, inserting as root' }, data: [], highlighted: key, treeData: null });
+            tree = newNode;
+            trace.push({ line: 8, variables: { status: `Inserted ${key} as root` }, data: [], highlighted: key, treeData: cloneTree(tree) });
+            return;
+        }
+
+        let current = tree;
+        while (true) {
+            trace.push({ line: 10, variables: { current_node: current.value, insert_key: key, condition: `${key} < ${current.value}` }, data: [], highlighted: current.value, treeData: cloneTree(tree) });
+            if (key < current.value) {
+                trace.push({ line: 11, variables: { current_node: current.value, insert_key: key, status: 'Going left' }, data: [], highlighted: current.value, treeData: cloneTree(tree) });
+                if (current.left === null) {
+                    trace.push({ line: 12, variables: { parent: current.value, status: `Inserting ${key} as left child` }, data: [], highlighted: key, treeData: cloneTree(tree) });
+                    current.left = newNode;
+                    trace.push({ line: 13, variables: { status: `Inserted ${key}` }, data: [], highlighted: key, treeData: cloneTree(tree) });
+                    return;
+                }
+                current = current.left;
+            } else {
+                trace.push({ line: 14, variables: { current_node: current.value, insert_key: key, condition: `${key} > ${current.value}` }, data: [], highlighted: current.value, treeData: cloneTree(tree) });
+                if (current.right === null) {
+                    trace.push({ line: 15, variables: { parent: current.value, status: `Inserting ${key} as right child` }, data: [], highlighted: key, treeData: cloneTree(tree) });
+                    current.right = newNode;
+                    trace.push({ line: 16, variables: { status: `Inserted ${key}` }, data: [], highlighted: key, treeData: cloneTree(tree) });
+                    return;
+                }
+                current = current.right;
+            }
+        }
+    };
+    
+    trace.push({ line: 1, variables: { status: 'Building BST from input array' }, data: [], highlighted: null, treeData: null });
+    arr.forEach(insertNode);
+    trace.push({ line: 18, variables: { status: 'BST construction complete' }, data: [], highlighted: null, treeData: cloneTree(tree) });
+    return trace;
+}
+
 
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
@@ -1162,7 +1213,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
   postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
-  binarySearchTree: (arr: any) => [],
+  binarySearchTree: (arr: any) => generateBinarySearchTreeTrace(arr),
   avlTree: (arr: any) => [],
 };
 
@@ -1250,7 +1301,7 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (selectedAlgorithm.visualizer === 'tree' && !['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal'].includes(algorithmKey)) {
+    if (['avlTree'].includes(algorithmKey)) {
         toast({
             title: "Coming Soon!",
             description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
@@ -1290,14 +1341,14 @@ export function AlgoViz() {
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (algorithmCategory === 'tree') {
+      } else if (algorithmCategory === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal'].includes(algorithmKey)) {
           try {
               const parsedTree = JSON.parse(inputStr);
               trace = traceGenerator(parsedTree);
           } catch (e) {
               throw new Error("Invalid JSON input for the tree structure.");
           }
-      } else { // Sorting
+      } else { // Sorting or BST construction
         const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
         if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
         trace = traceGenerator(parsedArray, undefined);

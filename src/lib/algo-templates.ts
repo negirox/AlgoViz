@@ -653,29 +653,29 @@ function traverse(node) {
       },
       binarySearchTree: {
         name: "Binary Search Tree",
-        code: `class Node {
-    constructor(key) {
-        this.key = key;
-        this.left = null;
-        this.right = null;
-    }
+        code: `function buildBST(keys) {
+  let root = null;
+  keys.forEach(key => {
+    root = insert(root, key);
+  });
+  return root;
 }
-// BST insert operation
+
 function insert(node, key) {
-    if (node === null) {
-        return new Node(key);
-    }
-    if (key < node.key) {
-        node.left = insert(node.left, key);
-    } else if (key > node.key) {
-        node.right = insert(node.right, key);
-    }
-    return node;
+  if (node === null) {
+    return new Node(key);
+  }
+  if (key < node.key) {
+    node.left = insert(node.left, key);
+  } else if (key > node.key) {
+    node.right = insert(node.right, key);
+  }
+  return node;
 }`,
         input: "8,3,10,1,6,14,4,7,13",
         visualizer: 'tree',
         timeComplexity: "O(log n) Avg",
-        spaceComplexity: "O(log n) Avg",
+        spaceComplexity: "O(h) Avg",
       },
       avlTree: {
         name: "AVL Tree",
