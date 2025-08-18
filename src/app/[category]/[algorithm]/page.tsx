@@ -1436,8 +1436,8 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
 };
 
 
-export default function AlgorithmPage({ params: routeParams }: { params: { category: string, algorithm: string } }) {
-  const { category: categoryKey, algorithm: algorithmKey } = routeParams;
+export default function AlgorithmPage({ params }: { params: { category: string, algorithm: string } }) {
+  const { category: categoryKey, algorithm: algorithmKey } = params;
 
   // Validate params
   const category = ALGO_CATEGORIES[categoryKey as AlgorithmCategoryKey];
