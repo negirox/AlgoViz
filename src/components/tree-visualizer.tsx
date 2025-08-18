@@ -20,12 +20,12 @@ type TreeNodeProps = {
 };
 
 const NODE_DIAMETER = 45;
-const HORIZONTAL_SPACING = 25;
-const VERTICAL_SPACING = 90;
+const HORIZONTAL_SPACING = 30;
+const VERTICAL_SPACING = 80;
 
 const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, isHighlighted, isSecondaryHighlight, isTraversed }) => {
-    const getHeight = (n: TreeNodeData | null | undefined): number => n ? n.height || 1 : 0;
-    const balanceFactor = getHeight(node.left) - getHeight(node.right);
+    const getHeight = (n: TreeNodeData | null | undefined): number => n ? (n.height !== undefined ? n.height : 1) : 0;
+    const balanceFactor = node.height !== undefined ? getHeight(node.left) - getHeight(node.right) : undefined;
 
     return (
         <Tooltip>
@@ -46,7 +46,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, isHighlighted, isSec
                     >
                         <span>{node.value}</span>
                     </div>
-                     {node.height !== undefined && (
+                     {node.height !== undefined && balanceFactor !== undefined && (
                         <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs font-mono flex gap-2">
                            <span className="text-blue-400" title="Height">H:{node.height}</span>
                            <span className={cn(
@@ -60,7 +60,7 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, isHighlighted, isSec
             <TooltipContent>
                 <p>Node: {node.value}</p>
                 {node.height !== undefined && <p>Height: {node.height}</p>}
-                {node.height !== undefined && <p>Balance Factor: {balanceFactor}</p>}
+                {balanceFactor !== undefined && <p>Balance Factor: {balanceFactor}</p>}
             </TooltipContent>
         </Tooltip>
     );
@@ -74,45 +74,26 @@ type TreeVisualizerProps = {
     traversalPath?: number[];
 };
 
-const calculatePositions = (node: TreeNodeData | null | undefined, depth = 0, x = 0, positions: any = {}) => {
-    if (!node) return { positions, width: 0, x };
+const calculatePositions = (node: TreeNodeData | null | undefined, depth = 0, x = 0, positions: any = {}, levelNodes: any = {}) => {
+    if (!node) return { positions, width: -1 };
 
-    const leftSubtree = calculatePositions(node.left, depth + 1, x, positions);
-    const nodeX = leftSubtree.width > 0 ? leftSubtree.x + leftSubtree.width + HORIZONTAL_SPACING : x;
+    if (!levelNodes[depth]) {
+        levelNodes[depth] = 0;
+    }
     
-    positions[node.value] = { x: nodeX, y: depth * VERTICAL_SPACING };
+    const leftSubtree = calculatePositions(node.left, depth + 1, x, positions, levelNodes);
+    
+    const nodeX = (leftSubtree.width > -1 ? leftSubtree.width + 1 : 0) + levelNodes[depth];
+    positions[node.value] = { x: nodeX * (NODE_DIAMETER + HORIZONTAL_SPACING), y: depth * VERTICAL_SPACING };
+    levelNodes[depth] = nodeX + 1;
 
-    const rightSubtree = calculatePositions(node.right, depth + 1, nodeX + NODE_DIAMETER + HORIZONTAL_SPACING, positions);
-    
-    const childrenWidth = rightSubtree.width > 0 ? rightSubtree.x + rightSubtree.width - nodeX - NODE_DIAMETER : 0;
-    
+    const rightSubtree = calculatePositions(node.right, depth + 1, positions[node.value].x, positions, levelNodes);
+
     if (node.left && node.right) {
         positions[node.value].x = (positions[node.left.value].x + positions[node.right.value].x) / 2;
-    } else if (node.left) {
-        positions[node.value].x = positions[node.left.value].x + HORIZONTAL_SPACING;
-    } else if (node.right) {
-        positions[node.value].x = positions[node.right.value].x - HORIZONTAL_SPACING;
     }
-
-    // Shift the right subtree if it overlaps
-    if (node.left && node.right) {
-        const rightShift = positions[node.left.value].x + NODE_DIAMETER + HORIZONTAL_SPACING - positions[node.right.value].x;
-        if(rightShift > 0) {
-             const shiftSubtree = (n: TreeNodeData | null | undefined, amount: number) => {
-                if(!n) return;
-                positions[n.value].x += amount;
-                shiftSubtree(n.left, amount);
-                shiftSubtree(n.right, amount);
-            }
-            shiftSubtree(node.right, rightShift);
-            return calculatePositions(node, depth, x, positions); // Recalculate after shift
-        }
-    }
-
-
-    const totalWidth = Math.max(nodeX + NODE_DIAMETER, rightSubtree.x + rightSubtree.width);
-
-    return { positions, width: totalWidth, x: x };
+    
+    return { positions, width: Math.max(nodeX, rightSubtree.width) };
 };
 
 
@@ -188,5 +169,3 @@ export function TreeVisualizer({ treeData, highlightedNode, secondaryHighlight =
         </TooltipProvider>
     );
 }
-
-    
