@@ -12,16 +12,24 @@ import { Button } from '@/components/ui/button';
 import { Visualizer } from '@/components/visualizer';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Faq } from '@/components/faq';
-import { ALGO_TEMPLATES } from '@/lib/algo-templates';
-
-export type AlgorithmType = keyof typeof ALGO_TEMPLATES;
+import { ALGO_CATEGORIES, AlgorithmCategoryKey, AlgorithmKey } from '@/lib/algo-templates';
 
 export type TraceStep = {
   line: number;
   variables: Record<string, any>;
   data: any;
   highlighted: any;
+  tableState?: any;
+  treeData?: any;
+  traversalPath?: number[];
 };
+
+type TreeNode = {
+  value: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+};
+
 
 // Trace generation functions for each sorting algorithm
 function generateBubbleSortTrace(arr: number[]): TraceStep[] {
@@ -712,8 +720,361 @@ function generateIntroSortTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateLinearSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
 
-const TRACE_GENERATORS = {
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target });
+    for (let i = 0; i < localArr.length; i++) {
+        addTrace(2, { i }, [i]);
+        addTrace(3, { i, "arr[i]": localArr[i], target, condition: `${localArr[i]} === ${target}` }, [i]);
+        if (localArr[i] === target) {
+            addTrace(4, { 'return value': i }, [i]);
+            return trace;
+        }
+    }
+    addTrace(7, { 'return value': -1 });
+    return trace;
+}
+
+
+function generateBinarySearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b); // Binary search needs sorted array
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let low = 0;
+    addTrace(2, { arr: `[${localArr.join(', ')}]`, target, low });
+    let high = localArr.length - 1;
+    addTrace(3, { arr: `[${localArr.join(', ')}]`, target, low, high });
+
+    while (low <= high) {
+        addTrace(4, { low, high, condition: `${low} <= ${high}`}, [low, high]);
+        let mid = Math.floor(low + (high - low) / 2);
+        addTrace(5, { low, high, mid }, [low, high, mid]);
+        addTrace(6, { low, high, mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} === ${target}` }, [mid]);
+        if (localArr[mid] === target) {
+            addTrace(7, { 'return value': mid }, [mid]);
+            return trace;
+        }
+        addTrace(8, { low, high, mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} < ${target}` }, [mid]);
+        if (localArr[mid] < target) {
+            low = mid + 1;
+            addTrace(9, { low }, [low, high]);
+        } else {
+            high = mid - 1;
+            addTrace(11, { high }, [low, high]);
+        }
+    }
+    addTrace(4, { low, high, condition: `${low} <= ${high}`}, []);
+    addTrace(14, { 'return value': -1 });
+    return trace;
+}
+
+function generateJumpSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+    
+    const n = localArr.length;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, n });
+    let step = Math.floor(Math.sqrt(n));
+    addTrace(2, { n, step });
+    let prev = 0;
+    addTrace(3, { n, step, prev });
+
+    addTrace(4, { condition: `${localArr[Math.min(step, n) - 1]} < ${target}` }, [Math.min(step, n) - 1]);
+    while (localArr[Math.min(step, n) - 1] < target) {
+        prev = step;
+        addTrace(5, { prev }, [prev]);
+        step += Math.floor(Math.sqrt(n));
+        addTrace(6, { prev, step }, [step]);
+        addTrace(7, { prev, n, condition: `${prev} >= ${n}` });
+        if (prev >= n) {
+            addTrace(8, { 'return value': -1 });
+            return trace;
+        }
+        addTrace(4, { condition: `${localArr[Math.min(step, n) - 1]} < ${target}` }, [Math.min(step, n) - 1]);
+    }
+    
+    addTrace(11, { prev, condition: `${localArr[prev]} < ${target}` }, [prev]);
+    while (localArr[prev] < target) {
+        prev++;
+        addTrace(12, { prev }, [prev]);
+        addTrace(13, { prev, step, n, condition: `${prev} == ${Math.min(step, n)}` });
+        if (prev === Math.min(step, n)) {
+            addTrace(14, { 'return value': -1 });
+            return trace;
+        }
+        addTrace(11, { prev, condition: `${localArr[prev]} < ${target}` }, [prev]);
+    }
+
+    addTrace(17, { prev, condition: `${localArr[prev]} === ${target}` }, [prev]);
+    if (localArr[prev] === target) {
+        addTrace(18, { 'return value': prev }, [prev]);
+        return trace;
+    }
+    addTrace(20, { 'return value': -1 });
+    return trace;
+}
+
+function generateInterpolationSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a, b) => a - b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let n = localArr.length;
+    let lo = 0, hi = n - 1;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, n });
+    addTrace(2, { lo, hi });
+
+    addTrace(3, { lo, hi, target, condition: `${lo} <= ${hi} && ${target} >= ${localArr[lo]} && ${target} <= ${localArr[hi]}` });
+    while (lo <= hi && target >= localArr[lo] && target <= localArr[hi]) {
+        if (lo === hi) {
+            addTrace(4, { condition: `${lo} === ${hi}`});
+            if (localArr[lo] === target) {
+                 addTrace(5, { 'return value': lo }, [lo]);
+                 return trace;
+            }
+            addTrace(6, { 'return value': -1 });
+            return trace;
+        }
+        
+        let pos = lo + Math.floor(((hi - lo) / (localArr[hi] - localArr[lo])) * (target - localArr[lo]));
+        addTrace(9, { lo, hi, pos, formula: `pos = ${lo} + floor((${hi}-${lo}) / (${localArr[hi]}-${localArr[lo]})) * (${target}-${localArr[lo]})` }, [pos, lo, hi]);
+
+        addTrace(10, { pos, condition: `${localArr[pos]} == ${target}` }, [pos]);
+        if (localArr[pos] === target) {
+            addTrace(11, { 'return value': pos }, [pos]);
+            return trace;
+        }
+
+        addTrace(13, { pos, condition: `${localArr[pos]} < ${target}` }, [pos]);
+        if (localArr[pos] < target) {
+            lo = pos + 1;
+            addTrace(14, { lo }, [lo, hi]);
+        } else {
+            hi = pos - 1;
+            addTrace(16, { hi }, [lo, hi]);
+        }
+        addTrace(3, { lo, hi, target, condition: `${lo} <= ${hi} && ${target} >= ${localArr[lo]} && ${target} <= ${localArr[hi]}` });
+    }
+    addTrace(19, { 'return value': -1 });
+    return trace;
+}
+
+function generateExponentialSearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let n = localArr.length;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, n });
+
+    addTrace(2, { condition: `${localArr[0]} == ${target}` }, [0]);
+    if (localArr[0] === target) {
+        addTrace(3, { 'return value': 0 }, [0]);
+        return trace;
+    }
+
+    let i = 1;
+    addTrace(5, { i });
+    addTrace(6, { i, n, condition: `${i} < ${n} && ${localArr[i]} <= ${target}` }, [i]);
+    while (i < n && localArr[i] <= target) {
+        i = i * 2;
+        addTrace(7, { i }, [i < n ? i : n-1]);
+        addTrace(6, { i, n, condition: `${i} < ${n} && ${localArr[i]} <= ${target}` }, [i < n ? i : n-1]);
+    }
+    
+    // Binary Search part
+    let low = i / 2;
+    let high = Math.min(i, n - 1);
+    addTrace(10, { from: low, to: high, status: "Calling Binary Search" }, Array.from({length: high-low+1}, (_, k) => low + k));
+
+    while (low <= high) {
+        addTrace(16, { low, high, condition: `${low} <= ${high}`}, [low, high]);
+        let mid = Math.floor(low + (high - low) / 2);
+        addTrace(17, { low, high, mid }, [low, high, mid]);
+        addTrace(18, { mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} === ${target}` }, [mid]);
+        if (localArr[mid] === target) {
+            addTrace(19, { 'return value': mid }, [mid]);
+            return trace;
+        }
+        addTrace(20, { mid, "arr[mid]": localArr[mid], target, condition: `${localArr[mid]} < ${target}` }, [mid]);
+        if (localArr[mid] < target) {
+            low = mid + 1;
+            addTrace(21, { low }, [low, high]);
+        } else {
+            high = mid - 1;
+            addTrace(23, { high }, [low, high]);
+        }
+    }
+    addTrace(16, { low, high, condition: `${low} <= ${high}`}, []);
+
+    addTrace(26, { 'return value': -1 });
+    return trace;
+}
+
+function generateTernarySearchTrace(arr: number[], target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr].sort((a,b) => a-b);
+    const addTrace = (line: number, variables: Record<string, any>, highlighted: number[] = []) => {
+        trace.push({ line, variables: { ...variables }, data: [...localArr], highlighted });
+    };
+
+    let l = 0, r = localArr.length - 1;
+    addTrace(1, { arr: `[${localArr.join(', ')}]`, target, l, r });
+    
+    addTrace(2, { l, r, condition: `${r} >= ${l}`}, [l,r]);
+    while (r >= l) {
+        let mid1 = l + Math.floor((r - l) / 3);
+        addTrace(3, { l, r, mid1 }, [l,r,mid1]);
+        let mid2 = r - Math.floor((r - l) / 3);
+        addTrace(4, { l, r, mid1, mid2 }, [l,r,mid1,mid2]);
+
+        addTrace(6, { mid1, condition: `${localArr[mid1]} == ${target}` }, [mid1]);
+        if (localArr[mid1] === target) {
+            addTrace(7, { 'return value': mid1 }, [mid1]);
+            return trace;
+        }
+        addTrace(8, { mid2, condition: `${localArr[mid2]} == ${target}` }, [mid2]);
+        if (localArr[mid2] === target) {
+            addTrace(9, { 'return value': mid2 }, [mid2]);
+            return trace;
+        }
+        
+        addTrace(11, { target, mid1, condition: `${target} < ${localArr[mid1]}` }, [mid1]);
+        if (target < localArr[mid1]) {
+            r = mid1 - 1;
+            addTrace(12, { r }, [l,r]);
+        } else if (target > localArr[mid2]) {
+            addTrace(13, { target, mid2, condition: `${target} > ${localArr[mid2]}` }, [mid2]);
+            l = mid2 + 1;
+            addTrace(14, { l }, [l,r]);
+        } else {
+            l = mid1 + 1;
+            r = mid2 - 1;
+            addTrace(16, { l, r }, [l,r]);
+        }
+        addTrace(2, { l, r, condition: `${r} >= ${l}`}, [l,r]);
+    }
+    
+    addTrace(19, { 'return value': -1 });
+    return trace;
+}
+
+function generateHashTableTrace(pairs: {key: string, value: string}[], size: number, searchKey?: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const table: {key: string, value: string}[][] = Array.from({ length: size }, () => []);
+
+    const hash = (key: string) => {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * i) % size;
+        }
+        return hash;
+    };
+
+    trace.push({ line: 1, variables: { status: 'Initializing hash table', size }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+    for (const pair of pairs) {
+        const { key, value } = pair;
+        trace.push({ line: 14, variables: { action: 'set', key, value }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+        const index = hash(key);
+        trace.push({ line: 8, variables: { key, value, calculation: `(hash + charCode * i) % ${size}`, 'hash_value (index)': index }, data: [], highlighted: { keyToInsert: key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        trace.push({ line: 15, variables: { key, value, index }, data: [], highlighted: { keyToInsert: key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        
+        const bucket = table[index];
+        const existingIndex = bucket.findIndex(item => item.key === key);
+
+        if (existingIndex !== -1) {
+             trace.push({ line: 16, variables: { key, value, index, status: 'Key exists, updating value'}, data: [], highlighted: { keyToInsert: key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+            bucket[existingIndex].value = value;
+        } else {
+            if (bucket.length > 0) {
+                 trace.push({ line: 17, variables: { key, value, index, status: 'Collision detected!' }, data: [], highlighted: { keyToInsert: key, bucket: index, collision: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+            }
+            bucket.push({ key, value });
+             trace.push({ line: 18, variables: { key, value, index, status: 'Inserting new key-value pair' }, data: [], highlighted: { keyToInsert: key, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        }
+        // Add a final state for this insertion
+        trace.push({ line: 20, variables: { status: `Finished inserting '${key}'` }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+    }
+    
+    trace.push({ line: 20, variables: { status: 'Finished all insertions.' }, data: [], highlighted: {}, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+    if(searchKey) {
+        trace.push({ line: 22, variables: { action: 'get', key: searchKey }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        const index = hash(searchKey);
+        trace.push({ line: 8, variables: { key: searchKey, calculation: `(hash + charCode * i) % ${size}`, 'hash_value (index)': index }, data: [], highlighted: { keyToSearch: searchKey }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        trace.push({ line: 23, variables: { key: searchKey, index }, data: [], highlighted: { keyToSearch: searchKey, bucket: index }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+
+        const bucket = table[index];
+        let foundItem = null;
+        for(let i = 0; i < bucket.length; i++) {
+            const item = bucket[i];
+            trace.push({ line: 24, variables: { key: searchKey, status: `Checking item in bucket...` }, data: [], highlighted: { keyToSearch: searchKey, bucket: index, foundKey: item.key }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+            if(item.key === searchKey) {
+                foundItem = item;
+                trace.push({ line: 25, variables: { key: searchKey, status: 'Key found!', value: item.value }, data: [], highlighted: { keyToSearch: searchKey, bucket: index, foundKey: item.key, success: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+                break;
+            }
+        }
+        if (!foundItem) {
+             trace.push({ line: 26, variables: { key: searchKey, status: 'Key not found in bucket.' }, data: [], highlighted: { keyToSearch: searchKey, bucket: index, fail: true }, tableState: { table: JSON.parse(JSON.stringify(table)) }});
+        }
+    }
+
+    return trace;
+}
+
+function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const traversalPath: number[] = [];
+
+    function traverse(node: TreeNode | null) {
+        trace.push({ line: 7, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
+
+        if (!node) {
+            trace.push({ line: 8, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            return;
+        }
+
+        trace.push({ line: 9, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.left);
+
+        trace.push({ line: 11, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traversalPath.push(node.value);
+        trace.push({ line: 12, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        
+        trace.push({ line: 13, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        traverse(node.right);
+        
+        trace.push({ line: 15, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+    }
+    
+    trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
+    traverse(tree);
+    trace.push({ line: 17, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    
+    return trace;
+}
+
+
+
+const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
   bubbleSort: generateBubbleSortTrace,
   selectionSort: generateSelectionSortTrace,
   insertionSort: generateInsertionSortTrace,
@@ -726,16 +1087,62 @@ const TRACE_GENERATORS = {
   pigeonholeSort: generatePigeonholeSortTrace,
   timSort: generateTimSortTrace,
   introSort: generateIntroSortTrace,
-  shellSort: (arr: number[]) => [],
-  combSort: (arr: number[]) => [],
-  cycleSort: (arr: number[]) => [],
-  tree: (arr: any) => [],
+  linearSearch: (arr, target) => generateLinearSearchTrace(arr, target!),
+  binarySearch: (arr, target) => generateBinarySearchTrace(arr, target!),
+  jumpSearch: (arr, target) => generateJumpSearchTrace(arr, target!),
+  interpolationSearch: (arr, target) => generateInterpolationSearchTrace(arr, target!),
+  exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
+  ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
+  hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
+  treeTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
+  binarySearchTree: (arr: any) => [],
+  avlTree: (arr: any) => [],
 };
 
+const getDefaultAlgorithm = (category: AlgorithmCategoryKey) => {
+    if (!ALGO_CATEGORIES[category]) {
+        // Fallback to the first category if the provided one is invalid
+        const firstCategoryKey = Object.keys(ALGO_CATEGORIES)[0] as AlgorithmCategoryKey;
+        const firstCategory = ALGO_CATEGORIES[firstCategoryKey];
+        const defaultKey = Object.keys(firstCategory.algorithms)[0] as AlgorithmKey<typeof firstCategoryKey>;
+        return { key: defaultKey, ...firstCategory.algorithms[defaultKey] };
+    }
+    const algorithms = ALGO_CATEGORIES[category]?.algorithms;
+    const defaultKey = Object.keys(algorithms)[0] as AlgorithmKey<typeof category>;
+    return { key: defaultKey, ...algorithms[defaultKey] };
+};
+
+
 export function AlgoViz() {
-  const [algorithmType, setAlgorithmType] = useState<AlgorithmType>("bubbleSort");
-  const [code, setCode] = useState(ALGO_TEMPLATES.bubbleSort.code);
-  const [inputStr, setInputStr] = useState(ALGO_TEMPLATES.bubbleSort.input);
+  const [algorithmCategory, setAlgorithmCategory] = useState<AlgorithmCategoryKey>('sorting');
+  
+  const getDefaultAlgoKey = useCallback((category: AlgorithmCategoryKey) => {
+    if (!ALGO_CATEGORIES[category]) return 'bubbleSort' as any;
+    return Object.keys(ALGO_CATEGORIES[category].algorithms)[0] as AlgorithmKey<typeof category>;
+  }, []);
+
+  const [algorithmKey, setAlgorithmKey] = useState<AlgorithmKey<typeof algorithmCategory>>(getDefaultAlgoKey(algorithmCategory));
+  
+  const selectedAlgorithm = ALGO_CATEGORIES[algorithmCategory]?.algorithms[algorithmKey as any] || getDefaultAlgorithm(algorithmCategory);
+
+  const [code, setCode] = useState(selectedAlgorithm?.code || '');
+  const [inputStr, setInputStr] = useState(() => {
+    if (selectedAlgorithm?.input.includes(';')) {
+        return selectedAlgorithm?.input.split(';')[0] || '';
+    }
+    return selectedAlgorithm?.input || '';
+  });
+
+  const [targetStr, setTargetStr] = useState(() => {
+      if (selectedAlgorithm?.input.includes(';')) {
+          const parts = selectedAlgorithm.input.split(';');
+          return parts.length > 1 ? parts[1] : '';
+      }
+      return '';
+  });
+
+  const [searchKeyStr, setSearchKeyStr] = useState('grape');
+
   const [executionTrace, setExecutionTrace] = useState<TraceStep[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -743,14 +1150,32 @@ export function AlgoViz() {
 
   const { toast } = useToast();
 
-  const handleAlgorithmChange = (type: AlgorithmType) => {
-    if (!type || !ALGO_TEMPLATES[type]) return;
-    setAlgorithmType(type);
-    setCode(ALGO_TEMPLATES[type].code);
-    setInputStr(ALGO_TEMPLATES[type].input);
-    setExecutionTrace([]);
-    setCurrentStep(0);
-    setIsPlaying(false);
+  const handleAlgorithmCategoryChange = (category: AlgorithmCategoryKey) => {
+      if (!category || !ALGO_CATEGORIES[category]) return;
+      const newAlgorithmKey = getDefaultAlgoKey(category);
+      setAlgorithmCategory(category);
+      handleAlgorithmChange(newAlgorithmKey, category);
+  }
+
+  const handleAlgorithmChange = (key: AlgorithmKey<any>, category = algorithmCategory) => {
+      if (!key || !ALGO_CATEGORIES[category]?.algorithms[key]) return;
+      
+      const newAlgo = ALGO_CATEGORIES[category].algorithms[key];
+      setAlgorithmKey(key);
+      setCode(newAlgo.code);
+
+      if (category === 'searching' && newAlgo.input.includes(';')) {
+          const [arrayPart, targetPart] = newAlgo.input.split(';');
+          setInputStr(arrayPart || '');
+          setTargetStr(targetPart || '');
+      } else {
+          setInputStr(newAlgo.input);
+          setTargetStr('');
+      }
+
+      setExecutionTrace([]);
+      setCurrentStep(0);
+      setIsPlaying(false);
   }
 
   const handleTraceGeneration = useCallback(() => {
@@ -758,10 +1183,10 @@ export function AlgoViz() {
     setCurrentStep(0);
     setExecutionTrace([]);
     
-    if (ALGO_TEMPLATES[algorithmType].visualizer === 'tree') {
+    if (selectedAlgorithm.visualizer === 'tree' && algorithmKey !== 'treeTraversal') {
         toast({
             title: "Coming Soon!",
-            description: `Visualization for ${ALGO_TEMPLATES[algorithmType].name} is not yet implemented.`,
+            description: `Visualization for ${selectedAlgorithm.name} is not yet implemented.`,
             variant: 'default',
         });
         setIsLoading(false);
@@ -770,34 +1195,53 @@ export function AlgoViz() {
     }
 
     try {
-      const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
-      if (parsedArray.some(isNaN) && algorithmType !== 'bucketSort') { // Bucket sort can handle floats
-        toast({
-            variant: "destructive",
-            title: "Invalid Input",
-            description: "Please enter a comma-separated list of numbers for sorting.",
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      const traceGenerator = TRACE_GENERATORS[algorithmType as keyof typeof TRACE_GENERATORS] as (arr: number[]) => TraceStep[];
+      const traceGenerator = TRACE_GENERATORS[algorithmKey as keyof typeof TRACE_GENERATORS];
       if (!traceGenerator) {
           toast({
               title: "Not Implemented",
-              description: `The visualizer for ${ALGO_TEMPLATES[algorithmType].name} is not yet implemented.`,
+              description: `The visualizer for ${selectedAlgorithm.name} is not yet implemented.`,
           });
           setIsLoading(false);
           return;
       }
+      
+      let trace: TraceStep[] = [];
 
-      const trace = traceGenerator(parsedArray);
+      if (algorithmCategory === 'searching') {
+        const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+        if (parsedArray.some(isNaN)) throw new Error("Invalid array input. Please enter comma-separated numbers.");
+        
+        const target = Number(targetStr.trim());
+        if (isNaN(target)) throw new Error("Invalid target value. Please enter a number.");
+        
+        trace = traceGenerator(parsedArray, target);
+
+      } else if (algorithmCategory === 'data-structures' && algorithmKey === 'hashing') {
+        const pairs = inputStr.split(';').map(s => {
+            const [key, value] = s.split(',').map(p => p.trim());
+            if (!key || !value) throw new Error("Invalid key-value pair format. Use 'key,value;key2,value2'.");
+            return { key, value };
+        });
+        trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
+      } else if (algorithmCategory === 'tree') {
+          try {
+              const parsedTree = JSON.parse(inputStr);
+              trace = traceGenerator(parsedTree);
+          } catch (e) {
+              throw new Error("Invalid JSON input for the tree structure.");
+          }
+      } else { // Sorting
+        const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+        if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
+        trace = traceGenerator(parsedArray, undefined);
+      }
+      
       if (trace && trace.length > 0) {
         setExecutionTrace(trace);
       } else if (trace) {
          toast({
           title: "Visualization Not Ready",
-          description: `The visualizer for ${ALGO_TEMPLATES[algorithmType].name} is coming soon.`,
+          description: `The visualizer for ${selectedAlgorithm.name} is coming soon.`,
         });
       }
     } catch (error: any) {
@@ -810,13 +1254,13 @@ export function AlgoViz() {
     } finally {
       setIsLoading(false);
     }
-  }, [toast, inputStr, algorithmType]);
+  }, [toast, inputStr, targetStr, searchKeyStr, algorithmKey, selectedAlgorithm, algorithmCategory]);
   
   // Initial trace generation
   useEffect(() => {
     handleTraceGeneration();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [algorithmType]);
+  }, [algorithmKey]);
 
   const currentTrace = useMemo(() => executionTrace[currentStep], [executionTrace, currentStep]);
 
@@ -857,8 +1301,7 @@ export function AlgoViz() {
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = ALGO_TEMPLATES[algorithmType].visualizer as 'array' | 'tree';
-  const selectedAlgo = ALGO_TEMPLATES[algorithmType];
+  const visualizerType = selectedAlgorithm.visualizer as 'array' | 'tree' | 'hash-table';
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-8">
@@ -869,49 +1312,90 @@ export function AlgoViz() {
             <CardDescription>Select algorithm, provide input, and control playback.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-              <div>
-                <label htmlFor="algo-type" className="text-sm font-medium mb-2 block">Algorithm Type</label>
-                <Select value={algorithmType} onValueChange={(value) => handleAlgorithmChange(value as AlgorithmType)}>
-                  <SelectTrigger id="algo-type">
-                    <SelectValue placeholder="Select algorithm type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Comparison Sorting</SelectLabel>
-                      <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
-                      <SelectItem value="selectionSort">Selection Sort</SelectItem>
-                      <SelectItem value="insertionSort">Insertion Sort</SelectItem>
-                      <SelectItem value="mergeSort">Merge Sort</SelectItem>
-                      <SelectItem value="quickSort">Quick Sort</SelectItem>
-                      <SelectItem value="heapSort">Heap Sort</SelectItem>
-                    </SelectGroup>
-                     <SelectGroup>
-                      <SelectLabel>Non-Comparison Sorting</SelectLabel>
-                      <SelectItem value="countingSort">Counting Sort</SelectItem>
-                      <SelectItem value="radixSort">Radix Sort</SelectItem>
-                      <SelectItem value="bucketSort">Bucket Sort</SelectItem>
-                      <SelectItem value="pigeonholeSort">Pigeonhole Sort</SelectItem>
-                    </SelectGroup>
-                    <SelectGroup>
-                      <SelectLabel>Hybrid Sorting</SelectLabel>
-                      <SelectItem value="timSort">Tim Sort</SelectItem>
-                      <SelectItem value="introSort">Intro Sort</SelectItem>
-                    </SelectGroup>
-                    <SelectGroup>
-                        <SelectLabel>Other Data Structures</SelectLabel>
-                        <SelectItem value="tree">Tree / Graph</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="algo-category" className="text-sm font-medium mb-2 block">Category</label>
+                  <Select value={algorithmCategory} onValueChange={(value) => handleAlgorithmCategoryChange(value as AlgorithmCategoryKey)}>
+                    <SelectTrigger id="algo-category">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(ALGO_CATEGORIES).map(([key, category]) => (
+                        <SelectItem key={key} value={key}>{category.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label htmlFor="algo-type" className="text-sm font-medium mb-2 block">Algorithm</label>
+                  <Select value={algorithmKey} onValueChange={(value) => handleAlgorithmChange(value as AlgorithmKey<typeof algorithmCategory>)}>
+                    <SelectTrigger id="algo-type">
+                      <SelectValue placeholder="Select algorithm" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {algorithmCategory === 'sorting' && (
+                        <>
+                          <SelectGroup>
+                            <SelectLabel>Comparison Sorting</SelectLabel>
+                            <SelectItem value="bubbleSort">Bubble Sort</SelectItem>
+                            <SelectItem value="selectionSort">Selection Sort</SelectItem>
+                            <SelectItem value="insertionSort">Insertion Sort</SelectItem>
+                            <SelectItem value="mergeSort">Merge Sort</SelectItem>
+                            <SelectItem value="quickSort">Quick Sort</SelectItem>
+                            <SelectItem value="heapSort">Heap Sort</SelectItem>
+                          </SelectGroup>
+                          <SelectGroup>
+                            <SelectLabel>Non-Comparison Sorting</SelectLabel>
+                            <SelectItem value="countingSort">Counting Sort</SelectItem>
+                            <SelectItem value="radixSort">Radix Sort</SelectItem>
+                            <SelectItem value="bucketSort">Bucket Sort</SelectItem>
+                            <SelectItem value="pigeonholeSort">Pigeonhole Sort</SelectItem>
+                          </SelectGroup>
+                          <SelectGroup>
+                            <SelectLabel>Hybrid Sorting</SelectLabel>
+                            <SelectItem value="timSort">Tim Sort</SelectItem>
+                            <SelectItem value="introSort">Intro Sort</SelectItem>
+                          </SelectGroup>
+                        </>
+                      )}
+                       {algorithmCategory === 'searching' && (
+                         <SelectGroup>
+                          <SelectLabel>Searching</SelectLabel>
+                          <SelectItem value="linearSearch">Linear Search</SelectItem>
+                          <SelectItem value="binarySearch">Binary Search</SelectItem>
+                          <SelectItem value="jumpSearch">Jump Search</SelectItem>
+                          <SelectItem value="interpolationSearch">Interpolation Search</SelectItem>
+                          <SelectItem value="exponentialSearch">Exponential Search</SelectItem>
+                          <SelectItem value="ternarySearch">Ternary Search</SelectItem>
+                        </SelectGroup>
+                       )}
+                       {algorithmCategory === 'tree' && (
+                         <SelectGroup>
+                          <SelectLabel>Tree / Graph</SelectLabel>
+                          <SelectItem value="treeTraversal">In-order Traversal</SelectItem>
+                          <SelectItem value="binarySearchTree">Binary Search Tree</SelectItem>
+                          <SelectItem value="avlTree">AVL Tree</SelectItem>
+                        </SelectGroup>
+                       )}
+                        {algorithmCategory === 'data-structures' && (
+                            <SelectGroup>
+                                <SelectLabel>Data Structures</SelectLabel>
+                                <SelectItem value="hashing">Hashing</SelectItem>
+                            </SelectGroup>
+                        )}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              {selectedAlgo.timeComplexity && selectedAlgo.spaceComplexity && (
+              {selectedAlgorithm.timeComplexity && selectedAlgorithm.spaceComplexity && (
                 <div className="flex justify-between text-sm text-muted-foreground pt-2">
                   <div className="font-mono text-xs">
-                      <strong>Time:</strong> {selectedAlgo.timeComplexity}
+                      <strong>Time:</strong> {selectedAlgorithm.timeComplexity}
                   </div>
                   <div className="font-mono text-xs">
-                      <strong>Space:</strong> {selectedAlgo.spaceComplexity}
+                      <strong>Space:</strong> {selectedAlgorithm.spaceComplexity}
                   </div>
                 </div>
               )}
@@ -923,10 +1407,36 @@ export function AlgoViz() {
                           id="input-data"
                           value={inputStr}
                           onChange={(e) => setInputStr(e.target.value)}
-                          placeholder={ALGO_TEMPLATES[algorithmType].visualizer === 'array' ? "e.g. 5, 3, 8, 4, 2" : "Enter data structure..."}
+                          placeholder={
+                            algorithmCategory === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
+                            algorithmCategory === 'searching' ? "e.g. 2, 8, 5, 12" :
+                            algorithmCategory === 'tree' ? "e.g. { \"value\": 10, ... }" :
+                            "e.g. key1,val1;key2,val2"
+                          }
+                          className="flex-1"
                       />
+                      {algorithmCategory === 'searching' && (
+                        <Input
+                          id="target-data"
+                          value={targetStr}
+                          onChange={(e) => setTargetStr(e.target.value)}
+                          placeholder="Target"
+                          className="w-24"
+                        />
+                      )}
                       <Button onClick={handleTraceGeneration}>Visualize</Button>
                   </div>
+                  {algorithmCategory === 'data-structures' && algorithmKey === 'hashing' && (
+                    <div className='flex gap-2 mt-2'>
+                        <Input
+                            id="search-key"
+                            value={searchKeyStr}
+                            onChange={(e) => setSearchKeyStr(e.target.value)}
+                            placeholder="Key to search"
+                            className="flex-1"
+                        />
+                    </div>
+                  )}
               </div>
               {executionTrace.length > 0 && (
                 <div className="flex justify-center pt-4">
@@ -971,7 +1481,9 @@ export function AlgoViz() {
         )}
       </div>
 
-      <Faq algorithm={algorithmType} />
+      <Faq algorithm={algorithmKey} category={algorithmCategory} />
     </div>
   );
 }
+
+    

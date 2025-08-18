@@ -1,8 +1,11 @@
 
-export const ALGO_TEMPLATES = {
-  bubbleSort: {
-    name: "Bubble Sort",
-    code: `function bubbleSort(arr) {
+export const ALGO_CATEGORIES = {
+  sorting: {
+    name: "Sorting",
+    algorithms: {
+      bubbleSort: {
+        name: "Bubble Sort",
+        code: `function bubbleSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
@@ -15,14 +18,14 @@ export const ALGO_TEMPLATES = {
   }
   return arr;
 }`,
-    input: "5, 3, 8, 4, 2",
-    visualizer: "array",
-    timeComplexity: "O(n^2)",
-    spaceComplexity: "O(1)",
-  },
-  selectionSort: {
-    name: "Selection Sort",
-    code: `function selectionSort(arr) {
+        input: "5, 3, 8, 4, 2",
+        visualizer: "array",
+        timeComplexity: "O(n^2)",
+        spaceComplexity: "O(1)",
+      },
+      selectionSort: {
+        name: "Selection Sort",
+        code: `function selectionSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     let min_idx = i;
@@ -37,14 +40,14 @@ export const ALGO_TEMPLATES = {
   }
   return arr;
 }`,
-    input: "64, 25, 12, 22, 11",
-    visualizer: "array",
-    timeComplexity: "O(n^2)",
-    spaceComplexity: "O(1)",
-  },
-  insertionSort: {
-    name: "Insertion Sort",
-    code: `function insertionSort(arr) {
+        input: "64, 25, 12, 22, 11",
+        visualizer: "array",
+        timeComplexity: "O(n^2)",
+        spaceComplexity: "O(1)",
+      },
+      insertionSort: {
+        name: "Insertion Sort",
+        code: `function insertionSort(arr) {
   let n = arr.length;
   for (let i = 1; i < n; i++) {
     let key = arr[i];
@@ -57,14 +60,14 @@ export const ALGO_TEMPLATES = {
   }
   return arr;
 }`,
-    input: "12, 11, 13, 5, 6",
-    visualizer: "array",
-    timeComplexity: "O(n^2)",
-    spaceComplexity: "O(1)",
-  },
-  mergeSort: {
-    name: "Merge Sort",
-    code: `function mergeSort(arr) {
+        input: "12, 11, 13, 5, 6",
+        visualizer: "array",
+        timeComplexity: "O(n^2)",
+        spaceComplexity: "O(1)",
+      },
+      mergeSort: {
+        name: "Merge Sort",
+        code: `function mergeSort(arr) {
   if (arr.length <= 1) {
     return arr;
   }
@@ -89,14 +92,14 @@ function merge(left, right) {
     .concat(left.slice(leftIndex))
     .concat(right.slice(rightIndex));
 }`,
-    input: "38, 27, 43, 3, 9, 82, 10",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(n)",
-  },
-  quickSort: {
-    name: "Quick Sort",
-    code: `function quickSort(arr, low, high) {
+        input: "38, 27, 43, 3, 9, 82, 10",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+      },
+      quickSort: {
+        name: "Quick Sort",
+        code: `function quickSort(arr, low, high) {
   if (low < high) {
     let pi = partition(arr, low, high);
     quickSort(arr, low, pi - 1);
@@ -117,14 +120,14 @@ function partition(arr, low, high) {
   [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
   return (i + 1);
 }`,
-    input: "10, 7, 8, 9, 1, 5",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(log n)",
-  },
-  heapSort: {
-    name: "Heap Sort",
-    code: `function heapSort(arr) {
+        input: "10, 7, 8, 9, 1, 5",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(log n)",
+      },
+      heapSort: {
+        name: "Heap Sort",
+        code: `function heapSort(arr) {
     var n = arr.length;
     for (var i = Math.floor(n / 2) - 1; i >= 0; i--)
         heapify(arr, n, i);
@@ -151,14 +154,14 @@ function heapify(arr, n, i) {
         heapify(arr, n, largest);
     }
 }`,
-    input: "12, 11, 13, 5, 6, 7",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(1)",
-  },
-  countingSort: {
-    name: "Counting Sort",
-    code: `function countingSort(arr) {
+        input: "12, 11, 13, 5, 6, 7",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(1)",
+      },
+      countingSort: {
+        name: "Counting Sort",
+        code: `function countingSort(arr) {
   const max = Math.max(...arr);
   const min = Math.min(...arr);
   const range = max - min + 1;
@@ -179,14 +182,14 @@ function heapify(arr, n, i) {
   }
   return arr;
 }`,
-    input: "4, 2, 2, 8, 3, 3, 1",
-    visualizer: "array",
-    timeComplexity: "O(n + k)",
-    spaceComplexity: "O(k)",
-  },
-  radixSort: {
-    name: "Radix Sort",
-    code: `function radixSort(arr) {
+        input: "4, 2, 2, 8, 3, 3, 1",
+        visualizer: "array",
+        timeComplexity: "O(n + k)",
+        spaceComplexity: "O(k)",
+      },
+      radixSort: {
+        name: "Radix Sort",
+        code: `function radixSort(arr) {
     const max = Math.max(...arr);
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
         countingSort(arr, exp);
@@ -212,14 +215,14 @@ function countingSort(arr, exp) {
         arr[i] = output[i];
     }
 }`,
-    input: "170, 45, 75, 90, 802, 24, 2, 66",
-    visualizer: "array",
-    timeComplexity: "O(d * (n+k))",
-    spaceComplexity: "O(n + k)",
-  },
-  bucketSort: {
-    name: "Bucket Sort",
-    code: `function bucketSort(arr, n = 5) {
+        input: "170, 45, 75, 90, 802, 24, 2, 66",
+        visualizer: "array",
+        timeComplexity: "O(d * (n+k))",
+        spaceComplexity: "O(n + k)",
+      },
+      bucketSort: {
+        name: "Bucket Sort",
+        code: `function bucketSort(arr, n = 5) {
     if (arr.length === 0) {
         return arr;
     }
@@ -236,14 +239,14 @@ function countingSort(arr, exp) {
     let result = [].concat(...buckets);
     return result;
 }`,
-    input: "0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434",
-    visualizer: "array",
-    timeComplexity: "O(n + k)",
-    spaceComplexity: "O(n)",
-  },
-  pigeonholeSort: {
-      name: "Pigeonhole Sort",
-      code: `function pigeonholeSort(arr) {
+        input: "0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434",
+        visualizer: "array",
+        timeComplexity: "O(n + k)",
+        spaceComplexity: "O(n)",
+      },
+      pigeonholeSort: {
+        name: "Pigeonhole Sort",
+        code: `function pigeonholeSort(arr) {
     let min = Math.min(...arr);
     let max = Math.max(...arr);
     let range = max - min + 1;
@@ -262,14 +265,14 @@ function countingSort(arr, exp) {
     }
     return arr;
 }`,
-      input: "8, 3, 2, 7, 4, 6, 8",
-      visualizer: "array",
-      timeComplexity: "O(n + N)",
-      spaceComplexity: "O(N)",
-  },
-  timSort: {
-    name: "Tim Sort",
-    code: `const RUN = 32;
+        input: "8, 3, 2, 7, 4, 6, 8",
+        visualizer: "array",
+        timeComplexity: "O(n + N)",
+        spaceComplexity: "O(N)",
+      },
+      timSort: {
+        name: "Tim Sort",
+        code: `const RUN = 32;
 
 // Insertion sort for sub-arrays
 function insertionSort(arr, left, right) {
@@ -341,14 +344,14 @@ function timSort(arr) {
     }
     return arr;
 }`,
-    input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0, -1, 50",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(n)",
-  },
-  introSort: {
-    name: "Intro Sort",
-    code: `function introSort(arr) {
+        input: "5, 21, 7, 23, 19, 1, 45, 67, 89, 3, 0, -1, 50",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(n)",
+      },
+      introSort: {
+        name: "Intro Sort",
+        code: `function introSort(arr) {
   let maxdepth = Math.floor(Math.log2(arr.length)) * 2;
   introsort_helper(arr, 0, arr.length - 1, maxdepth);
   return arr;
@@ -415,32 +418,303 @@ function insertionSort(arr, left, right) {
     arr[j + 1] = key;
   }
 }`,
-    input: "2, 1, 0, 5, 8, 3, 7, 4, 9, 6",
-    visualizer: "array",
-    timeComplexity: "O(n log n)",
-    spaceComplexity: "O(log n)",
+        input: "2, 1, 0, 5, 8, 3, 7, 4, 9, 6",
+        visualizer: "array",
+        timeComplexity: "O(n log n)",
+        spaceComplexity: "O(log n)",
+      },
+    },
   },
-  tree: {
-    name: "Tree / Graph Traversal",
-    code: `class TreeNode {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  searching: {
+    name: "Searching",
+    algorithms: {
+      linearSearch: {
+        name: "Linear Search",
+        code: `function linearSearch(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) {
+      return i; // Found
+    }
   }
+  return -1; // Not found
+}`,
+        input: "2,8,5,12,16,23,38,56,72,91;16",
+        visualizer: "array",
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(1)",
+      },
+      binarySearch: {
+        name: "Binary Search",
+        code: `function binarySearch(arr, target) {
+  let low = 0;
+  let high = arr.length - 1;
+  while (low <= high) {
+    let mid = Math.floor(low + (high - low) / 2);
+    if (arr[mid] === target) {
+      return mid; // Found
+    } else if (arr[mid] < target) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return -1; // Not found
+}`,
+        input: "2,5,8,12,16,23,38,56,72,91;23",
+        visualizer: "array",
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(1)",
+      },
+      jumpSearch: {
+        name: "Jump Search",
+        code: `function jumpSearch(arr, x) {
+    let n = arr.length;
+    let step = Math.floor(Math.sqrt(n));
+    let prev = 0;
+    while (arr[Math.min(step, n) - 1] < x) {
+        prev = step;
+        step += Math.floor(Math.sqrt(n));
+        if (prev >= n)
+            return -1;
+    }
+    while (arr[prev] < x) {
+        prev++;
+        if (prev == Math.min(step, n))
+            return -1;
+    }
+    if (arr[prev] == x)
+        return prev;
+    return -1;
+}`,
+        input: "0,1,1,2,3,5,8,13,21,34,55,89,144,233,377,610;55",
+        visualizer: "array",
+        timeComplexity: "O(√n)",
+        spaceComplexity: "O(1)",
+      },
+      interpolationSearch: {
+        name: "Interpolation Search",
+        code: `function interpolationSearch(arr, x) {
+    let n = arr.length;
+    let lo = 0, hi = n - 1;
+    while (lo <= hi && x >= arr[lo] && x <= arr[hi]) {
+        if (lo == hi) {
+            if (arr[lo] == x) return lo;
+            return -1;
+        }
+        let pos = lo + Math.floor(((hi - lo) / (arr[hi] - arr[lo])) * (x - arr[lo]));
+        if (arr[pos] == x)
+            return pos;
+        if (arr[pos] < x)
+            lo = pos + 1;
+        else
+            hi = pos - 1;
+    }
+    return -1;
+}`,
+        input: "10,12,13,16,18,19,20,21,22,23,24,33,35,42,47;18",
+        visualizer: "array",
+        timeComplexity: "O(log log n)",
+        spaceComplexity: "O(1)",
+      },
+      exponentialSearch: {
+        name: "Exponential Search",
+        code: `function exponentialSearch(arr, x) {
+    let n = arr.length;
+    if (arr[0] == x)
+        return 0;
+    let i = 1;
+    while (i < n && arr[i] <= x)
+        i = i * 2;
+    return binarySearch(arr, i / 2, Math.min(i, n - 1), x);
 }
 
-// Example: In-order traversal
+function binarySearch(arr, l, r, x) {
+    if (r >= l) {
+        let mid = l + Math.floor((r - l) / 2);
+        if (arr[mid] == x)
+            return mid;
+        if (arr[mid] > x)
+            return binarySearch(arr, l, mid - 1, x);
+        return binarySearch(arr, mid + 1, r, x);
+    }
+    return -1;
+}`,
+        input: "2,3,4,10,40;10",
+        visualizer: "array",
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(1)",
+      },
+      ternarySearch: {
+        name: "Ternary Search",
+        code: `function ternarySearch(l, r, key, ar) {
+    while (r >= l) {
+        let mid1 = l + Math.floor((r - l) / 3);
+        let mid2 = r - Math.floor((r - l) / 3);
+
+        if (ar[mid1] == key) {
+            return mid1;
+        }
+        if (ar[mid2] == key) {
+            return mid2;
+        }
+
+        if (key < ar[mid1]) {
+            r = mid1 - 1;
+        } else if (key > ar[mid2]) {
+            l = mid2 + 1;
+        } else {
+            l = mid1 + 1;
+            r = mid2 - 1;
+        }
+    }
+    return -1;
+}`,
+        input: "1,2,3,4,5,6,7,8,9,10;5",
+        visualizer: "array",
+        timeComplexity: "O(log3 n)",
+        spaceComplexity: "O(1)",
+      },
+    }
+  },
+  tree: {
+    name: "Tree / Graph",
+    algorithms: {
+      treeTraversal: {
+        name: "In-order Traversal",
+        code: `class TreeNode {
+    constructor(value) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
 function traverse(node) {
-  if (node) {
+  if (node) { // if node is not null
     traverse(node.left);
     // visit(node)
+    // visited_path.push(node.value)
     traverse(node.right);
   }
+  // return from recursion
+}
+
+// final_path = visited_path`,
+        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+        visualizer: "tree",
+        timeComplexity: "O(n)",
+        spaceComplexity: "O(h)",
+      },
+      binarySearchTree: {
+        name: "Binary Search Tree",
+        code: `class Node {
+    constructor(key) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+    }
+}
+// BST insert operation
+function insert(node, key) {
+    if (node === null) {
+        return new Node(key);
+    }
+    if (key < node.key) {
+        node.left = insert(node.left, key);
+    } else if (key > node.key) {
+        node.right = insert(node.right, key);
+    }
+    return node;
 }`,
-    input: "{ \"value\": 10, \"left\": { \"value\": 5 }, \"right\": { \"value\": 15 } }",
-    visualizer: "tree",
-    timeComplexity: "N/A",
-    spaceComplexity: "N/A",
+        input: "8,3,10,1,6,14,4,7,13",
+        visualizer: 'tree',
+        timeComplexity: "O(log n) Avg",
+        spaceComplexity: "O(log n) Avg",
+      },
+      avlTree: {
+        name: "AVL Tree",
+        code: `// AVL Tree insertion
+function insert(node, key) {
+    // 1. Perform standard BST insertion
+    if (node == null) return new Node(key);
+    if (key < node.key) node.left = insert(node.left, key);
+    else if (key > node.key) node.right = insert(node.right, key);
+    else return node;
+
+    // 2. Update height of this ancestor node
+    node.height = 1 + Math.max(height(node.left), height(node.right));
+
+    // 3. Get the balance factor
+    let balance = getBalance(node);
+
+    // 4. If unbalanced, then perform rotations
+    // Left Left Case
+    if (balance > 1 && key < node.left.key) return rightRotate(node);
+    // Right Right Case
+    if (balance < -1 && key > node.right.key) return leftRotate(node);
+    // Left Right Case
+    if (balance > 1 && key > node.left.key) {
+        node.left = leftRotate(node.left);
+        return rightRotate(node);
+    }
+    // Right Left Case
+    if (balance < -1 && key < node.right.key) {
+        node.right = rightRotate(node.right);
+        return leftRotate(node);
+    }
+    return node;
+}`,
+        input: "10,20,30,40,50,25",
+        visualizer: 'tree',
+        timeComplexity: "O(log n)",
+        spaceComplexity: "O(log n)",
+      }
+    }
+  },
+  'data-structures': {
+      name: "Data Structures",
+      algorithms: {
+          hashing: {
+              name: "Hashing",
+              code: `class HashTable {
+    constructor(size) {
+        this.table = new Array(size);
+        this.size = size;
+    }
+
+    hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * i) % this.size;
+        }
+        return hash;
+    }
+
+    set(key, value) {
+        const index = this.hash(key);
+        if(!this.table[index]) {
+            this.table[index] = [];
+        }
+        // ... collision handling to update or push ...
+        this.table[index].push({ key, value });
+    }
+
+    get(key) {
+        const index = this.hash(key);
+        // ... collision handling to find the correct item ...
+        return this.table[index];
+    }
+}`,
+              input: "apple,red;banana,yellow;grape,purple;orange,orange;mango,yellow;strawberry,red;peach,orange;lemon,yellow;lime,green;cherry,red;blueberry,blue;watermelon,green;pear,green;pineapple,yellow;kiwi,green",
+              visualizer: "hash-table",
+              timeComplexity: "O(1) Average",
+              spaceComplexity: "O(n)",
+          }
+      }
   }
 } as const;
+
+export type AlgorithmCategoryKey = keyof typeof ALGO_CATEGORIES;
+export type AlgorithmKey<T extends AlgorithmCategoryKey> = keyof (typeof ALGO_CATEGORIES)[T]['algorithms'];
+
+    
