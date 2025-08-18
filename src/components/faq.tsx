@@ -4,7 +4,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlgorithmCategoryKey, AlgorithmKey } from "@/lib/algo-templates";
-import { FAQ_DATA } from "@/lib/faq-data";
+import { FAQ_DATA } from "@/lib/faq-data.tsx";
 
 type FaqProps = {
     category: AlgorithmCategoryKey;
@@ -42,3 +42,5 @@ export function Faq({ category, algorithm }: FaqProps) {
         </Card>
     );
 }
+
+    

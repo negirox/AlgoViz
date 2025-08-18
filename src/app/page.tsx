@@ -1,4 +1,5 @@
-import { AlgoViz } from '@/components/algo-viz';
+
+import { AlgorithmShowcase } from '@/components/algorithm-showcase';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/footer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -103,7 +104,7 @@ export default function Home() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon" asChild>
-                    <a href="https://github.com/negirox" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
+                    <a href="https://github.com/negirox/AlgoViz" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
                       <Github className="h-5 w-5" />
                       <span className="sr-only">GitHub</span>
                     </a>
@@ -131,6 +132,9 @@ export default function Home() {
                         <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                             AlgoViz brings complex computer science algorithms to life. Move beyond static code and see exactly how data is sorted, searched, and structured with step-by-step, interactive visualizations.
                         </p>
+                         <p className="max-w-[600px] text-muted-foreground md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed">
+                            AlgoViz is an interactive web-based tool designed to help students, developers, and computer science enthusiasts learn and understand a wide variety of algorithms through step-by-step visualization. The platform provides a hands-on experience, bridging the gap between abstract theory and practical implementation.
+                        </p>
                         <ul className="grid gap-2 text-md text-muted-foreground">
                             <li className="flex items-center gap-2">
                                 <CheckCircle className="h-5 w-5 text-primary" />
@@ -157,9 +161,11 @@ export default function Home() {
                 </div>
             </div>
         </section>
-        <AlgoViz />
+        <AlgorithmShowcase />
       </main>
       <Footer />
     </div>
   );
 }
+
+    
