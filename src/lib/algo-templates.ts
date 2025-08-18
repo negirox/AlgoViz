@@ -594,7 +594,7 @@ function binarySearch(arr, l, r, x) {
 }
 
 // final_path = visited_path`,
-        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2, "left": null, "right": null }, "right": { "value": 7, "left": null, "right": null } }, "right": { "value": 15, "left": { "value": 12, "left": null, "right": null }, "right": { "value": 18, "left": null, "right": null } } }`,
         visualizer: "tree",
         timeComplexity: "O(n)",
         spaceComplexity: "O(h)",
@@ -613,7 +613,7 @@ function binarySearch(arr, l, r, x) {
 }
 
 // final_path = visited_path`,
-        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2, "left": null, "right": null }, "right": { "value": 7, "left": null, "right": null } }, "right": { "value": 15, "left": { "value": 12, "left": null, "right": null }, "right": { "value": 18, "left": null, "right": null } } }`,
         visualizer: "tree",
         timeComplexity: "O(n)",
         spaceComplexity: "O(h)",
@@ -632,7 +632,7 @@ function binarySearch(arr, l, r, x) {
 }
 
 // final_path = visited_path`,
-        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+        input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2, "left": null, "right": null }, "right": { "value": 7, "left": null, "right": null } }, "right": { "value": 15, "left": { "value": 12, "left": null, "right": null }, "right": { "value": 18, "left": null, "right": null } } }`,
         visualizer: "tree",
         timeComplexity: "O(n)",
         spaceComplexity: "O(h)",
@@ -658,10 +658,37 @@ function binarySearch(arr, l, r, x) {
     }
     return visited_path;
 }`,
-          input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+          input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2, "left": null, "right": null }, "right": { "value": 7, "left": null, "right": null } }, "right": { "value": 15, "left": { "value": 12, "left": null, "right": null }, "right": { "value": 18, "left": null, "right": null } } }`,
           visualizer: "tree",
           timeComplexity: "O(n)",
           spaceComplexity: "O(w)",
+      },
+      bestFirstSearch: {
+          name: "Best-First Search",
+          code: `function bestFirstSearch(startNode, target) {
+    let pq = new PriorityQueue();
+    pq.add(startNode);
+    let visited = new Set();
+
+    while (!pq.isEmpty()) {
+        let currentNode = pq.poll(); // Get node with best score
+
+        if (currentNode === target) return "Found!";
+        
+        visited.add(currentNode);
+
+        for (let neighbor of currentNode.neighbors) {
+            if (!visited.has(neighbor)) {
+                pq.add(neighbor);
+            }
+        }
+    }
+    return "Not Found";
+}`,
+          input: `{ "value": 10, "left": { "value": 5, "left": { "value": 18, "left": null, "right": null }, "right": { "value": 2, "left": null, "right": null } }, "right": { "value": 15, "left": { "value": 12, "left": null, "right": null }, "right": { "value": 7, "left": null, "right": null } } };2`,
+          visualizer: "tree",
+          timeComplexity: "O(n log n)",
+          spaceComplexity: "O(n)",
       },
       binarySearchTree: {
         name: "Binary Search Tree",

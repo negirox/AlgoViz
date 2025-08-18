@@ -801,44 +801,28 @@ export const FAQ_DATA: FaqData = {
                         answer: "Tree traversal (also known as tree search) is a form of graph traversal and refers to the process of visiting (checking and/or updating) each node in a tree data structure, exactly once. Such traversals are classified by the order in which the nodes are visited."
                     },
                     {
-                        question: "What are common traversal methods for binary trees?",
-                        answer: "The three most common methods for binary trees are: In-order (Left, Root, Right), Pre-order (Root, Left, Right), and Post-order (Left, Right, Root). For a Binary Search Tree, an in-order traversal visits the nodes in ascending sorted order."
+                        question: "What is In-order Traversal?",
+                        answer: "In-order traversal is a depth-first traversal method for binary trees. The order is: traverse the Left subtree, visit the Root, then traverse the Right subtree. For a Binary Search Tree, an in-order traversal visits the nodes in ascending sorted order, which is a key property."
                     },
                     {
                         question: "What is the difference between Breadth-First Search (BFS) and Depth-First Search (DFS)?",
-                        answer: "Breadth-First Search (BFS) explores neighbor nodes first, level by level. It uses a queue to keep track of nodes to visit. Depth-First Search (DFS) explores as far as possible along each branch before backtracking. It typically uses a stack (often the implicit call stack via recursion)."
+                        answer: "Breadth-First Search (BFS) explores neighbor nodes first, level by level. It uses a queue to keep track of nodes to visit. Depth-First Search (DFS), which includes in-order, pre-order, and post-order, explores as far as possible along each branch before backtracking."
                     },
                     {
-                        question: "When would you use BFS over DFS?",
-                        answer: "Use BFS when you need to find the shortest path between two nodes in an unweighted graph. It's also useful for finding all nodes within a certain distance from a source node, like finding all friends of a friend on a social network."
+                        question: "What is the time complexity for In-order traversal?",
+                        answer: "The time complexity is O(n), where n is the number of nodes in the tree, because every node is visited exactly once."
                     },
                     {
-                        question: "When would you use DFS over BFS?",
-                        answer: "Use DFS when you need to check for the existence of a path, detect cycles in a graph, or explore all parts of a graph (e.g., in a maze-solving problem or topological sorting). It generally uses less memory than BFS on wide graphs."
+                        question: "What is the space complexity for In-order traversal?",
+                        answer: "The space complexity is O(h), where h is the height of the tree. This is due to the space required for the recursion stack. In the worst case (a skewed tree), this can be O(n), and in the best case (a balanced tree), it is O(log n)."
                     },
                     {
-                        question: "What is the time complexity for BFS and DFS on a graph?",
-                        answer: "The time complexity for both BFS and DFS is O(V + E), where V is the number of vertices (nodes) and E is the number of edges. This is because every vertex and every edge will be visited exactly once."
-                    },
-                    {
-                        question: "What is the space complexity for BFS and DFS?",
-                        answer: "The space complexity for BFS is O(W), where W is the maximum width of the graph, as the queue can store all nodes at the widest level. The space complexity for DFS is O(H), where H is the maximum height (or depth) of the graph, due to the recursion stack."
-                    },
-                    {
-                        question: "How can you detect a cycle in a directed graph using DFS?",
-                        answer: "You can detect a cycle by keeping track of the nodes currently in the recursion stack for the DFS traversal. If you encounter a node that is already in the current recursion stack, you have found a back edge, which indicates a cycle."
-                    },
-                    {
-                        question: "What is topological sorting, and how is it related to DFS?",
-                        answer: "Topological sorting is a linear ordering of the vertices of a Directed Acyclic Graph (DAG) such that for every directed edge from vertex u to vertex v, u comes before v in the ordering. It can be implemented using a modified DFS. After a node has been fully explored (all its neighbors visited), it is added to the front of a list."
-                    },
-                    {
-                        question: "What is a trivial use case for a post-order traversal?",
-                        answer: "A classic use case for post-order traversal is to delete all nodes in a tree. You must delete the children (left and right) before you can delete the parent node itself. Post-order traversal (Left, Right, Root) ensures this correct order of operations."
+                        question: "Can In-order traversal be done iteratively?",
+                        answer: "Yes, an iterative version can be implemented using an explicit stack. The process involves pushing nodes onto the stack as you go left, and then popping a node, visiting it, and moving to its right child."
                     },
                     {
                         question: "Where can I learn more?",
-                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/tree-traversal-inorder-preorder-postorder/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },
@@ -918,6 +902,47 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Where can I learn more?",
                         answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
+                ]
+            },
+            bestFirstSearch: {
+                title: "Best-First Search",
+                faqs: [
+                    {
+                        question: "What is Best-First Search?",
+                        answer: "Best-First Search is a graph traversal algorithm that explores a graph by expanding the most promising node chosen according to a specified evaluation function or heuristic. It is considered a 'greedy' algorithm because it always chooses the path that appears best at the moment."
+                    },
+                    {
+                        question: "How does Best-First Search work?",
+                        answer: "It uses a priority queue to store the frontier (or open list) of nodes to visit. The priority of each node is determined by a heuristic function. The algorithm repeatedly extracts the highest-priority node from the queue, checks if it's the goal, and if not, expands its neighbors, adding them to the priority queue."
+                    },
+                    {
+                        question: "What is a 'heuristic' in this context?",
+                        answer: "A heuristic is a function that estimates the 'cost' or 'promise' of a node. It's an educated guess to guide the search towards the goal. For example, in a map, the heuristic might be the straight-line distance to the destination."
+                    },
+                    {
+                        question: "Is Best-First Search optimal?",
+                        answer: "No, a simple greedy Best-First Search is not optimal. It can be deceived by a low-cost path that leads to a dead end, ignoring a slightly higher-cost path that could be a better overall solution. It does not guarantee the shortest path."
+                    },
+                    {
+                        question: "How is it different from Dijkstra's and A* Search?",
+                        answer: "Dijkstra's algorithm always expands the node with the lowest actual path cost from the start, making it optimal. A* Search is a type of Best-First Search that combines Dijkstra's (actual cost) with a heuristic (estimated cost to goal), making it both optimal and efficient. Greedy Best-First Search only uses the heuristic."
+                    },
+                    {
+                        question: "What is the time complexity of Best-First Search?",
+                        answer: "The time complexity is typically O(E + V log V) where V is vertices and E is edges, when implemented with a priority queue. In the worst case, it can explore all nodes."
+                    },
+                    {
+                        question: "What is the space complexity?",
+                        answer: "The space complexity is O(V) to store the nodes in the priority queue and the visited set."
+                    },
+                    {
+                        question: "What data structures are needed?",
+                        answer: "The core data structures are a priority queue to manage the open list of nodes to visit and a hash set or boolean array to keep track of the closed (visited) list to avoid cycles."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/best-first-search-greedy-search/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
                     }
                 ]
             },

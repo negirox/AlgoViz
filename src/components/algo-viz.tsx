@@ -1048,29 +1048,29 @@ function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const traversalPath: number[] = [];
 
     function traverse(node: TreeNode | null) {
-        trace.push({ line: 7, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 2, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
 
         if (!node) {
-            trace.push({ line: 8, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            trace.push({ line: 3, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
             return;
         }
 
-        trace.push({ line: 9, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 4, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traverse(node.left);
 
-        trace.push({ line: 11, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 7, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traversalPath.push(node.value);
-        trace.push({ line: 12, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 8, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         
-        trace.push({ line: 13, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 10, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traverse(node.right);
         
-        trace.push({ line: 15, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 12, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
     }
     
     trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
     traverse(tree);
-    trace.push({ line: 17, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    trace.push({ line: 15, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
     
     return trace;
 }
@@ -1080,29 +1080,29 @@ function generatePreOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const traversalPath: number[] = [];
 
     function traverse(node: TreeNode | null) {
-        trace.push({ line: 7, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 2, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
 
         if (!node) {
-            trace.push({ line: 8, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            trace.push({ line: 3, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
             return;
         }
         
-        trace.push({ line: 9, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 5, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traversalPath.push(node.value);
-        trace.push({ line: 10, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 6, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
 
-        trace.push({ line: 11, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 8, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traverse(node.left);
         
-        trace.push({ line: 12, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 9, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traverse(node.right);
         
-        trace.push({ line: 14, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 11, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
     }
     
     trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
     traverse(tree);
-    trace.push({ line: 16, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    trace.push({ line: 14, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
     
     return trace;
 }
@@ -1112,29 +1112,29 @@ function generatePostOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const traversalPath: number[] = [];
 
     function traverse(node: TreeNode | null) {
-        trace.push({ line: 7, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 2, variables: { 'current_node': node?.value ?? 'null' }, data: [], highlighted: node?.value ?? null, treeData: tree, traversalPath: [...traversalPath] });
 
         if (!node) {
-            trace.push({ line: 8, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+            trace.push({ line: 3, variables: { 'node': 'is null', 'action': 'return' }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
             return;
         }
 
-        trace.push({ line: 9, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 4, variables: { 'from_node': node.value, 'action': 'traversing left' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traverse(node.left);
         
-        trace.push({ line: 10, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 5, variables: { 'from_node': node.value, 'action': 'traversing right' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traverse(node.right);
         
-        trace.push({ line: 12, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 8, variables: { 'current_node': node.value, 'action': 'visiting node' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
         traversalPath.push(node.value);
-        trace.push({ line: 13, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 9, variables: { 'current_node': node.value, 'visited_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
 
-        trace.push({ line: 15, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
+        trace.push({ line: 11, variables: { 'finished_subtree_at': node.value, 'action': 'return' }, data: [], highlighted: node.value, treeData: tree, traversalPath: [...traversalPath] });
     }
     
     trace.push({ line: 1, variables: { status: 'starting traversal' }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
     traverse(tree);
-    trace.push({ line: 17, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    trace.push({ line: 14, variables: { 'final_path': `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
     
     return trace;
 }
@@ -1176,6 +1176,59 @@ function generateBFSTraversalTrace(tree: TreeNode): TraceStep[] {
     trace.push({ line: 5, variables: { queue: "[]", condition: `0 > 0` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
     trace.push({ line: 15, variables: { final_path: `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
     
+    return trace;
+}
+
+function generateBestFirstSearchTrace(tree: TreeNode, target: number): TraceStep[] {
+    const trace: TraceStep[] = [];
+    if (!tree) return trace;
+    
+    const priorityQueue: { node: TreeNode; path: number[] }[] = [];
+    const visited = new Set<number>();
+    
+    const getQueueValues = (q: { node: TreeNode; path: number[] }[]) => q.map(item => item.node.value).join(', ');
+
+    trace.push({ line: 1, variables: { status: "Starting Search", target }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
+    
+    priorityQueue.push({ node: tree, path: [tree.value] });
+    trace.push({ line: 3, variables: { action: `Add start node (${tree.value}) to priority queue`, priority_queue: getQueueValues(priorityQueue) }, data: [], highlighted: tree.value, treeData: tree, traversalPath: [] });
+
+    while (priorityQueue.length > 0) {
+        trace.push({ line: 5, variables: { condition: `${priorityQueue.length} > 0`, priority_queue: getQueueValues(priorityQueue) }, data: [], highlighted: null, treeData: tree });
+        
+        // Sort PQ to simulate priority (here, lower value is higher priority)
+        priorityQueue.sort((a, b) => a.node.value - b.node.value);
+        trace.push({ line: 6, variables: { action: `Sort priority queue`, priority_queue: getQueueValues(priorityQueue) }, data: [], highlighted: null, treeData: tree });
+
+        const { node: currentNode, path } = priorityQueue.shift()!;
+        trace.push({ line: 8, variables: { action: `Expand best node: ${currentNode.value}`, current_path: path.join(' -> '), priority_queue: getQueueValues(priorityQueue) }, data: [], highlighted: currentNode.value, treeData: tree, traversalPath: path });
+
+        trace.push({ line: 9, variables: { current_node: currentNode.value, target, condition: `${currentNode.value} === ${target}` }, data: [], highlighted: currentNode.value, treeData: tree, traversalPath: path });
+        if (currentNode.value === target) {
+            trace.push({ line: 10, variables: { status: "Target found!", final_path: path.join(' -> ') }, data: [], highlighted: currentNode.value, treeData: tree, traversalPath: path });
+            return trace;
+        }
+
+        visited.add(currentNode.value);
+        trace.push({ line: 11, variables: { action: `Mark ${currentNode.value} as visited`, visited: Array.from(visited).join(', ') }, data: [], highlighted: currentNode.value, treeData: tree, traversalPath: path });
+
+        const children = [currentNode.left, currentNode.right].filter(Boolean) as TreeNode[];
+        for (const child of children) {
+            trace.push({ line: 13, variables: { action: `Checking child ${child.value} of ${currentNode.value}` }, data: [], highlighted: child.value, treeData: tree, traversalPath: path });
+            if (!visited.has(child.value)) {
+                trace.push({ line: 14, variables: { child: child.value, status: 'Not visited. Adding to queue.' }, data: [], highlighted: child.value, treeData: tree, traversalPath: path });
+                const newPath = [...path, child.value];
+                priorityQueue.push({ node: child, path: newPath });
+                trace.push({ line: 15, variables: { action: `Add ${child.value} to queue`, priority_queue: getQueueValues(priorityQueue) }, data: [], highlighted: child.value, treeData: tree, traversalPath: path });
+            } else {
+                 trace.push({ line: 14, variables: { child: child.value, status: 'Already visited. Skipping.' }, data: [], highlighted: child.value, treeData: tree, traversalPath: path });
+            }
+        }
+    }
+
+    trace.push({ line: 5, variables: { condition: `0 > 0`, status: "Queue empty" }, data: [], highlighted: null, treeData: tree });
+    trace.push({ line: 19, variables: { status: "Target not found" }, data: [], highlighted: null, treeData: tree });
+
     return trace;
 }
 
@@ -1376,6 +1429,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
   postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
   bfsTraversal: (tree: any) => generateBFSTraversalTrace(tree),
+  bestFirstSearch: (tree: any, target: any) => generateBestFirstSearchTrace(tree, target),
   binarySearchTree: (arr: any) => generateBinarySearchTreeTrace(arr),
   avlTree: (arr: any) => generateAVLTreeTrace(arr),
 };
@@ -1445,7 +1499,7 @@ export function AlgoViz() {
       setAlgorithmKey(key);
       setCode(newAlgo.code);
 
-      if (category === 'searching' && newAlgo.input.includes(';')) {
+      if ((category === 'searching' || category === 'tree') && newAlgo.input.includes(';')) {
           const [arrayPart, targetPart] = newAlgo.input.split(';');
           setInputStr(arrayPart || '');
           setTargetStr(targetPart || '');
@@ -1493,10 +1547,14 @@ export function AlgoViz() {
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (algorithmCategory === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal'].includes(algorithmKey)) {
+      } else if (algorithmCategory === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal', 'bestFirstSearch'].includes(algorithmKey)) {
           try {
               const parsedTree = JSON.parse(inputStr);
-              trace = traceGenerator(parsedTree);
+              const target = Number(targetStr.trim());
+              if (algorithmKey === 'bestFirstSearch' && isNaN(target)) {
+                  throw new Error("Invalid target value for Best-First Search. Please enter a number.");
+              }
+              trace = traceGenerator(parsedTree, target);
           } catch (e) {
               throw new Error("Invalid JSON input for the tree structure.");
           }
@@ -1572,6 +1630,7 @@ export function AlgoViz() {
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
   const visualizerType = selectedAlgorithm.visualizer as 'array' | 'tree' | 'hash-table';
+  const needsTargetInput = (algorithmCategory === 'searching') || (algorithmCategory === 'tree' && algorithmKey === 'bestFirstSearch');
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-8">
@@ -1646,7 +1705,8 @@ export function AlgoViz() {
                           <SelectItem value="inOrderTraversal">In-order Traversal</SelectItem>
                           <SelectItem value="preOrderTraversal">Pre-order Traversal</SelectItem>
                           <SelectItem value="postOrderTraversal">Post-order Traversal</SelectItem>
-                           <SelectItem value="bfsTraversal">Breadth-First Search (BFS)</SelectItem>
+                          <SelectItem value="bfsTraversal">Breadth-First Search (BFS)</SelectItem>
+                          <SelectItem value="bestFirstSearch">Best-First Search</SelectItem>
                           <SelectItem value="binarySearchTree">Binary Search Tree</SelectItem>
                           <SelectItem value="avlTree">AVL Tree</SelectItem>
                         </SelectGroup>
@@ -1688,7 +1748,7 @@ export function AlgoViz() {
                           }
                           className="flex-1"
                       />
-                      {algorithmCategory === 'searching' && (
+                      {needsTargetInput && (
                         <Input
                           id="target-data"
                           value={targetStr}
