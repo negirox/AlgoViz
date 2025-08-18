@@ -50,9 +50,9 @@ export function HashTableVisualizer({ tableState, highlighted }: HashTableVisual
 
     const getItemClass = (itemKey: string) => {
         if (keyToSearch && itemKey === foundKey) {
-            if (success) return "bg-green-500 text-white";
-            if (fail) return "bg-red-500 text-white";
-            return "bg-blue-500 text-white";
+            if (success) return "bg-green-500 text-primary-foreground";
+            if (fail) return "bg-red-500 text-primary-foreground";
+            return "bg-blue-500 text-primary-foreground";
         }
         if (itemKey === keyToInsert || itemKey === keyToSearch) return "bg-primary text-primary-foreground";
         return "bg-accent/50";
