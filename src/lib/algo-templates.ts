@@ -774,5 +774,3 @@ function insert(node, key) {
 
 export type AlgorithmCategoryKey = keyof typeof ALGO_CATEGORIES;
 export type AlgorithmKey<T extends AlgorithmCategoryKey> = keyof (typeof ALGO_CATEGORIES)[T]['algorithms'];
-
-    

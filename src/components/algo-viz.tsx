@@ -1648,5 +1648,3 @@ export function AlgoViz() {
     </div>
   );
 }
-
-    

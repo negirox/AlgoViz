@@ -3,6 +3,7 @@
 
 import { cn } from "@/lib/utils";
 import React from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type TreeNodeData = {
     value: number;
@@ -21,23 +22,29 @@ const NODE_DIAMETER = 40;
 const HORIZONTAL_SPACING = 20;
 const VERTICAL_SPACING = 70;
 
-const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, isHighlighted, isTraversed, depth }) => {
+const TreeNodeComponent: React.FC<TreeNodeProps> = ({ node, isHighlighted, isTraversed }) => {
     return (
-        <div 
-            className={cn(
-                "absolute flex items-center justify-center rounded-full border-2 transition-all duration-300",
-                isHighlighted ? "bg-primary text-primary-foreground border-primary" : 
-                isTraversed ? "bg-primary/20 border-primary/50" :
-                "bg-card border-border",
-            )}
-            style={{
-                width: NODE_DIAMETER,
-                height: NODE_DIAMETER,
-                transform: 'translate(-50%, -50%)'
-            }}
-        >
-            <span className="text-sm font-bold">{node.value}</span>
-        </div>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <div 
+                    className={cn(
+                        "flex items-center justify-center rounded-full border-2 transition-all duration-300",
+                        isHighlighted ? "bg-primary text-primary-foreground border-primary" : 
+                        isTraversed ? "bg-primary/20 border-primary/50" :
+                        "bg-card border-border",
+                    )}
+                    style={{
+                        width: NODE_DIAMETER,
+                        height: NODE_DIAMETER,
+                    }}
+                >
+                    <span className="text-sm font-bold">{node.value}</span>
+                </div>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>Node: {node.value}</p>
+            </TooltipContent>
+        </Tooltip>
     );
 };
 
@@ -48,18 +55,22 @@ type TreeVisualizerProps = {
     traversalPath?: number[];
 };
 
-const calculatePositions = (node: TreeNodeData | null | undefined, depth = 0, xOffset = 0, positions: any = {}, widths: any = {}) => {
-    if (!node) return { positions, totalWidth: 0 };
+const calculatePositions = (node: TreeNodeData | null | undefined, depth = 0, x = 0, positions: any = {}) => {
+    if (!node) return { positions, width: 0 };
 
-    const leftWidth = node.left ? calculatePositions(node.left, depth + 1, xOffset, positions, widths).totalWidth : 0;
-    const rightOffset = xOffset + leftWidth + (leftWidth > 0 ? HORIZONTAL_SPACING : 0);
-    const rightWidth = node.right ? calculatePositions(node.right, depth + 1, rightOffset + NODE_DIAMETER + HORIZONTAL_SPACING, positions, widths).totalWidth : 0;
-    
-    const nodeX = xOffset + leftWidth + (leftWidth > 0 ? HORIZONTAL_SPACING/2 : 0) + (rightWidth > 0 ? rightWidth/2 - HORIZONTAL_SPACING/2 : 0) + NODE_DIAMETER / 2;
-    positions[node.value] = { x: nodeX, y: depth * VERTICAL_SPACING + NODE_DIAMETER };
-    widths[depth] = (widths[depth] || 0) + NODE_DIAMETER + (leftWidth > 0 ? HORIZONTAL_SPACING : 0) + (rightWidth > 0 ? HORIZONTAL_SPACING : 0);
+    const leftSubtree = calculatePositions(node.left, depth + 1, x, positions);
+    const nodeX = leftSubtree.width + x + (leftSubtree.width > 0 ? HORIZONTAL_SPACING : 0);
+    const rightSubtree = calculatePositions(node.right, depth + 1, nodeX + NODE_DIAMETER, positions);
 
-    return { positions, totalWidth: leftWidth + rightWidth + NODE_DIAMETER + (leftWidth > 0 ? HORIZONTAL_SPACING : 0) + (rightWidth > 0 ? HORIZONTAL_SPACING : 0) };
+    const subtreeWidth = rightSubtree.width > 0 ? HORIZONTAL_SPACING + rightSubtree.width : 0;
+    const totalWidth = leftSubtree.width + NODE_DIAMETER + subtreeWidth;
+
+    positions[node.value] = { 
+      x: x + (totalWidth - NODE_DIAMETER) / 2, 
+      y: depth * VERTICAL_SPACING + NODE_DIAMETER / 2
+    };
+
+    return { positions, width: totalWidth };
 };
 
 const renderTree = (node: TreeNodeData | null | undefined, positions: any, highlightedNode: number | null | undefined, traversalPath: number[] = [], depth = 0): React.ReactNode[] => {
@@ -80,7 +91,7 @@ const renderTree = (node: TreeNodeData | null | undefined, positions: any, highl
     }
     
     children.push(
-        <foreignObject key={node.value} x={nodePos.x} y={nodePos.y} width="1" height="1" style={{overflow: 'visible'}}>
+        <foreignObject key={node.value} x={nodePos.x - NODE_DIAMETER/2} y={nodePos.y - NODE_DIAMETER/2} width={NODE_DIAMETER} height={NODE_DIAMETER}>
             <TreeNodeComponent
                 node={node}
                 isHighlighted={highlightedNode === node.value}
@@ -103,19 +114,21 @@ export function TreeVisualizer({ treeData, highlightedNode, traversalPath = [] }
         );
     }
     
-    const { positions, totalWidth } = calculatePositions(treeData);
+    const { positions, width } = calculatePositions(treeData);
     const renderedNodes = renderTree(treeData, positions, highlightedNode, traversalPath);
     
     const maxDepth = Math.max(...Object.values(positions).map((p: any) => p.y));
     const totalHeight = maxDepth + NODE_DIAMETER * 2;
 
     return (
-        <div className="w-full flex justify-center items-center overflow-auto p-4">
-             <svg width={totalWidth + 40} height={totalHeight} style={{ minWidth: totalWidth + 40 }}>
-                <g transform={`translate(20, 20)`}>
-                    {renderedNodes}
-                </g>
-             </svg>
-        </div>
+        <TooltipProvider>
+            <div className="w-full flex justify-center items-center overflow-auto p-4">
+                 <svg width={width + 40} height={totalHeight} style={{ minWidth: width + 40 }}>
+                    <g transform={`translate(20, 20)`}>
+                        {renderedNodes}
+                    </g>
+                 </svg>
+            </div>
+        </TooltipProvider>
     );
 }
