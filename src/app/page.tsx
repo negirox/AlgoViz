@@ -4,6 +4,7 @@ import { Footer } from '@/components/footer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Github } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { CheckCircle } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -117,6 +118,45 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1">
+        <section className="py-12 md:py-20 lg:py-24 bg-background/50">
+            <div className="container px-4 md:px-6">
+                <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+                    <div className="space-y-4">
+                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
+                            Interactive Learning
+                        </div>
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                            Understand Algorithms, Don't Just Memorize Them
+                        </h2>
+                        <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                            AlgoViz brings complex computer science algorithms to life. Move beyond static code and see exactly how data is sorted, searched, and structured with step-by-step, interactive visualizations.
+                        </p>
+                        <ul className="grid gap-2 text-md text-muted-foreground">
+                            <li className="flex items-center gap-2">
+                                <CheckCircle className="h-5 w-5 text-primary" />
+                                <span>Visualize sorting, searching, trees, and more.</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <CheckCircle className="h-5 w-5 text-primary" />
+                                <span>Control the execution speed with playback controls.</span>
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <CheckCircle className="h-5 w-5 text-primary" />
+                                <span>Inspect variables at every step to deepen understanding.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <img
+                      data-ai-hint="abstract algorithm"
+                      src="https://placehold.co/600x400.png"
+                      width="600"
+                      height="400"
+                      alt="Algorithm Visualization"
+                      className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
+                    />
+                </div>
+            </div>
+        </section>
         <AlgoViz />
       </main>
       <Footer />

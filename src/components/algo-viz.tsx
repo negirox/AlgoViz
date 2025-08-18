@@ -1798,7 +1798,7 @@ export function AlgoViz() {
         <Card className="w-full bg-card/50">
           <CardHeader>
             <CardTitle>Code Editor</CardTitle>
-            <CardDescription>The code is for reference. Editing it won't affect the visualization yet.</CardDescription>
+            <CardDescription>The code is for reference. Editing it won't affect the visualization.</CardDescription>
           </CardHeader>
           <CardContent>
             <CodeEditor
