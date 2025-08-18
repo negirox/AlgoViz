@@ -1,4 +1,3 @@
-
 import { AlgorithmShowcase } from '@/components/algorithm-showcase';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/footer';
@@ -152,7 +151,7 @@ export default function Home() {
                     </div>
                     <img
                       data-ai-hint="abstract algorithm"
-                      src="https://placehold.co/600x400.png"
+                      src="https://images.unsplash.com/photo-1544256718-3bcf237f3974?q=80&w=2071&auto=format&fit=crop"
                       width="600"
                       height="400"
                       alt="Algorithm Visualization"
@@ -167,5 +166,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

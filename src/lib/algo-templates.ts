@@ -1,10 +1,10 @@
-
 export const ALGO_CATEGORIES = {
   sorting: {
     name: "Sorting",
     algorithms: {
       bubbleSort: {
         name: "Bubble Sort",
+        description: "A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. The pass through the list is repeated until the list is sorted.",
         code: `function bubbleSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
@@ -25,6 +25,7 @@ export const ALGO_CATEGORIES = {
       },
       selectionSort: {
         name: "Selection Sort",
+        description: "An in-place comparison sorting algorithm. It divides the input list into two parts: a sorted sublist which is built up from left to right and a sublist of the remaining unsorted items that occupy the rest of the list. Initially, the sorted sublist is empty and the unsorted sublist is the entire input list. The algorithm proceeds by finding the smallest (or largest, depending on sorting order) element in the unsorted sublist, exchanging (swapping) it with the leftmost unsorted element (putting it in sorted order), and moving the sublist boundaries one element to the right.",
         code: `function selectionSort(arr) {
   let n = arr.length;
   for (let i = 0; i < n - 1; i++) {
@@ -47,6 +48,7 @@ export const ALGO_CATEGORIES = {
       },
       insertionSort: {
         name: "Insertion Sort",
+        description: "A simple sorting algorithm that builds the final sorted array one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort. However, it provides several advantages: simple implementation, efficient for (quite) small data sets, adaptive (i.e., efficient) for data sets that are already substantially sorted: the time complexity is O(nk) when each element in the input is no more than k places away from its sorted position, and stable (i.e., does not change the relative order of elements with equal keys).",
         code: `function insertionSort(arr) {
   let n = arr.length;
   for (let i = 1; i < n; i++) {
@@ -67,6 +69,7 @@ export const ALGO_CATEGORIES = {
       },
       mergeSort: {
         name: "Merge Sort",
+        description: "An efficient, stable, comparison-based sorting algorithm. Most implementations produce a stable sort, which means that the order of equal elements is the same in the input and output. Merge sort is a divide and conquer algorithm that was invented by John von Neumann in 1945. The algorithm splits the array into two halves, recursively sorts them, and then merges the two sorted halves.",
         code: `function mergeSort(arr) {
   if (arr.length <= 1) {
     return arr;
@@ -99,6 +102,7 @@ function merge(left, right) {
       },
       quickSort: {
         name: "Quick Sort",
+        description: "An efficient, in-place, comparison-based sorting algorithm. It applies the divide-and-conquer strategy. It works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot. The sub-arrays are then sorted recursively.",
         code: `function quickSort(arr, low, high) {
   if (low < high) {
     let pi = partition(arr, low, high);
@@ -127,6 +131,7 @@ function partition(arr, low, high) {
       },
       heapSort: {
         name: "Heap Sort",
+        description: "A comparison-based sorting technique based on a Binary Heap data structure. It is similar to selection sort where we first find the maximum element and place the maximum element at the end. We repeat the same process for the remaining elements.",
         code: `function heapSort(arr) {
     var n = arr.length;
     for (var i = Math.floor(n / 2) - 1; i >= 0; i--)
@@ -161,6 +166,7 @@ function heapify(arr, n, i) {
       },
       countingSort: {
         name: "Counting Sort",
+        description: "An integer sorting algorithm that operates by counting the number of objects that have each distinct key value. It is only suitable for direct use in situations where the variation in keys is not significantly greater than the number of items.",
         code: `function countingSort(arr) {
   const max = Math.max(...arr);
   const min = Math.min(...arr);
@@ -189,6 +195,7 @@ function heapify(arr, n, i) {
       },
       radixSort: {
         name: "Radix Sort",
+        description: "A non-comparative sorting algorithm. It avoids comparison by creating and distributing elements into buckets according to their radix. For elements with more than one significant digit, this bucketing process is repeated for each digit, while preserving the ordering of the prior step, until all digits have been considered.",
         code: `function radixSort(arr) {
     const max = Math.max(...arr);
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
@@ -222,6 +229,7 @@ function countingSort(arr, exp) {
       },
       bucketSort: {
         name: "Bucket Sort",
+        description: "A distribution sort that works by distributing the elements of an array into a number of buckets. Each bucket is then sorted individually, either using a different sorting algorithm, or by recursively applying the bucket sort algorithm. It is a distribution sort, a generalization of pigeonhole sort that allows for a larger range of keys.",
         code: `function bucketSort(arr, n = 5) {
     if (arr.length === 0) {
         return arr;
@@ -246,6 +254,7 @@ function countingSort(arr, exp) {
       },
       pigeonholeSort: {
         name: "Pigeonhole Sort",
+        description: "A sorting algorithm that is suitable for sorting lists of elements where the number of elements and the number of possible key values are approximately the same. It requires knowing the range of the values in advance.",
         code: `function pigeonholeSort(arr) {
     let min = Math.min(...arr);
     let max = Math.max(...arr);
@@ -272,6 +281,7 @@ function countingSort(arr, exp) {
       },
       timSort: {
         name: "Tim Sort",
+        description: "A hybrid stable sorting algorithm, derived from merge sort and insertion sort, designed to perform well on many kinds of real-world data. It was invented by Tim Peters in 2002 for use in the Python programming language.",
         code: `const RUN = 32;
 
 // Insertion sort for sub-arrays
@@ -351,6 +361,7 @@ function timSort(arr) {
       },
       introSort: {
         name: "Intro Sort",
+        description: "A hybrid sorting algorithm that provides both fast average performance and optimal worst-case performance. It starts with quicksort, switches to heapsort when the recursion depth exceeds a level based on the number of elements being sorted, and switches to insertion sort for small partitions.",
         code: `function introSort(arr) {
   let maxdepth = Math.floor(Math.log2(arr.length)) * 2;
   introsort_helper(arr, 0, arr.length - 1, maxdepth);
@@ -430,6 +441,7 @@ function insertionSort(arr, left, right) {
     algorithms: {
       linearSearch: {
         name: "Linear Search",
+        description: "A simple method for finding an element within a list. It sequentially checks each element of the list until a match is found or the whole list has been searched. It is one of the simplest searching algorithms.",
         code: `function linearSearch(arr, target) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === target) {
@@ -445,6 +457,7 @@ function insertionSort(arr, left, right) {
       },
       binarySearch: {
         name: "Binary Search",
+        description: "An efficient algorithm for finding an item from a sorted list of items. It works by repeatedly dividing in half the portion of the list that could contain the item, until you've narrowed down the possible locations to just one.",
         code: `function binarySearch(arr, target) {
   let low = 0;
   let high = arr.length - 1;
@@ -467,6 +480,7 @@ function insertionSort(arr, left, right) {
       },
       jumpSearch: {
         name: "Jump Search",
+        description: "A searching algorithm for sorted arrays. The basic idea is to check fewer elements than linear search by jumping ahead by fixed steps and then doing a linear search in the identified block.",
         code: `function jumpSearch(arr, x) {
     let n = arr.length;
     let step = Math.floor(Math.sqrt(n));
@@ -493,6 +507,7 @@ function insertionSort(arr, left, right) {
       },
       interpolationSearch: {
         name: "Interpolation Search",
+        description: "An improvement over Binary Search for instances where the values in a sorted array are uniformly distributed. It estimates the position of the target value rather than always checking the middle.",
         code: `function interpolationSearch(arr, x) {
     let n = arr.length;
     let lo = 0, hi = n - 1;
@@ -518,6 +533,7 @@ function insertionSort(arr, left, right) {
       },
       exponentialSearch: {
         name: "Exponential Search",
+        description: "An algorithm used for searching in sorted, unbounded arrays. It involves two steps: first finding a range where the element could be, and then performing a binary search within that range.",
         code: `function exponentialSearch(arr, x) {
     let n = arr.length;
     if (arr[0] == x)
@@ -546,6 +562,7 @@ function binarySearch(arr, l, r, x) {
       },
       ternarySearch: {
         name: "Ternary Search",
+        description: "A divide and conquer searching technique. It is similar to binary search but divides the array into three parts and determines which part the key lies in.",
         code: `function ternarySearch(l, r, key, ar) {
     while (r >= l) {
         let mid1 = l + Math.floor((r - l) / 3);
@@ -581,6 +598,7 @@ function binarySearch(arr, l, r, x) {
     algorithms: {
       inOrderTraversal: {
         name: "In-order Traversal",
+        description: "A tree traversal method that visits nodes in the order: left child, root, right child. For a Binary Search Tree, this traversal visits nodes in ascending order.",
         code: `function traverse(node) {
   if (node) { // if node is not null
     traverse(node.left);
@@ -601,6 +619,7 @@ function binarySearch(arr, l, r, x) {
       },
       preOrderTraversal: {
         name: "Pre-order Traversal",
+        description: "A tree traversal method that visits nodes in the order: root, left child, right child. It's used to create a copy of the tree.",
         code: `function traverse(node) {
   if (node) {
     // visit(node)
@@ -620,6 +639,7 @@ function binarySearch(arr, l, r, x) {
       },
       postOrderTraversal: {
         name: "Post-order Traversal",
+        description: "A tree traversal method that visits nodes in the order: left child, right child, root. It is used to delete the tree.",
         code: `function traverse(node) {
   if (node) {
     traverse(node.left);
@@ -639,6 +659,7 @@ function binarySearch(arr, l, r, x) {
       },
       bfsTraversal: {
           name: "Breadth-First Search (BFS)",
+          description: "A graph traversal algorithm that explores the neighbor nodes first, before moving to the next level neighbors. It's often used to find the shortest path in an unweighted graph.",
           code: `function bfs(root) {
     const queue = [];
     if (root) {
@@ -665,6 +686,7 @@ function binarySearch(arr, l, r, x) {
       },
       bestFirstSearch: {
           name: "Best-First Search",
+          description: "A graph search algorithm which explores a graph by expanding the most promising node chosen according to a specified rule. It uses a priority queue to select the next node to visit based on a heuristic cost.",
           code: `function bestFirstSearch(startNode, target) {
     let pq = new PriorityQueue();
     pq.add(startNode);
@@ -692,6 +714,7 @@ function binarySearch(arr, l, r, x) {
       },
       binarySearchTree: {
         name: "Binary Search Tree",
+        description: "A node-based binary tree data structure which has the following properties: the left subtree of a node contains only nodes with keys lesser than the node's key; the right subtree of a node contains only nodes with keys greater than the node's key; the left and right subtree each must also be a binary search tree.",
         code: `function buildBST(keys) {
   let root = null;
   keys.forEach(key => {
@@ -718,6 +741,7 @@ function insert(node, key) {
       },
       avlTree: {
         name: "AVL Tree",
+        description: "A self-balancing binary search tree. It was the first such data structure to be invented. In an AVL tree, the heights of the two child subtrees of any node differ by at most one; if at any time they differ by more than one, rebalancing is done to restore this property.",
         code: `// AVL Tree insertion
 function insert(node, key) {
     // 1. Perform standard BST insertion
@@ -761,6 +785,7 @@ function insert(node, key) {
       algorithms: {
           hashing: {
               name: "Hashing",
+              description: "A technique used to map data of an arbitrary size to data of a fixed size. The values returned by a hash function are called hash values, hash codes, digests, or simply hashes. The values are used to index a fixed-size table called a hash table.",
               code: `class HashTable {
     constructor(size) {
         this.table = new Array(size);

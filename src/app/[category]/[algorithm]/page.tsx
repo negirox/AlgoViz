@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -1436,12 +1435,12 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
 };
 
 
-export default function AlgorithmPage({ params }: { params: { category: string, algorithm: string } }) {
+export default function AlgorithmPage({ params }: { params: { category: AlgorithmCategoryKey, algorithm: AlgorithmKey<any> } }) {
   const { category: categoryKey, algorithm: algorithmKey } = params;
 
   // Validate params
-  const category = ALGO_CATEGORIES[categoryKey as AlgorithmCategoryKey];
-  const algorithm = category?.algorithms[algorithmKey as keyof typeof category.algorithms];
+  const category = ALGO_CATEGORIES[categoryKey];
+  const algorithm = category?.algorithms[algorithmKey];
 
   if (!category || !algorithm) {
     notFound();
@@ -1666,6 +1665,15 @@ export default function AlgorithmPage({ params }: { params: { category: string, 
         />
       </div>
 
+       <Card className="w-full bg-card/50">
+            <CardHeader>
+                <CardTitle>About {algorithm.name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-muted-foreground leading-relaxed">{algorithm.description}</p>
+            </CardContent>
+        </Card>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <Card className="w-full bg-card/50">
           <CardHeader>
@@ -1686,7 +1694,7 @@ export default function AlgorithmPage({ params }: { params: { category: string, 
         )}
       </div>
 
-      <Faq algorithm={algorithmKey as AlgorithmKey<any>} category={categoryKey as AlgorithmCategoryKey} />
+      <Faq algorithm={algorithmKey} category={categoryKey} />
     </div>
   );
 }
