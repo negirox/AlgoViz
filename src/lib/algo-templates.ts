@@ -581,15 +581,7 @@ function binarySearch(arr, l, r, x) {
     algorithms: {
       inOrderTraversal: {
         name: "In-order Traversal",
-        code: `class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function traverse(node) {
+        code: `function traverse(node) {
   if (node) { // if node is not null
     traverse(node.left);
     
@@ -609,20 +601,17 @@ function traverse(node) {
       },
       preOrderTraversal: {
         name: "Pre-order Traversal",
-        code: `class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-function traverse(node) {
+        code: `function traverse(node) {
   if (node) {
+    // visit(node)
     visited_path.push(node.value);
+
     traverse(node.left);
     traverse(node.right);
   }
+  // return from recursion
 }
+
 // final_path = visited_path`,
         input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
         visualizer: "tree",
@@ -631,25 +620,48 @@ function traverse(node) {
       },
       postOrderTraversal: {
         name: "Post-order Traversal",
-        code: `class TreeNode {
-    constructor(value) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-function traverse(node) {
+        code: `function traverse(node) {
   if (node) {
     traverse(node.left);
     traverse(node.right);
+
+    // visit(node)
     visited_path.push(node.value);
   }
+  // return from recursion
 }
+
 // final_path = visited_path`,
         input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
         visualizer: "tree",
         timeComplexity: "O(n)",
         spaceComplexity: "O(h)",
+      },
+      bfsTraversal: {
+          name: "Breadth-First Search (BFS)",
+          code: `function bfs(root) {
+    const queue = [];
+    if (root) {
+        queue.push(root);
+    }
+    while (queue.length > 0) {
+        const node = queue.shift();
+        // visit(node)
+        visited_path.push(node.value);
+
+        if (node.left) {
+            queue.push(node.left);
+        }
+        if (node.right) {
+            queue.push(node.right);
+        }
+    }
+    return visited_path;
+}`,
+          input: `{ "value": 10, "left": { "value": 5, "left": { "value": 2 }, "right": { "value": 7 } }, "right": { "value": 15, "left": { "value": 12 }, "right": { "value": 18 } } }`,
+          visualizer: "tree",
+          timeComplexity: "O(n)",
+          spaceComplexity: "O(w)",
       },
       binarySearchTree: {
         name: "Binary Search Tree",

@@ -884,6 +884,43 @@ export const FAQ_DATA: FaqData = {
                     }
                 ]
             },
+            bfsTraversal: {
+                title: "Breadth-First Search (BFS)",
+                faqs: [
+                    {
+                        question: "What is Breadth-First Search (BFS)?",
+                        answer: "BFS is a graph traversal algorithm that explores neighbor nodes first, before moving to the next level neighbors. It starts at a source node and explores all of its neighbors at the present depth prior to moving on to the nodes at the next depth level. It uses a queue to keep track of the next location to visit."
+                    },
+                    {
+                        question: "How does BFS work?",
+                        answer: "BFS starts with a source node, adds it to a queue, and marks it as visited. Then, it enters a loop that continues as long as the queue is not empty. In each iteration, it dequeues a node, visits it, and enqueues all of its unvisited neighbors. This process guarantees that nodes are visited level by level."
+                    },
+                    {
+                        question: "What is the time complexity of BFS?",
+                        answer: "The time complexity is O(V + E), where V is the number of vertices (nodes) and E is the number of edges. Every vertex and every edge is explored exactly once."
+                    },
+                    {
+                        question: "What is the space complexity of BFS?",
+                        answer: "The space complexity is O(W), where W is the maximum width of the tree or graph. In the worst-case scenario (a complete binary tree), the last level can contain up to n/2 nodes, so the space can be proportional to the number of nodes."
+                    },
+                    {
+                        question: "What is the primary use case for BFS?",
+                        answer: "The most well-known application of BFS is to find the shortest path between two nodes in an unweighted graph. Because it explores level by level, the first time it reaches a target node, it is guaranteed to have found a shortest path."
+                    },
+                    {
+                        question: "How does BFS compare to Depth-First Search (DFS)?",
+                        answer: "BFS explores level by level (horizontally), while DFS explores branch by branch (vertically). BFS is better for finding the shortest path in unweighted graphs, while DFS is often used for cycle detection, pathfinding in mazes, and topological sorting."
+                    },
+                    {
+                        question: "Can BFS be implemented recursively?",
+                        answer: "While technically possible, it's very unnatural and inefficient. BFS is fundamentally an iterative algorithm that relies on a queue data structure to manage the order of visitation. The iterative approach is standard practice."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: "You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>."
+                    }
+                ]
+            },
             binarySearchTree: {
                 title: "Binary Search Tree (BST)",
                 faqs: [

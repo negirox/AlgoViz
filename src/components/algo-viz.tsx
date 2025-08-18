@@ -1137,6 +1137,47 @@ function generatePostOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     return trace;
 }
 
+function generateBFSTraversalTrace(tree: TreeNode): TraceStep[] {
+    const trace: TraceStep[] = [];
+    if (!tree) return trace;
+    
+    const traversalPath: number[] = [];
+    const queue: (TreeNode | null)[] = [];
+
+    const getQueueValues = (q: (TreeNode | null)[]) => q.map(n => n ? n.value : 'null').join(', ');
+    
+    trace.push({ line: 1, variables: { status: "Starting Traversal" }, data: [], highlighted: null, treeData: tree, traversalPath: [] });
+
+    queue.push(tree);
+    trace.push({ line: 3, variables: { action: `Enqueue root (${tree.value})`, queue: `[${getQueueValues(queue)}]` }, data: [], highlighted: tree.value, treeData: tree, traversalPath: [...traversalPath] });
+
+    while (queue.length > 0) {
+        trace.push({ line: 5, variables: { queue: `[${getQueueValues(queue)}]`, condition: `${queue.length} > 0` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+        
+        const currentNode = queue.shift();
+        trace.push({ line: 6, variables: { action: `Dequeue ${currentNode?.value}`, queue: `[${getQueueValues(queue)}]`, current_node: currentNode?.value }, data: [], highlighted: currentNode?.value, treeData: tree, traversalPath: [...traversalPath] });
+        
+        if (currentNode) {
+            traversalPath.push(currentNode.value);
+            trace.push({ line: 8, variables: { action: `Visit ${currentNode.value}`, visited_path: `[${traversalPath.join(', ')}]`}, data: [], highlighted: currentNode.value, treeData: tree, traversalPath: [...traversalPath] });
+
+            if (currentNode.left) {
+                queue.push(currentNode.left);
+                trace.push({ line: 10, variables: { action: `Enqueue left child (${currentNode.left.value})`, queue: `[${getQueueValues(queue)}]`}, data: [], highlighted: currentNode.left.value, treeData: tree, traversalPath: [...traversalPath] });
+            }
+            if (currentNode.right) {
+                queue.push(currentNode.right);
+                trace.push({ line: 12, variables: { action: `Enqueue right child (${currentNode.right.value})`, queue: `[${getQueueValues(queue)}]`}, data: [], highlighted: currentNode.right.value, treeData: tree, traversalPath: [...traversalPath] });
+            }
+        }
+    }
+    trace.push({ line: 5, variables: { queue: "[]", condition: `0 > 0` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    trace.push({ line: 15, variables: { final_path: `[${traversalPath.join(', ')}]` }, data: [], highlighted: null, treeData: tree, traversalPath: [...traversalPath] });
+    
+    return trace;
+}
+
+
 function generateBinarySearchTreeTrace(arr: number[]): TraceStep[] {
     const trace: TraceStep[] = [];
     let tree: TreeNode | null = null;
@@ -1213,6 +1254,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
   postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
+  bfsTraversal: (tree: any) => generateBFSTraversalTrace(tree),
   binarySearchTree: (arr: any) => generateBinarySearchTreeTrace(arr),
   avlTree: (arr: any) => [],
 };
@@ -1341,7 +1383,7 @@ export function AlgoViz() {
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (algorithmCategory === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal'].includes(algorithmKey)) {
+      } else if (algorithmCategory === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal'].includes(algorithmKey)) {
           try {
               const parsedTree = JSON.parse(inputStr);
               trace = traceGenerator(parsedTree);
@@ -1494,6 +1536,7 @@ export function AlgoViz() {
                           <SelectItem value="inOrderTraversal">In-order Traversal</SelectItem>
                           <SelectItem value="preOrderTraversal">Pre-order Traversal</SelectItem>
                           <SelectItem value="postOrderTraversal">Post-order Traversal</SelectItem>
+                           <SelectItem value="bfsTraversal">Breadth-First Search (BFS)</SelectItem>
                           <SelectItem value="binarySearchTree">Binary Search Tree</SelectItem>
                           <SelectItem value="avlTree">AVL Tree</SelectItem>
                         </SelectGroup>
