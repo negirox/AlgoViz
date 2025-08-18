@@ -119,4 +119,3 @@ export function TreeVisualizer({ treeData, highlightedNode, traversalPath = [] }
         </div>
     );
 }
-
