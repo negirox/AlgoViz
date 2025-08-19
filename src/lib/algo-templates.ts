@@ -1,3 +1,4 @@
+
 export const ALGO_CATEGORIES = {
   sorting: {
     name: "Sorting",
@@ -388,7 +389,7 @@ function partition(arr, begin, end) {
   for (let j = begin; j < end; j++) {
     if (arr[j] <= pivot) {
       i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      [arr[i], arr[j]] = [arr[j], arr[j]];
     }
   }
   [arr[i + 1], arr[end]] = [arr[end], arr[i + 1]];
@@ -819,6 +820,34 @@ function insert(node, key) {
               visualizer: "hash-table",
               timeComplexity: "O(1) Average",
               spaceComplexity: "O(n)",
+          },
+          stack: {
+            name: "Stack",
+            description: "A linear data structure that follows the Last-In, First-Out (LIFO) principle. Elements are added (pushed) and removed (popped) from the same end, called the 'top'.",
+            code: `class Stack {
+  constructor() {
+    this.items = [];
+  }
+  push(element) {
+    this.items.push(element);
+  }
+  pop() {
+    if (this.isEmpty()) {
+      return "Underflow";
+    }
+    return this.items.pop();
+  }
+  peek() {
+    return this.items[this.items.length - 1];
+  }
+  isEmpty() {
+    return this.items.length === 0;
+  }
+}`,
+            input: "push 10,push 20,push 30,pop,push 40,pop,pop",
+            visualizer: "array",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(n)",
           }
       }
   }
@@ -826,3 +855,5 @@ function insert(node, key) {
 
 export type AlgorithmCategoryKey = keyof typeof ALGO_CATEGORIES;
 export type AlgorithmKey<T extends AlgorithmCategoryKey> = keyof (typeof ALGO_CATEGORIES)[T]['algorithms'];
+
+    

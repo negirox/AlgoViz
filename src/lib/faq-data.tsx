@@ -1,5 +1,4 @@
 
-
 import { ALGO_CATEGORIES } from "./algo-templates";
 
 type FaqItem = {
@@ -1094,6 +1093,47 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Where can I learn more?",
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/hashing-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+            stack: {
+                title: "Stack",
+                faqs: [
+                    {
+                        question: "What is a Stack?",
+                        answer: "A Stack is a linear data structure that follows a particular order in which the operations are performed. The order is Last-In, First-Out (LIFO). An excellent analogy is a stack of plates; you can only add a plate to the top and can only remove the top plate."
+                    },
+                    {
+                        question: "What are the primary operations of a Stack?",
+                        answer: "The primary operations are: <ul><li><b>Push:</b> Adds an element to the top of the stack.</li><li><b>Pop:</b> Removes the top element from the stack.</li><li><b>Peek (or Top):</b> Returns the top element without removing it.</li><li><b>isEmpty:</b> Checks if the stack is empty.</li></ul>"
+                    },
+                    {
+                        question: "What is the time complexity of stack operations?",
+                        answer: "For a standard implementation (e.g., using an array or a linked list), the time complexity for `push`, `pop`, and `peek` is O(1). These operations are very fast as they don't depend on the number of items in the stack."
+                    },
+                    {
+                        question: "Where are stacks used in computing?",
+                        answer: "Stacks are used in many areas: <ul><li><b>Function Calls:</b> The 'call stack' manages active function calls. When a function is called, it's pushed onto the stack, and when it returns, it's popped off.</li><li><b>Undo/Redo Features:</b> Text editors and other software use stacks to implement undo functionality.</li><li><b>Expression Evaluation:</b> Compilers use stacks to convert expressions from infix to postfix notation and evaluate them.</li><li><b>Backtracking Algorithms:</b> Stacks are used to keep track of paths in algorithms like maze-solving or in graph traversals (DFS).</li></ul>"
+                    },
+                    {
+                        question: "What is a stack overflow?",
+                        answer: "A stack overflow is an error that occurs when the call stack runs out of space. This usually happens with very deep or infinite recursion, where functions are pushed onto the stack faster than they are popped off."
+                    },
+                    {
+                        question: "What is a stack underflow?",
+                        answer: "A stack underflow occurs when you try to `pop` an element from an empty stack. A well-implemented stack should handle this case by throwing an error or returning a specific value like null or undefined."
+                    },
+                    {
+                        question: "How can a Stack be implemented?",
+                        answer: "A stack can be easily implemented using either an Array (or a dynamic array like a vector) or a Linked List. An array-based implementation is simple and cache-friendly, while a linked-list implementation offers more flexible memory management."
+                    },
+                    {
+                        question: "What's the difference between a Stack and a Queue?",
+                        answer: "The main difference is the order of operations. A Stack is **LIFO (Last-In, First-Out)**, while a Queue is **FIFO (First-In, First-Out)**. Think of a queue as a line of people; the first person to get in line is the first one to be served."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/stack-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
             }

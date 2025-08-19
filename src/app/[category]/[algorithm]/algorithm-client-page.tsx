@@ -1043,6 +1043,35 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
     return trace;
 }
 
+function generateStackTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const stack: number[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    trace.push({ line: 2, variables: { status: 'Initializing stack' }, data: [...stack], highlighted: [] });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'push' && !isNaN(value)) {
+            trace.push({ line: 4, variables: { action: `push(${value})` }, data: [...stack], highlighted: [] });
+            stack.push(value);
+            trace.push({ line: 5, variables: { status: `Pushed ${value}`, top: value }, data: [...stack], highlighted: [stack.length - 1] });
+        } else if (operation === 'pop') {
+            trace.push({ line: 7, variables: { action: 'pop()' }, data: [...stack], highlighted: [stack.length - 1] });
+            if (stack.length === 0) {
+                trace.push({ line: 8, variables: { status: 'Underflow: cannot pop from empty stack' }, data: [...stack], highlighted: [] });
+            } else {
+                const poppedValue = stack.pop();
+                trace.push({ line: 11, variables: { status: `Popped ${poppedValue}`, top: stack[stack.length - 1] ?? 'empty' }, data: [...stack], highlighted: [] });
+            }
+        }
+    }
+    trace.push({ line: 18, variables: { status: 'Operations complete', final_stack: `[${stack.join(', ')}]` }, data: [...stack], highlighted: [] });
+    return trace;
+}
+
 function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const trace: TraceStep[] = [];
     const traversalPath: number[] = [];
@@ -1425,6 +1454,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
+  stack: (commands) => generateStackTrace(commands),
   inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
   postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
@@ -1501,6 +1531,8 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
+      } else if (categoryKey === 'data-structures' && algorithmKey === 'stack') {
+          trace = traceGenerator(inputStr, undefined, undefined);
       } else if (categoryKey === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal', 'bestFirstSearch'].includes(algorithmKey)) {
           try {
               const parsedTree = JSON.parse(inputStr);
@@ -1611,6 +1643,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
                             categoryKey === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             categoryKey === 'searching' ? "e.g. 2, 8, 5, 12" :
                             categoryKey === 'tree' ? "e.g. { \"value\": 10, ... }" :
+                            categoryKey === 'data-structures' && algorithmKey === 'stack' ? "e.g. push 5,push 10,pop" :
                             "e.g. key1,val1;key2,val2"
                           }
                           className="flex-1"
@@ -1694,3 +1727,5 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     </div>
   );
 }
+
+    
