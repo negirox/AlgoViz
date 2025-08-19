@@ -54,7 +54,6 @@ export default function InterviewQuestionDetailPage({ params }: { params: { slug
                             <div className="prose prose-invert max-w-none mb-6" dangerouslySetInnerHTML={{ __html: question.solution.explanation }} />
                             <CodeEditor 
                                 code={question.solution.code}
-                                onCodeChange={() => {}}
                                 highlightedLine={undefined}
                                 readOnly={true}
                             />
