@@ -1214,6 +1214,43 @@ export const FAQ_DATA: FaqData = {
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/data-structures/linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
+            },
+            doublyLinkedList: {
+                title: "Doubly Linked List",
+                faqs: [
+                    {
+                        question: "What is a Doubly Linked List?",
+                        answer: "A Doubly Linked List is a more complex type of linked list where each node has a pointer to the next node as well as a pointer to the previous node. This allows for traversal in both forward and backward directions."
+                    },
+                    {
+                        question: "What are the advantages of a Doubly Linked List over a Singly Linked List?",
+                        answer: "The main advantage is bidirectional traversal. You can move forwards and backwards. This makes some operations, like deleting a node (if you have a pointer to it) or inserting a node before another, more efficient (O(1)) because you don't have to traverse the list to find the previous node."
+                    },
+                    {
+                        question: "What are the disadvantages?",
+                        answer: "The main disadvantage is that it requires extra space for the `prev` pointer in each node. Additionally, the insertion and deletion operations are slightly more complex because you have to manage two pointers (`next` and `prev`) instead of just one."
+                    },
+                    {
+                        question: "What does a node in a Doubly Linked List contain?",
+                        answer: "Each node contains three parts: the data, a pointer to the next node (`next`), and a pointer to the previous node (`prev`)."
+                    },
+                    {
+                        question: "How does deletion work in a Doubly Linked List?",
+                        answer: "To delete a node, you update the `next` pointer of the previous node to point to the current node's `next`, and you update the `prev` pointer of the next node to point to the current node's `prev`. This effectively 'unlinks' the node from the chain."
+                    },
+                    {
+                        question: "What are the time complexities for operations?",
+                        answer: "<ul><li><b>Access/Search:</b> O(n).</li><li><b>Insertion/Deletion at beginning/end:</b> O(1) (if a tail pointer is maintained).</li><li><b>Insertion/Deletion at a given node:</b> O(1).</li></ul>"
+                    },
+                    {
+                        question: "Where are Doubly Linked Lists used?",
+                        answer: "They are used in applications that require frequent forward and backward traversal, such as in the 'undo/redo' functionality of a text editor, or in representing the history of visited pages in a web browser."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/doubly-linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
             }
         }
     }

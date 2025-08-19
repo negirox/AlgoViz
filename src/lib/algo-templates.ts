@@ -924,6 +924,39 @@ class LinkedList {
             visualizer: "linked-list",
             timeComplexity: "O(n) Search",
             spaceComplexity: "O(n)",
+          },
+          doublyLinkedList: {
+            name: "Doubly Linked List",
+            description: "A Doubly Linked List is a type of linked list where each node contains a data field and two pointers: one to the next node in the sequence (next pointer) and one to the previous node (prev pointer). This bidirectional linking allows for traversal in both directions.",
+            code: `class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+        this.prev = null;
+    }
+}
+class DoublyLinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+    }
+    // ... insert, delete methods ...
+    insertAtEnd(data) {
+      const newNode = new Node(data);
+      if (!this.head) {
+          this.head = newNode;
+          this.tail = newNode;
+          return;
+      }
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    }
+}`,
+            input: "insert 10,insert 20,insert 30,delete 20",
+            visualizer: "doubly-linked-list",
+            timeComplexity: "O(n) Search",
+            spaceComplexity: "O(n)",
           }
       }
   }

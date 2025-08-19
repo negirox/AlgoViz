@@ -9,11 +9,12 @@ import { HashTableVisualizer } from "./hash-table-visualizer";
 import { TreeVisualizer } from "./tree-visualizer";
 import { StackVisualizer } from "./stack-visualizer";
 import { LinkedListVisualizer } from "./linked-list-visualizer";
+import { DoublyLinkedListVisualizer } from "./doubly-linked-list-visualizer";
 
 type VisualizerProps = {
     isLoading: boolean;
     traceStep?: TraceStep;
-    type: 'array' | 'tree' | 'graph' | 'hash-table' | 'stack' | 'linked-list'; // Extensible for future types
+    type: 'array' | 'tree' | 'graph' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list'; // Extensible for future types
 };
 
 export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
@@ -62,7 +63,13 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
                 highlightedIndex={traceStep?.highlighted}
               />
             )}
-            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && type !== 'stack' && type !== 'linked-list' && (
+            {type === 'doubly-linked-list' && (
+              <DoublyLinkedListVisualizer
+                nodes={traceStep?.data ?? []}
+                highlightedIndex={traceStep?.highlighted}
+              />
+            )}
+            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && type !== 'stack' && type !== 'linked-list' && type !== 'doubly-linked-list' && (
                  <div className="flex items-center justify-center h-64 text-muted-foreground">{type} visualizer coming soon!</div>
             )}
           </>
@@ -71,5 +78,3 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
     </Card>
   );
 }
-
-    
