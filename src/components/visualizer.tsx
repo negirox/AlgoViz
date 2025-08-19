@@ -12,11 +12,13 @@ import { StackVisualizer } from "./stack-visualizer";
 import { LinkedListVisualizer } from "./linked-list-visualizer";
 import { DoublyLinkedListVisualizer } from "./doubly-linked-list-visualizer";
 import { CircularLinkedListVisualizer } from "./circular-linked-list-visualizer";
+import { QueueVisualizer } from "./queue-visualizer";
+import { DequeVisualizer } from "./deque-visualizer";
 
 type VisualizerProps = {
     isLoading: boolean;
     traceStep?: TraceStep;
-    type: 'array' | 'tree' | 'graph' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list'; // Extensible for future types
+    type: 'array' | 'tree' | 'graph' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list' | 'queue' | 'deque'; // Extensible for future types
 };
 
 export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
@@ -77,7 +79,19 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
                 highlightedIndex={traceStep?.highlighted}
               />
             )}
-            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && type !== 'stack' && type !== 'linked-list' && type !== 'doubly-linked-list' && type !== 'circular-linked-list' && (
+            {type === 'queue' && (
+              <QueueVisualizer 
+                data={traceStep?.data ?? []}
+                highlighted={traceStep?.highlighted}
+              />
+            )}
+            {type === 'deque' && (
+              <DequeVisualizer
+                data={traceStep?.data ?? []}
+                highlighted={traceStep?.highlighted}
+              />
+            )}
+            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && type !== 'stack' && type !== 'linked-list' && type !== 'doubly-linked-list' && type !== 'circular-linked-list' && type !== 'queue' && type !== 'deque' && (
                  <div className="flex items-center justify-center h-64 text-muted-foreground">{type} visualizer coming soon!</div>
             )}
           </>

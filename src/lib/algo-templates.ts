@@ -894,6 +894,62 @@ function extractMin(arr) {
             timeComplexity: "O(1)",
             spaceComplexity: "O(n)",
           },
+          queue: {
+            name: "Queue",
+            description: "A linear data structure that follows the First-In, First-Out (FIFO) principle. Elements are added (enqueued) at the rear and removed (dequeued) from the front, like a line of people.",
+            code: `class Queue {
+  constructor() {
+    this.items = [];
+  }
+  enqueue(element) {
+    this.items.push(element);
+  }
+  dequeue() {
+    if (this.isEmpty()) {
+      return "Underflow";
+    }
+    return this.items.shift();
+  }
+  front() {
+    return this.items[0];
+  }
+  isEmpty() {
+    return this.items.length === 0;
+  }
+}`,
+            input: "enqueue 10,enqueue 20,dequeue,enqueue 30,enqueue 40,dequeue",
+            visualizer: "queue",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(n)",
+          },
+          deque: {
+            name: "Double-Ended Queue (Deque)",
+            description: "A Deque, or double-ended queue, is a generalized version of a Queue. Elements can be added or removed from either the front or the rear, providing maximum flexibility.",
+            code: `class Deque {
+  constructor() {
+    this.items = [];
+  }
+  addFront(element) {
+    this.items.unshift(element);
+  }
+  addRear(element) {
+    this.items.push(element);
+  }
+  removeFront() {
+    if(this.isEmpty()) return "Underflow";
+    return this.items.shift();
+  }
+  removeRear() {
+    if(this.isEmpty()) return "Underflow";
+    return this.items.pop();
+  }
+  // ... other helper methods
+}`,
+            input: "addRear 10,addRear 20,addFront 5,removeRear,removeFront",
+            visualizer: "deque",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(n)",
+          },
           singlyLinkedList: {
             name: "Singly Linked List",
             description: "A linear data structure where elements are stored in nodes. Each node contains a data field and a reference (or 'pointer') to the next node in the sequence. Unlike arrays, linked lists do not have a fixed size and allow for efficient insertions and deletions.",

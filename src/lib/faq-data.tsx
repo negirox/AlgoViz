@@ -1179,6 +1179,64 @@ export const FAQ_DATA: FaqData = {
                     }
                 ]
             },
+            queue: {
+                title: "Queue",
+                faqs: [
+                    {
+                        question: "What is a Queue?",
+                        answer: "A Queue is a linear data structure that follows the **First-In, First-Out (FIFO)** principle. Like a real-world queue or line, the first element added to the queue will be the first one to be removed."
+                    },
+                    {
+                        question: "What are the primary operations of a Queue?",
+                        answer: "The main operations are: <ul><li><b>Enqueue:</b> Adds an element to the rear (end) of the queue.</li><li><b>Dequeue:</b> Removes an element from the front of the queue.</li><li><b>Front (or Peek):</b> Returns the first element without removing it.</li><li><b>isEmpty:</b> Checks if the queue is empty.</li></ul>"
+                    },
+                    {
+                        question: "What is the time complexity of queue operations?",
+                        answer: "When implemented efficiently (e.g., with a linked list or a dynamic array that handles resizing well), `enqueue` and `dequeue` operations have an amortized time complexity of O(1)."
+                    },
+                    {
+                        question: "Where are queues used in computing?",
+                        answer: "Queues are used extensively: <ul><li><b>Operating Systems:</b> For managing processes in CPU scheduling.</li><li><b>Networking:</b> To handle data packets in order.</li><li><b>Printers:</b> To manage print jobs in the order they were received.</li><li><b>Breadth-First Search (BFS):</b> The algorithm uses a queue to explore graph nodes level by level.</li></ul>"
+                    },
+                     {
+                        question: "How can you implement a Queue?",
+                        answer: "A queue can be implemented using an array, but this can be inefficient for `dequeue` (which takes O(n) if you shift all elements). A better approach is to use a Linked List, where adding to the tail and removing from the head are both O(1) operations."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/queue-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+            deque: {
+                title: "Double-Ended Queue (Deque)",
+                faqs: [
+                    {
+                        question: "What is a Deque?",
+                        answer: "A Deque (pronounced 'deck'), or Double-Ended Queue, is a generalized version of a Queue. It's a linear collection of elements that allows insertion and deletion at both the front and the rear ends."
+                    },
+                    {
+                        question: "What are the primary operations of a Deque?",
+                        answer: "<ul><li><b>addFront:</b> Adds an element to the beginning.</li><li><b>addRear:</b> Adds an element to the end.</li><li><b>removeFront:</b> Removes an element from the beginning.</li><li><b>removeRear:</b> Removes an element from the end.</li></ul>"
+                    },
+                    {
+                        question: "How is a Deque different from a Queue or a Stack?",
+                        answer: "A Deque is more flexible. You can think of a Stack as a deque where insertions and deletions only happen at one end, and a Queue as a deque where insertions happen at one end and deletions at the other. A deque supports all of these operations."
+                    },
+                    {
+                        question: "What is the time complexity of deque operations?",
+                        answer: "When implemented with a data structure like a doubly linked list or a dynamic array, all primary operations (`addFront`, `addRear`, `removeFront`, `removeRear`) can be performed in O(1) amortized time."
+                    },
+                     {
+                        question: "Where are deques used?",
+                        answer: "Deques are useful for algorithms that require a 'sliding window', like finding the maximum element in all subarrays of a fixed size. They are also used for implementing palindrome checkers and other algorithms that require access to both ends of a sequence."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/deque-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
             singlyLinkedList: {
                 title: "Singly Linked List",
                 faqs: [
@@ -1258,7 +1316,7 @@ export const FAQ_DATA: FaqData = {
                 faqs: [
                     {
                         question: "What is a Circular Linked List?",
-                        answer: "A Circular Linked List is a variation of a linked list where all nodes are connected to form a circle. There is no `null` at the end; instead, the `next` pointer of the last node points to the first node (the head)."
+                        answer: "A Circular Linked List is a variation of a linked list in which the last node points back to the first node, creating a circle. There is no `null` at the end; instead, the `next` pointer of the last node points to the first node (the head)."
                     },
                     {
                         question: "What are the advantages of a Circular Linked List?",

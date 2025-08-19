@@ -1613,6 +1613,76 @@ function generateMinHeapTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateQueueTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const queue: number[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    trace.push({ line: 2, variables: { status: 'Initializing queue' }, data: [...queue], highlighted: {} });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'enqueue' && !isNaN(value)) {
+            trace.push({ line: 4, variables: { action: `enqueue(${value})` }, data: [...queue], highlighted: {} });
+            queue.push(value);
+            trace.push({ line: 5, variables: { status: `Enqueued ${value}`, front: queue[0], rear: queue[queue.length - 1] }, data: [...queue], highlighted: { index: queue.length - 1, type: 'enqueue' } });
+        } else if (operation === 'dequeue') {
+            trace.push({ line: 7, variables: { action: 'dequeue()' }, data: [...queue], highlighted: { index: 0, type: 'dequeue' } });
+            if (queue.length === 0) {
+                trace.push({ line: 8, variables: { status: 'Underflow: cannot dequeue from empty queue' }, data: [...queue], highlighted: {} });
+            } else {
+                const dequeuedValue = queue.shift();
+                trace.push({ line: 11, variables: { status: `Dequeued ${dequeuedValue}`, front: queue.length > 0 ? queue[0] : 'empty', rear: queue.length > 0 ? queue[queue.length-1] : 'empty' }, data: [...queue], highlighted: {} });
+            }
+        }
+    }
+    trace.push({ line: 18, variables: { status: 'Operations complete', final_queue: `[${queue.join(', ')}]` }, data: [...queue], highlighted: {} });
+    return trace;
+}
+
+function generateDequeTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const deque: number[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    trace.push({ line: 1, variables: { status: 'Initializing deque' }, data: [...deque], highlighted: {} });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'addFront' && !isNaN(value)) {
+            trace.push({ line: 5, variables: { action: `addFront(${value})` }, data: [...deque], highlighted: {} });
+            deque.unshift(value);
+            trace.push({ line: 6, variables: { status: `Added ${value} to front`, front: deque[0], rear: deque[deque.length - 1] }, data: [...deque], highlighted: { index: 0, type: 'front' } });
+        } else if (operation === 'addRear' && !isNaN(value)) {
+            trace.push({ line: 8, variables: { action: `addRear(${value})` }, data: [...deque], highlighted: {} });
+            deque.push(value);
+            trace.push({ line: 9, variables: { status: `Added ${value} to rear`, front: deque[0], rear: deque[deque.length - 1] }, data: [...deque], highlighted: { index: deque.length - 1, type: 'rear' } });
+        } else if (operation === 'removeFront') {
+            trace.push({ line: 11, variables: { action: 'removeFront()' }, data: [...deque], highlighted: { index: 0, type: 'front' } });
+            if (deque.length === 0) {
+                trace.push({ line: 12, variables: { status: 'Deque is empty' }, data: [...deque], highlighted: {} });
+            } else {
+                const removedValue = deque.shift();
+                trace.push({ line: 13, variables: { status: `Removed ${removedValue} from front`, front: deque.length > 0 ? deque[0] : 'empty', rear: deque.length > 0 ? deque[deque.length-1] : 'empty' }, data: [...deque], highlighted: {} });
+            }
+        } else if (operation === 'removeRear') {
+            trace.push({ line: 15, variables: { action: 'removeRear()' }, data: [...deque], highlighted: { index: deque.length - 1, type: 'rear' } });
+            if (deque.length === 0) {
+                trace.push({ line: 16, variables: { status: 'Deque is empty' }, data: [...deque], highlighted: {} });
+            } else {
+                const removedValue = deque.pop();
+                trace.push({ line: 17, variables: { status: `Removed ${removedValue} from rear`, front: deque.length > 0 ? deque[0] : 'empty', rear: deque.length > 0 ? deque[deque.length-1] : 'empty' }, data: [...deque], highlighted: {} });
+            }
+        }
+    }
+    trace.push({ line: 24, variables: { status: 'Operations complete', final_deque: `[${deque.join(', ')}]` }, data: [...deque], highlighted: {} });
+    return trace;
+}
+
 
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
@@ -1647,6 +1717,8 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   bestFirstSearch: (tree: any, target: any) => generateBestFirstSearchTrace(tree, target),
   binarySearchTree: (arr: any) => generateBinarySearchTreeTrace(arr),
   avlTree: (arr: any) => generateAVLTreeTrace(arr),
+  queue: (commands) => generateQueueTrace(commands),
+  deque: (commands) => generateDequeTrace(commands),
 };
 
 type AlgorithmClientPageProps = {
@@ -1716,9 +1788,9 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList')) {
+      } else if (categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque'].includes(algorithmKey)) {
           trace = traceGenerator(inputStr, undefined, undefined);
-      } else if (categoryKey === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal', 'bestFirstSearch', 'minHeap'].includes(algorithmKey)) {
+      } else if (categoryKey === 'tree') {
           if (algorithmKey === 'minHeap') {
             const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
             if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
@@ -1805,7 +1877,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list';
+  const visualizerType = algorithm.visualizer as | 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list' | 'queue' | 'deque';
   const needsTargetInput = (categoryKey === 'searching') || (categoryKey === 'tree' && algorithmKey === 'bestFirstSearch');
 
   return (
@@ -1834,7 +1906,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
                             categoryKey === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             categoryKey === 'searching' ? "e.g. 2, 8, 5, 12" :
                             categoryKey === 'tree' ? "e.g. { \"value\": 10, ... } or 10,20,5..." :
-                            categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList') ? "e.g. push 5,push 10,pop" :
+                            categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque'].includes(algorithmKey) ? "e.g. push 5,push 10,pop" :
                             "e.g. key1,val1;key2,val2"
                           }
                           className="flex-1"
