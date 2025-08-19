@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import { ALGO_CATEGORIES, AlgorithmCategoryKey, AlgorithmKey } from '@/lib/algo-templates';
 import AlgorithmClientPage from './algorithm-client-page';
 
-export default function AlgorithmPage({ params }: { params: { category: AlgorithmCategoryKey, algorithm: AlgorithmKey<any> } }) {
-  const { category: categoryKey, algorithm: algorithmKey } = params;
+export default async function AlgorithmPage({ params }: { params: { category: AlgorithmCategoryKey, algorithm: AlgorithmKey<any> } }) {
+  const { category: categoryKey, algorithm: algorithmKey } = await params;
 
   // Validate params on the server
   const category = ALGO_CATEGORIES[categoryKey];
