@@ -1,18 +1,25 @@
+
 import { AlgorithmShowcase } from '@/components/algorithm-showcase';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/footer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Github } from 'lucide-react';
+import { Github, BookCopy } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CheckCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background font-sans text-foreground">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
-          <h1 className="text-xl font-bold font-headline text-primary">AlgoViz</h1>
-          <div className="flex items-center gap-4">
+          <Link href="/" className="mr-6 flex items-center space-x-2">
+            <h1 className="text-xl font-bold font-headline text-primary">AlgoViz</h1>
+          </Link>
+          <nav className="flex items-center gap-4">
+             <Link href="/interview-questions" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">
+                Interview Questions
+              </Link>
             <Dialog>
                 <DialogTrigger asChild>
                     <Button variant="link" className="text-sm font-medium text-muted-foreground">About Us</Button>
@@ -114,7 +121,7 @@ export default function Home() {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </div>
+          </nav>
         </div>
       </header>
       <main className="flex-1">
@@ -142,6 +149,10 @@ export default function Home() {
                             <li className="flex items-center gap-2">
                                 <CheckCircle className="h-5 w-5 text-primary" />
                                 <span>Control the execution speed with playback controls.</span>
+                            </li>
+                             <li className="flex items-center gap-2">
+                                <BookCopy className="h-5 w-5 text-primary" />
+                                <span>Practice with real interview questions.</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <CheckCircle className="h-5 w-5 text-primary" />
