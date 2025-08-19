@@ -1683,6 +1683,78 @@ function generateDequeTrace(commands: string): TraceStep[] {
     return trace;
 }
 
+function generateCircularQueueTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const size = 5; // Fixed size for visualization
+    const queue = new Array(size).fill(null);
+    let front = -1;
+    let rear = -1;
+
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    const getQueueState = () => ({
+        queue: [...queue],
+        front,
+        rear,
+        size
+    });
+
+    trace.push({ line: 1, variables: { status: 'Initializing Circular Queue', size }, data: getQueueState(), highlighted: {} });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'enqueue' && !isNaN(value)) {
+            trace.push({ line: 9, variables: { action: `enqueue(${value})` }, data: getQueueState(), highlighted: {} });
+            
+            const isFull = (rear + 1) % size === front;
+            trace.push({ line: 10, variables: { condition: `(rear + 1) % size === front -> ${isFull}` }, data: getQueueState(), highlighted: {} });
+            if (isFull) {
+                trace.push({ line: 11, variables: { status: 'Queue is full. Cannot enqueue.' }, data: getQueueState(), highlighted: {} });
+                continue;
+            }
+
+            trace.push({ line: 13, variables: { condition: `front === -1 -> ${front === -1}` }, data: getQueueState(), highlighted: {} });
+            if (front === -1) {
+                front = 0;
+                trace.push({ line: 13, variables: { front: 0 }, data: getQueueState(), highlighted: { index: front, type: 'front' } });
+            }
+
+            rear = (rear + 1) % size;
+            trace.push({ line: 14, variables: { rear }, data: getQueueState(), highlighted: { index: rear, type: 'rear' } });
+            queue[rear] = value;
+            trace.push({ line: 15, variables: { status: `Enqueued ${value}` }, data: getQueueState(), highlighted: { index: rear, type: 'enqueue' } });
+
+        } else if (operation === 'dequeue') {
+            trace.push({ line: 17, variables: { action: 'dequeue()' }, data: getQueueState(), highlighted: {} });
+            
+            const isEmpty = front === -1;
+            trace.push({ line: 18, variables: { condition: `front === -1 -> ${isEmpty}` }, data: getQueueState(), highlighted: {} });
+            if (isEmpty) {
+                trace.push({ line: 19, variables: { status: 'Queue is empty. Cannot dequeue.' }, data: getQueueState(), highlighted: {} });
+                continue;
+            }
+
+            const dequeuedValue = queue[front];
+            queue[front] = null; // Visually empty the slot
+            trace.push({ line: 21, variables: { dequeuedValue }, data: getQueueState(), highlighted: { index: front, type: 'dequeue' } });
+
+            const wasLastElement = front === rear;
+            trace.push({ line: 22, variables: { condition: `front === rear -> ${wasLastElement}` }, data: getQueueState(), highlighted: {} });
+            if (wasLastElement) {
+                front = -1;
+                rear = -1;
+                trace.push({ line: 23, variables: { status: 'Queue is now empty', front, rear }, data: getQueueState(), highlighted: {} });
+            } else {
+                front = (front + 1) % size;
+                trace.push({ line: 26, variables: { front }, data: getQueueState(), highlighted: { index: front, type: 'front' } });
+            }
+        }
+    }
+    trace.push({ line: 30, variables: { status: 'Operations complete' }, data: getQueueState(), highlighted: {} });
+    return trace;
+}
 
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
@@ -1719,6 +1791,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   avlTree: (arr: any) => generateAVLTreeTrace(arr),
   queue: (commands) => generateQueueTrace(commands),
   deque: (commands) => generateDequeTrace(commands),
+  circularQueue: (commands) => generateCircularQueueTrace(commands),
 };
 
 type AlgorithmClientPageProps = {
@@ -1788,7 +1861,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque'].includes(algorithmKey)) {
+      } else if (categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque', 'circularQueue'].includes(algorithmKey)) {
           trace = traceGenerator(inputStr, undefined, undefined);
       } else if (categoryKey === 'tree') {
           if (algorithmKey === 'minHeap') {
@@ -1877,7 +1950,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = algorithm.visualizer as | 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list' | 'queue' | 'deque';
+  const visualizerType = algorithm.visualizer as | 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list' | 'queue' | 'deque' | 'circular-queue';
   const needsTargetInput = (categoryKey === 'searching') || (categoryKey === 'tree' && algorithmKey === 'bestFirstSearch');
 
   return (
@@ -1906,7 +1979,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
                             categoryKey === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             categoryKey === 'searching' ? "e.g. 2, 8, 5, 12" :
                             categoryKey === 'tree' ? "e.g. { \"value\": 10, ... } or 10,20,5..." :
-                            categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque'].includes(algorithmKey) ? "e.g. push 5,push 10,pop" :
+                            categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque', 'circularQueue'].includes(algorithmKey) ? "e.g. push 5,push 10,pop" :
                             "e.g. key1,val1;key2,val2"
                           }
                           className="flex-1"

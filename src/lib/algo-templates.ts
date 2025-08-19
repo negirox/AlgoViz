@@ -598,6 +598,50 @@ function binarySearch(arr, l, r, x) {
   tree: {
     name: "Tree / Graph",
     algorithms: {
+      minHeap: {
+        name: "Min-Heap",
+        description: "A Min-Heap is a specialized tree-based data structure that satisfies the heap property: the value of each node is less than or equal to the value of its children. This means the smallest element is always at the root. It is commonly used to implement priority queues.",
+        code: `// Heapify a subtree rooted with node i
+function heapify(arr, n, i) {
+    let smallest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < n && arr[left] < arr[smallest]) {
+        smallest = left;
+    }
+
+    if (right < n && arr[right] < arr[smallest]) {
+        smallest = right;
+    }
+
+    if (smallest !== i) {
+        [arr[i], arr[smallest]] = [arr[smallest], arr[i]];
+        heapify(arr, n, smallest);
+    }
+}
+
+// Build a min-heap from an array
+function buildHeap(arr) {
+    const n = arr.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+}
+
+// Extract the minimum element
+function extractMin(arr) {
+    const min = arr[0];
+    arr[0] = arr.pop();
+    heapify(arr, arr.length, 0);
+    return min;
+}
+`,
+        input: "10,20,15,30,40,5,50,1",
+        visualizer: "tree",
+        timeComplexity: "O(log n) Insert/Delete",
+        spaceComplexity: "O(1)",
+      },
       inOrderTraversal: {
         name: "In-order Traversal",
         description: "A tree traversal method that visits nodes in the order: left child, root, right child. For a Binary Search Tree, this traversal visits nodes in ascending order.",
@@ -779,50 +823,6 @@ function insert(node, key) {
         visualizer: 'tree',
         timeComplexity: "O(log n)",
         spaceComplexity: "O(log n)",
-      },
-      minHeap: {
-        name: "Min-Heap",
-        description: "A Min-Heap is a specialized tree-based data structure that satisfies the heap property: the value of each node is less than or equal to the value of its children. This means the smallest element is always at the root. It is commonly used to implement priority queues.",
-        code: `// Heapify a subtree rooted with node i
-function heapify(arr, n, i) {
-    let smallest = i;
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
-
-    if (left < n && arr[left] < arr[smallest]) {
-        smallest = left;
-    }
-
-    if (right < n && arr[right] < arr[smallest]) {
-        smallest = right;
-    }
-
-    if (smallest !== i) {
-        [arr[i], arr[smallest]] = [arr[smallest], arr[i]];
-        heapify(arr, n, smallest);
-    }
-}
-
-// Build a min-heap from an array
-function buildHeap(arr) {
-    const n = arr.length;
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-}
-
-// Extract the minimum element
-function extractMin(arr) {
-    const min = arr[0];
-    arr[0] = arr.pop();
-    heapify(arr, arr.length, 0);
-    return min;
-}
-`,
-        input: "10,20,15,30,40,5,50,1",
-        visualizer: "tree",
-        timeComplexity: "O(log n) Insert/Delete",
-        spaceComplexity: "O(1)",
       },
     }
   },
@@ -1048,7 +1048,44 @@ class CircularLinkedList {
             visualizer: "circular-linked-list",
             timeComplexity: "O(n) Search/Insert",
             spaceComplexity: "O(n)",
-          }
+          },
+          circularQueue: {
+            name: "Circular Queue",
+            description: "A Circular Queue is a linear data structure that follows the FIFO principle but its last position is connected back to the first position to make a circle. It is also called 'Ring Buffer'. It's an efficient implementation of a queue using a fixed-size array.",
+            code: `class CircularQueue {
+    constructor(size) {
+        this.size = size;
+        this.queue = new Array(size);
+        this.front = -1;
+        this.rear = -1;
+    }
+    enqueue(data) {
+        if ((this.rear + 1) % this.size === this.front) {
+            return "Queue is full";
+        }
+        if (this.front === -1) this.front = 0;
+        this.rear = (this.rear + 1) % this.size;
+        this.queue[this.rear] = data;
+    }
+    dequeue() {
+        if (this.front === -1) {
+            return "Queue is empty";
+        }
+        let data = this.queue[this.front];
+        if (this.front === this.rear) {
+            this.front = -1;
+            this.rear = -1;
+        } else {
+            this.front = (this.front + 1) % this.size;
+        }
+        return data;
+    }
+}`,
+            input: "enqueue 10,enqueue 20,enqueue 30,dequeue,enqueue 40,enqueue 50,dequeue,dequeue,enqueue 60",
+            visualizer: "circular-queue",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(k)",
+          },
       }
   }
 } as const;
