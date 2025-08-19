@@ -1177,6 +1177,43 @@ export const FAQ_DATA: FaqData = {
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/heap-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
+            },
+            singlyLinkedList: {
+                title: "Singly Linked List",
+                faqs: [
+                    {
+                        question: "What is a Linked List?",
+                        answer: "A linked list is a linear data structure, in which the elements are not stored at contiguous memory locations. The elements in a linked list are linked using pointers. In simple words, a linked list consists of nodes where each node contains a data field and a reference(link) to the next node in the list."
+                    },
+                    {
+                        question: "What is the difference between an Array and a Linked List?",
+                        answer: "Arrays are fixed-size and store elements in contiguous memory, allowing for O(1) random access. Linked lists are dynamic in size and use pointers to connect nodes, which means access/search is O(n), but insertions and deletions are more efficient at O(1) if the node's location is known."
+                    },
+                    {
+                        question: "What are the primary operations of a Linked List?",
+                        answer: "<ul><li><b>Insertion:</b> Adds an element at the beginning, end, or a specific position.</li><li><b>Deletion:</b> Removes an element from the list.</li><li><b>Search:</b> Finds an element in the list.</li><li><b>Traversal:</b> Iterates through all the nodes in the list.</li></ul>"
+                    },
+                    {
+                        question: "What is a 'node' in a linked list?",
+                        answer: "A node is the basic building block of a linked list. It typically consists of two parts: the data itself, and a pointer (or link) that references the next node in the sequence."
+                    },
+                    {
+                        question: "What is the 'head' of a linked list?",
+                        answer: "The 'head' is a pointer that stores the address of the very first node in the linked list. If the head is null, the list is empty. It's the entry point to the entire list."
+                    },
+                    {
+                        question: "What is the time complexity for operations?",
+                        answer: "<ul><li><b>Access/Search:</b> O(n) because you may have to traverse the entire list.</li><li><b>Insertion/Deletion at beginning:</b> O(1).</li><li><b>Insertion/Deletion at end:</b> O(n) because you must traverse to the end first.</li></ul>"
+                    },
+                    {
+                        question: "What is the space complexity of a Linked List?",
+                        answer: "The space complexity is O(n) because it stores n elements, and each element's node requires space for the data and a pointer."
+                    },
+                     {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/data-structures/linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
             }
         }
     }

@@ -892,6 +892,38 @@ function extractMin(arr) {
             visualizer: "tree",
             timeComplexity: "O(log n) Insert/Delete",
             spaceComplexity: "O(1)",
+          },
+          singlyLinkedList: {
+            name: "Singly Linked List",
+            description: "A linear data structure where elements are stored in nodes. Each node contains a data field and a reference (or 'pointer') to the next node in the sequence. Unlike arrays, linked lists do not have a fixed size and allow for efficient insertions and deletions.",
+            code: `class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+    // ... insert, delete, search methods ...
+    insertAtEnd(data) {
+      const newNode = new Node(data);
+      if (!this.head) {
+          this.head = newNode;
+          return;
+      }
+      let current = this.head;
+      while (current.next) {
+          current = current.next;
+      }
+      current.next = newNode;
+    }
+}`,
+            input: "insert 10,insert 20,insert 5,delete 20,insert 15",
+            visualizer: "linked-list",
+            timeComplexity: "O(n) Search",
+            spaceComplexity: "O(n)",
           }
       }
   }

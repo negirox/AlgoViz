@@ -1072,6 +1072,40 @@ function generateStackTrace(commands: string): TraceStep[] {
     return trace;
 }
 
+function generateSinglyLinkedListTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const list: {value: number}[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    const listToArray = () => list.map(node => ({ value: node.value }));
+
+    trace.push({ line: 7, variables: { status: 'Initializing Linked List' }, data: listToArray(), highlighted: -1 });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'insert' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `insert(${value})` }, data: listToArray(), highlighted: -1 });
+            list.push({ value });
+            trace.push({ line: 19, variables: { status: `Inserted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: list.length - 1 });
+        } else if (operation === 'delete' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `delete(${value})` }, data: listToArray(), highlighted: -1 });
+            const indexToDelete = list.findIndex(node => node.value === value);
+            if (indexToDelete !== -1) {
+                trace.push({ line: 11, variables: { action: `delete(${value})`, status: `Found ${value} at index ${indexToDelete}` }, data: listToArray(), highlighted: indexToDelete });
+                list.splice(indexToDelete, 1);
+                trace.push({ line: 11, variables: { status: `Deleted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: -1 });
+            } else {
+                 trace.push({ line: 11, variables: { action: `delete(${value})`, status: `${value} not found` }, data: listToArray(), highlighted: -1 });
+            }
+        }
+    }
+    trace.push({ line: 20, variables: { status: 'Operations complete', final_list: `[${list.map(n => n.value).join(' -> ')}]` }, data: listToArray(), highlighted: -1 });
+    return trace;
+}
+
+
 function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const trace: TraceStep[] = [];
     const traversalPath: number[] = [];
@@ -1527,6 +1561,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
   stack: (commands) => generateStackTrace(commands),
+  singlyLinkedList: (commands) => generateSinglyLinkedListTrace(commands),
   minHeap: (arr) => generateMinHeapTrace(arr),
   inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
@@ -1604,8 +1639,8 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'minHeap')) {
-          if (algorithmKey === 'stack') {
+      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'minHeap' || algorithmKey === 'singlyLinkedList')) {
+          if (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList') {
             trace = traceGenerator(inputStr, undefined, undefined);
           } else { // minHeap
             const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
@@ -1693,7 +1728,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table' | 'stack';
+  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list';
   const needsTargetInput = (categoryKey === 'searching') || (categoryKey === 'tree' && algorithmKey === 'bestFirstSearch');
 
   return (
@@ -1722,7 +1757,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
                             categoryKey === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             categoryKey === 'searching' ? "e.g. 2, 8, 5, 12" :
                             categoryKey === 'tree' ? "e.g. { \"value\": 10, ... }" :
-                            categoryKey === 'data-structures' && algorithmKey === 'stack' ? "e.g. push 5,push 10,pop" :
+                            categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList') ? "e.g. push 5,push 10,pop" :
                             "e.g. key1,val1;key2,val2"
                           }
                           className="flex-1"
