@@ -1432,6 +1432,78 @@ function generateAVLTreeTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateMinHeapTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+
+    const arrayToTree = (array: number[], i = 0): TreeNode | null => {
+        if (i >= array.length) return null;
+        const node: TreeNode = {
+            value: array[i],
+            left: arrayToTree(array, 2 * i + 1),
+            right: arrayToTree(array, 2 * i + 2)
+        };
+        return node;
+    };
+
+    const getHighlightNodeFromIndex = (index: number) => {
+        return localArr[index];
+    }
+    
+    const getHighlightNodesFromIndices = (i: number, j: number) => {
+        return [localArr[i], localArr[j]];
+    }
+
+    function heapify(n: number, i: number) {
+        trace.push({ line: 2, variables: { status: `Heapifying at index ${i}`, node_value: localArr[i] }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        let smallest = i;
+        const left = 2 * i + 1;
+        const right = 2 * i + 2;
+        trace.push({ line: 3, variables: { i, smallest }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        trace.push({ line: 4, variables: { left_child_index: left }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        trace.push({ line: 5, variables: { right_child_index: right }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        
+        trace.push({ line: 7, variables: { condition: `${left} < ${n} && ${localArr[left]} < ${localArr[smallest]}`}, data: [], highlighted: getHighlightNodeFromIndex(i), secondaryHighlight: left < n ? getHighlightNodesFromIndices(left, smallest) : [], treeData: arrayToTree(localArr) });
+        if (left < n && localArr[left] < localArr[smallest]) {
+            smallest = left;
+            trace.push({ line: 8, variables: { smallest_now: smallest }, data: [], highlighted: getHighlightNodeFromIndex(smallest), treeData: arrayToTree(localArr) });
+        }
+        
+        trace.push({ line: 10, variables: { condition: `${right} < ${n} && ${localArr[right]} < ${localArr[smallest]}`}, data: [], highlighted: getHighlightNodeFromIndex(i), secondaryHighlight: right < n ? getHighlightNodesFromIndices(right, smallest) : [], treeData: arrayToTree(localArr) });
+        if (right < n && localArr[right] < localArr[smallest]) {
+            smallest = right;
+            trace.push({ line: 11, variables: { smallest_now: smallest }, data: [], highlighted: getHighlightNodeFromIndex(smallest), treeData: arrayToTree(localArr) });
+        }
+
+        trace.push({ line: 13, variables: { condition: `${smallest} !== ${i}`}, data: [], highlighted: getHighlightNodeFromIndex(i), secondaryHighlight: getHighlightNodesFromIndices(i, smallest), treeData: arrayToTree(localArr) });
+        if (smallest !== i) {
+            [localArr[i], localArr[smallest]] = [localArr[smallest], localArr[i]];
+            trace.push({ line: 14, variables: { action: `Swapping ${localArr[smallest]} and ${localArr[i]}` }, data: [], highlighted: getHighlightNodeFromIndex(smallest), secondaryHighlight: getHighlightNodesFromIndices(i, smallest), treeData: arrayToTree(localArr) });
+            heapify(n, smallest);
+            trace.push({ line: 15, variables: { action: `Recursively heapify on new subtree` }, data: [], highlighted: getHighlightNodeFromIndex(smallest), treeData: arrayToTree(localArr) });
+        }
+    }
+
+    trace.push({ line: 19, variables: { status: 'Starting to build Min-Heap...' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+    const n = localArr.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(n, i);
+    }
+    trace.push({ line: 22, variables: { status: 'Min-Heap built successfully' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+
+    // Demonstrate extract min
+    trace.push({ line: 25, variables: { status: 'Demonstrating extractMin...' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+    const min = localArr[0];
+    trace.push({ line: 26, variables: { extracted_min: min }, data: [], highlighted: getHighlightNodeFromIndex(0), treeData: arrayToTree(localArr) });
+    localArr[0] = localArr.pop()!;
+    trace.push({ line: 27, variables: { action: 'Move last element to root' }, data: [], highlighted: getHighlightNodeFromIndex(0), treeData: arrayToTree(localArr) });
+    heapify(localArr.length, 0);
+    trace.push({ line: 28, variables: { action: 'Heapify root to restore heap property' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+    trace.push({ line: 29, variables: { status: 'Extraction complete', returned_min: min, final_heap: `[${localArr.join(', ')}]` }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+
+    return trace;
+}
+
 
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
@@ -1455,6 +1527,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
   stack: (commands) => generateStackTrace(commands),
+  minHeap: (arr) => generateMinHeapTrace(arr),
   inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
   postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
@@ -1531,8 +1604,14 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (categoryKey === 'data-structures' && algorithmKey === 'stack') {
-          trace = traceGenerator(inputStr, undefined, undefined);
+      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'minHeap')) {
+          if (algorithmKey === 'stack') {
+            trace = traceGenerator(inputStr, undefined, undefined);
+          } else { // minHeap
+            const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+            if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
+            trace = traceGenerator(parsedArray, undefined);
+          }
       } else if (categoryKey === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal', 'bestFirstSearch'].includes(algorithmKey)) {
           try {
               const parsedTree = JSON.parse(inputStr);
@@ -1727,5 +1806,3 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     </div>
   );
 }
-
-    

@@ -950,7 +950,7 @@ export const FAQ_DATA: FaqData = {
                 faqs: [
                     {
                         question: "What is a Binary Search Tree (BST)?",
-                        answer: "A Binary Search Tree is a node-based binary tree data structure which has the following properties: The left subtree of a node contains only nodes with keys lesser than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be binary search trees."
+                        answer: "A Binary Search Tree is a node-based binary tree data structure which has the following properties: The left subtree of a node contains only nodes with keys lesser than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be a binary search tree."
                     },
                     {
                         question: "What is the time complexity for search, insert, and delete in a BST?",
@@ -1136,9 +1136,48 @@ export const FAQ_DATA: FaqData = {
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/stack-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
+            },
+            minHeap: {
+                title: "Min-Heap",
+                faqs: [
+                    {
+                        question: "What is a Heap?",
+                        answer: "A Heap is a specialized tree-based data structure that satisfies the 'heap property'. In a Min-Heap, for any given node, its value is less than or equal to the values of its children. This means the smallest element is always at the root. In a Max-Heap, the root contains the largest element."
+                    },
+                    {
+                        question: "How is a Heap represented in memory?",
+                        answer: "Although it's a tree conceptually, a heap is typically implemented as an array. The parent-child relationship is maintained mathematically: for a node at index `i`, its left child is at `2*i + 1` and its right child is at `2*i + 2`."
+                    },
+                    {
+                        question: "What is 'heapify'?",
+                        answer: "Heapify (or sift-down) is the process of rearranging the nodes to maintain the heap property. When an element is placed at the root that violates the property (e.g., after extracting the min element), heapify 'sinks' the new root down the tree by swapping it with its smallest child until the heap property is restored."
+                    },
+                    {
+                        question: "What is the time complexity for heap operations?",
+                        answer: "Building a heap from an array of n elements can be done in O(n) time. The time complexity for `insert` and `delete` (extract-min/max) operations is O(log n), because the height of a complete binary tree with n nodes is log n."
+                    },
+                    {
+                        question: "What are the main applications of a Heap?",
+                        answer: "Heaps are most famously used to implement Priority Queues, which are essential in many algorithms like Dijkstra's shortest path and Prim's minimum spanning tree. They are also the core of the Heap Sort algorithm."
+                    },
+                    {
+                        question: "What is the difference between a Min-Heap and a Max-Heap?",
+                        answer: "In a Min-Heap, the parent node is always smaller than or equal to its children, so the root is the minimum element. In a Max-Heap, the parent is always larger than or equal to its children, so the root is the maximum element."
+                    },
+                    {
+                        question: "How do you insert a new element into a Min-Heap?",
+                        answer: "To insert a new element, you add it to the end of the array (the bottom-most, right-most position in the tree). Then, you 'bubble up' the new element by repeatedly swapping it with its parent as long as it is smaller than its parent, until the heap property is restored."
+                    },
+                    {
+                        question: "Is a Heap a Binary Search Tree?",
+                        answer: "No. A BST has a strict ordering property (left < root < right). A heap only requires that parents are smaller (or larger) than their children; there is no required ordering between the left and right children."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/heap-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
             }
         }
     }
 };
-
-    

@@ -848,6 +848,50 @@ function insert(node, key) {
             visualizer: "stack",
             timeComplexity: "O(1)",
             spaceComplexity: "O(n)",
+          },
+          minHeap: {
+            name: "Min-Heap",
+            description: "A Min-Heap is a specialized tree-based data structure that satisfies the heap property: the value of each node is less than or equal to the value of its children. This means the smallest element is always at the root. It is commonly used to implement priority queues.",
+            code: `// Heapify a subtree rooted with node i
+function heapify(arr, n, i) {
+    let smallest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < n && arr[left] < arr[smallest]) {
+        smallest = left;
+    }
+
+    if (right < n && arr[right] < arr[smallest]) {
+        smallest = right;
+    }
+
+    if (smallest !== i) {
+        [arr[i], arr[smallest]] = [arr[smallest], arr[i]];
+        heapify(arr, n, smallest);
+    }
+}
+
+// Build a min-heap from an array
+function buildHeap(arr) {
+    const n = arr.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+}
+
+// Extract the minimum element
+function extractMin(arr) {
+    const min = arr[0];
+    arr[0] = arr.pop();
+    heapify(arr, arr.length, 0);
+    return min;
+}
+`,
+            input: "10,20,15,30,40,5,50,1",
+            visualizer: "tree",
+            timeComplexity: "O(log n) Insert/Delete",
+            spaceComplexity: "O(1)",
           }
       }
   }
@@ -855,5 +899,3 @@ function insert(node, key) {
 
 export type AlgorithmCategoryKey = keyof typeof ALGO_CATEGORIES;
 export type AlgorithmKey<T extends AlgorithmCategoryKey> = keyof (typeof ALGO_CATEGORIES)[T]['algorithms'];
-
-    
