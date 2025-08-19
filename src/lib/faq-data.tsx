@@ -951,7 +951,7 @@ export const FAQ_DATA: FaqData = {
                 faqs: [
                     {
                         question: "What is a Binary Search Tree (BST)?",
-                        answer: "A Binary Search Tree is a node-based binary tree data structure which has the following properties: The left subtree of a node contains only nodes with keys lesser than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be binary search trees."
+                        answer: "A Binary Search Tree is a node-based binary tree data structure which has the following properties: The left subtree of a node contains only nodes with keys lesser than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be a binary search tree."
                     },
                     {
                         question: "What is the time complexity for search, insert, and delete in a BST?",
@@ -1043,6 +1043,47 @@ export const FAQ_DATA: FaqData = {
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/avl-tree-set-1-insertion/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
+            },
+            minHeap: {
+                title: "Min-Heap",
+                faqs: [
+                    {
+                        question: "What is a Heap?",
+                        answer: "A Heap is a specialized tree-based data structure that satisfies the 'heap property'. In a Min-Heap, for any given node, its value is less than or equal to the values of its children. This means the smallest element is always at the root. In a Max-Heap, the root contains the largest element."
+                    },
+                    {
+                        question: "How is a Heap represented in memory?",
+                        answer: "Although it's a tree conceptually, a heap is typically implemented as an array. The parent-child relationship is maintained mathematically: for a node at index `i`, its left child is at `2*i + 1` and its right child is at `2*i + 2`."
+                    },
+                    {
+                        question: "What is 'heapify'?",
+                        answer: "Heapify (or sift-down) is the process of rearranging the nodes to maintain the heap property. When an element is placed at the root that violates the property (e.g., after extracting the min element), heapify 'sinks' the new root down the tree by swapping it with its smallest child until the heap property is restored."
+                    },
+                    {
+                        question: "What is the time complexity for heap operations?",
+                        answer: "Building a heap from an array of n elements can be done in O(n) time. The time complexity for `insert` and `delete` (extract-min/max) operations is O(log n), because the height of a complete binary tree with n nodes is log n."
+                    },
+                    {
+                        question: "What are the main applications of a Heap?",
+                        answer: "Heaps are most famously used to implement Priority Queues, which are essential in many algorithms like Dijkstra's shortest path and Prim's minimum spanning tree. They are also the core of the Heap Sort algorithm."
+                    },
+                    {
+                        question: "What is the difference between a Min-Heap and a Max-Heap?",
+                        answer: "In a Min-Heap, the parent node is always smaller than or equal to its children, so the root is the minimum element. In a Max-Heap, the parent is always larger than or equal to its children, so the root is the maximum element."
+                    },
+                    {
+                        question: "How do you insert a new element into a Min-Heap?",
+                        answer: "To insert a new element, you add it to the end of the array (the bottom-most, right-most position in the tree). Then, you 'bubble up' the new element by repeatedly swapping it with its parent as long as it is smaller than its parent, until the heap property is restored."
+                    },
+                    {
+                        question: "Is a Heap a Binary Search Tree?",
+                        answer: "No. A BST has a strict ordering property (left < root < right). A heap only requires that parents are smaller (or larger) than their children; there is no required ordering between the left and right children."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/heap-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
             }
         }
     },
@@ -1096,9 +1137,213 @@ export const FAQ_DATA: FaqData = {
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/hashing-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
+            },
+            stack: {
+                title: "Stack",
+                faqs: [
+                    {
+                        question: "What is a Stack?",
+                        answer: "A Stack is a linear data structure that follows a particular order in which the operations are performed. The order is Last-In, First-Out (LIFO). An excellent analogy is a stack of plates; you can only add a plate to the top and can only remove the top plate."
+                    },
+                    {
+                        question: "What are the primary operations of a Stack?",
+                        answer: "The primary operations are: <ul><li><b>Push:</b> Adds an element to the top of the stack.</li><li><b>Pop:</b> Removes the top element from the stack.</li><li><b>Peek (or Top):</b> Returns the top element without removing it.</li><li><b>isEmpty:</b> Checks if the stack is empty.</li></ul>"
+                    },
+                    {
+                        question: "What is the time complexity of stack operations?",
+                        answer: "For a standard implementation (e.g., using an array or a linked list), the time complexity for `push`, `pop`, and `peek` is O(1). These operations are very fast as they don't depend on the number of items in the stack."
+                    },
+                    {
+                        question: "Where are stacks used in computing?",
+                        answer: "Stacks are used in many areas: <ul><li><b>Function Calls:</b> The 'call stack' manages active function calls. When a function is called, it's pushed onto the stack, and when it returns, it's popped off.</li><li><b>Undo/Redo Features:</b> Text editors and other software use stacks to implement undo functionality.</li><li><b>Expression Evaluation:</b> Compilers use stacks to convert expressions from infix to postfix notation and evaluate them.</li><li><b>Backtracking Algorithms:</b> Stacks are used to keep track of paths in algorithms like maze-solving or in graph traversals (DFS).</li></ul>"
+                    },
+                    {
+                        question: "What is a stack overflow?",
+                        answer: "A stack overflow is an error that occurs when the call stack runs out of space. This usually happens with very deep or infinite recursion, where functions are pushed onto the stack faster than they are popped off."
+                    },
+                    {
+                        question: "What is a stack underflow?",
+                        answer: "A stack underflow occurs when you try to `pop` an element from an empty stack. A well-implemented stack should handle this case by throwing an error or returning a specific value like null or undefined."
+                    },
+                    {
+                        question: "How can a Stack be implemented?",
+                        answer: "A stack can be easily implemented using either an Array (or a dynamic array like a vector) or a Linked List. An array-based implementation is simple and cache-friendly, while a linked-list implementation offers more flexible memory management."
+                    },
+                    {
+                        question: "What's the difference between a Stack and a Queue?",
+                        answer: "The main difference is the order of operations. A Stack is **LIFO (Last-In, First-Out)**, while a Queue is **FIFO (First-In, First-Out)**. Think of a queue as a line of people; the first person to get in line is the first one to be served."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/stack-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+            queue: {
+                title: "Queue",
+                faqs: [
+                    {
+                        question: "What is a Queue?",
+                        answer: "A Queue is a linear data structure that follows the **First-In, First-Out (FIFO)** principle. Like a real-world queue or line, the first element added to the queue will be the first one to be removed."
+                    },
+                    {
+                        question: "What are the primary operations of a Queue?",
+                        answer: "The main operations are: <ul><li><b>Enqueue:</b> Adds an element to the rear (end) of the queue.</li><li><b>Dequeue:</b> Removes an element from the front of the queue.</li><li><b>Front (or Peek):</b> Returns the first element without removing it.</li><li><b>isEmpty:</b> Checks if the queue is empty.</li></ul>"
+                    },
+                    {
+                        question: "What is the time complexity of queue operations?",
+                        answer: "When implemented efficiently (e.g., with a linked list or a dynamic array that handles resizing well), `enqueue` and `dequeue` operations have an amortized time complexity of O(1)."
+                    },
+                    {
+                        question: "Where are queues used in computing?",
+                        answer: "Queues are used extensively: <ul><li><b>Operating Systems:</b> For managing processes in CPU scheduling.</li><li><b>Networking:</b> To handle data packets in order.</li><li><b>Printers:</b> To manage print jobs in the order they were received.</li><li><b>Breadth-First Search (BFS):</b> The algorithm uses a queue to explore graph nodes level by level.</li></ul>"
+                    },
+                     {
+                        question: "How can you implement a Queue?",
+                        answer: "A queue can be implemented using an array, but this can be inefficient for `dequeue` (which takes O(n) if you shift all elements). A better approach is to use a Linked List, where adding to the tail and removing from the head are both O(1) operations."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/queue-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+            deque: {
+                title: "Double-Ended Queue (Deque)",
+                faqs: [
+                    {
+                        question: "What is a Deque?",
+                        answer: "A Deque (pronounced 'deck'), or Double-Ended Queue, is a generalized version of a Queue. It's a linear collection of elements that allows insertion and deletion at both the front and the rear ends."
+                    },
+                    {
+                        question: "What are the primary operations of a Deque?",
+                        answer: "<ul><li><b>addFront:</b> Adds an element to the beginning.</li><li><b>addRear:</b> Adds an element to the end.</li><li><b>removeFront:</b> Removes an element from the beginning.</li><li><b>removeRear:</b> Removes an element from the end.</li></ul>"
+                    },
+                    {
+                        question: "How is a Deque different from a Queue or a Stack?",
+                        answer: "A Deque is more flexible. You can think of a Stack as a deque where insertions and deletions only happen at one end, and a Queue as a deque where insertions happen at one end and deletions at the other. A deque supports all of these operations."
+                    },
+                    {
+                        question: "What is the time complexity of deque operations?",
+                        answer: "When implemented with a data structure like a doubly linked list or a dynamic array, all primary operations (`addFront`, `addRear`, `removeFront`, `removeRear`) can be performed in O(1) amortized time."
+                    },
+                     {
+                        question: "Where are deques used?",
+                        answer: "Deques are useful for algorithms that require a 'sliding window', like finding the maximum element in all subarrays of a fixed size. They are also used for implementing palindrome checkers and other algorithms that require access to both ends of a sequence."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/deque-data-structure/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+            singlyLinkedList: {
+                title: "Singly Linked List",
+                faqs: [
+                    {
+                        question: "What is a Linked List?",
+                        answer: "A linked list is a linear data structure, in which the elements are not stored at contiguous memory locations. The elements in a linked list are linked using pointers. In simple words, a linked list consists of nodes where each node contains a data field and a reference(link) to the next node in the list."
+                    },
+                    {
+                        question: "What is the difference between an Array and a Linked List?",
+                        answer: "Arrays are fixed-size and store elements in contiguous memory, allowing for O(1) random access. Linked lists are dynamic in size and use pointers to connect nodes, which means access/search is O(n), but insertions and deletions are more efficient at O(1) if the node's location is known."
+                    },
+                    {
+                        question: "What are the primary operations of a Linked List?",
+                        answer: "<ul><li><b>Insertion:</b> Adds an element at the beginning, end, or a specific position.</li><li><b>Deletion:</b> Removes an element from the list.</li><li><b>Search:</b> Finds an element in the list.</li><li><b>Traversal:</b> Iterates through all the nodes in the list.</li></ul>"
+                    },
+                    {
+                        question: "What is a 'node' in a linked list?",
+                        answer: "A node is the basic building block of a linked list. It typically consists of two parts: the data itself, and a pointer (or link) that references the next node in the sequence."
+                    },
+                    {
+                        question: "What is the 'head' of a linked list?",
+                        answer: "The 'head' is a pointer that stores the address of the very first node in the linked list. If the head is null, the list is empty. It's the entry point to the entire list."
+                    },
+                    {
+                        question: "What is the time complexity for operations?",
+                        answer: "<ul><li><b>Access/Search:</b> O(n) because you may have to traverse the entire list.</li><li><b>Insertion/Deletion at beginning:</b> O(1).</li><li><b>Insertion/Deletion at end:</b> O(n) because you must traverse to the end first.</li></ul>"
+                    },
+                    {
+                        question: "What is the space complexity of a Linked List?",
+                        answer: "The space complexity is O(n) because it stores n elements, and each element's node requires space for the data and a pointer."
+                    },
+                     {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/data-structures/linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+            doublyLinkedList: {
+                title: "Doubly Linked List",
+                faqs: [
+                    {
+                        question: "What is a Doubly Linked List?",
+                        answer: "A Doubly Linked List is a more complex type of linked list where each node has a pointer to the next node as well as a pointer to the previous node. This allows for traversal in both forward and backward directions."
+                    },
+                    {
+                        question: "What are the advantages of a Doubly Linked List over a Singly Linked List?",
+                        answer: "The main advantage is bidirectional traversal. You can move forwards and backwards. This makes some operations, like deleting a node (if you have a pointer to it) or inserting a node before another, more efficient (O(1)) because you don't have to traverse the list to find the previous node."
+                    },
+                    {
+                        question: "What are the disadvantages?",
+                        answer: "The main disadvantage is that it requires extra space for the `prev` pointer in each node. Additionally, the insertion and deletion operations are slightly more complex because you have to manage two pointers (`next` and `prev`) instead of just one."
+                    },
+                    {
+                        question: "What does a node in a Doubly Linked List contain?",
+                        answer: "Each node contains three parts: the data, a pointer to the next node (`next`), and a pointer to the previous node (`prev`)."
+                    },
+                    {
+                        question: "How does deletion work in a Doubly Linked List?",
+                        answer: "To delete a node, you update the `next` pointer of the previous node to point to the current node's `next`, and you update the `prev` pointer of the next node to point to the current node's `prev`. This effectively 'unlinks' the node from the chain."
+                    },
+                    {
+                        question: "What are the time complexities for operations?",
+                        answer: "<ul><li><b>Access/Search:</b> O(n).</li><li><b>Insertion/Deletion at beginning/end:</b> O(1) (if a tail pointer is maintained).</li><li><b>Insertion/Deletion at a given node:</b> O(1).</li></ul>"
+                    },
+                    {
+                        question: "Where are Doubly Linked Lists used?",
+                        answer: "They are used in applications that require frequent forward and backward traversal, such as in the 'undo/redo' functionality of a text editor, or in representing the history of visited pages in a web browser."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/doubly-linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+             circularLinkedList: {
+                title: "Circular Linked List",
+                faqs: [
+                    {
+                        question: "What is a Circular Linked List?",
+                        answer: "A Circular Linked List is a variation of a linked list in which the last node points back to the first node, creating a circle. There is no `null` at the end; instead, the `next` pointer of the last node points to the first node (the head)."
+                    },
+                    {
+                        question: "What are the advantages of a Circular Linked List?",
+                        answer: "The primary advantage is that the entire list can be traversed starting from any node. It's also useful for implementing circular data structures like queues, and for applications that require continuous looping, such as round-robin scheduling in operating systems or playlists in media players."
+                    },
+                    {
+                        question: "How do you know when you've traversed the whole list?",
+                        answer: "You start at the `head` and traverse until you reach the `head` again. You need a `do-while` loop or a careful `while` loop condition to ensure the loop executes at least once if there's only one node."
+                    },
+                    {
+                        question: "What are the time complexities for operations?",
+                        answer: "<ul><li><b>Search:</b> O(n).</li><li><b>Insertion at beginning/end:</b> O(1) if a `tail` pointer is maintained, otherwise O(n).</li><li><b>Deletion:</b> O(n) to find the element, but O(1) if a pointer to the node (and its predecessor) is known.</li></ul>"
+                    },
+                    {
+                        question: "What is a major use case?",
+                        answer: "They are excellent for implementing round-robin algorithms. For example, in a multiplayer game, you can use a circular linked list to cycle through players for their turns."
+                    },
+                    {
+                        question: "How does insertion at the end work efficiently?",
+                        answer: "If you maintain a pointer to the `tail` node, you can insert a new node in O(1) time. The new node is inserted after the tail, and then the new node's `next` pointer is set to the head. The old tail's `next` pointer is updated to point to the new node, which becomes the new tail."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/circular-linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
             }
         }
     }
 };
-
-    

@@ -1,3 +1,5 @@
+
+
 export const ALGO_CATEGORIES = {
   sorting: {
     name: "Sorting",
@@ -388,7 +390,7 @@ function partition(arr, begin, end) {
   for (let j = begin; j < end; j++) {
     if (arr[j] <= pivot) {
       i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      [arr[i], arr[j]] = [arr[j], arr[j]];
     }
   }
   [arr[i + 1], arr[end]] = [arr[end], arr[i + 1]];
@@ -596,6 +598,50 @@ function binarySearch(arr, l, r, x) {
   tree: {
     name: "Tree / Graph",
     algorithms: {
+      minHeap: {
+        name: "Min-Heap",
+        description: "A Min-Heap is a specialized tree-based data structure that satisfies the heap property: the value of each node is less than or equal to the value of its children. This means the smallest element is always at the root. It is commonly used to implement priority queues.",
+        code: `// Heapify a subtree rooted with node i
+function heapify(arr, n, i) {
+    let smallest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    if (left < n && arr[left] < arr[smallest]) {
+        smallest = left;
+    }
+
+    if (right < n && arr[right] < arr[smallest]) {
+        smallest = right;
+    }
+
+    if (smallest !== i) {
+        [arr[i], arr[smallest]] = [arr[smallest], arr[i]];
+        heapify(arr, n, smallest);
+    }
+}
+
+// Build a min-heap from an array
+function buildHeap(arr) {
+    const n = arr.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+}
+
+// Extract the minimum element
+function extractMin(arr) {
+    const min = arr[0];
+    arr[0] = arr.pop();
+    heapify(arr, arr.length, 0);
+    return min;
+}
+`,
+        input: "10,20,15,30,40,5,50,1",
+        visualizer: "tree",
+        timeComplexity: "O(log n) Insert/Delete",
+        spaceComplexity: "O(1)",
+      },
       inOrderTraversal: {
         name: "In-order Traversal",
         description: "A tree traversal method that visits nodes in the order: left child, root, right child. For a Binary Search Tree, this traversal visits nodes in ascending order.",
@@ -777,7 +823,7 @@ function insert(node, key) {
         visualizer: 'tree',
         timeComplexity: "O(log n)",
         spaceComplexity: "O(log n)",
-      }
+      },
     }
   },
   'data-structures': {
@@ -819,7 +865,227 @@ function insert(node, key) {
               visualizer: "hash-table",
               timeComplexity: "O(1) Average",
               spaceComplexity: "O(n)",
-          }
+          },
+          stack: {
+            name: "Stack",
+            description: "A linear data structure that follows the Last-In, First-Out (LIFO) principle. Elements are added (pushed) and removed (popped) from the same end, called the 'top'.",
+            code: `class Stack {
+  constructor() {
+    this.items = [];
+  }
+  push(element) {
+    this.items.push(element);
+  }
+  pop() {
+    if (this.isEmpty()) {
+      return "Underflow";
+    }
+    return this.items.pop();
+  }
+  peek() {
+    return this.items[this.items.length - 1];
+  }
+  isEmpty() {
+    return this.items.length === 0;
+  }
+}`,
+            input: "push 10,push 20,push 30,pop,push 40,pop,pop",
+            visualizer: "stack",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(n)",
+          },
+          queue: {
+            name: "Queue",
+            description: "A linear data structure that follows the First-In, First-Out (FIFO) principle. Elements are added (enqueued) at the rear and removed (dequeued) from the front, like a line of people.",
+            code: `class Queue {
+  constructor() {
+    this.items = [];
+  }
+  enqueue(element) {
+    this.items.push(element);
+  }
+  dequeue() {
+    if (this.isEmpty()) {
+      return "Underflow";
+    }
+    return this.items.shift();
+  }
+  front() {
+    return this.items[0];
+  }
+  isEmpty() {
+    return this.items.length === 0;
+  }
+}`,
+            input: "enqueue 10,enqueue 20,dequeue,enqueue 30,enqueue 40,dequeue",
+            visualizer: "queue",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(n)",
+          },
+          deque: {
+            name: "Double-Ended Queue (Deque)",
+            description: "A Deque, or double-ended queue, is a generalized version of a Queue. Elements can be added or removed from either the front or the rear, providing maximum flexibility.",
+            code: `class Deque {
+  constructor() {
+    this.items = [];
+  }
+  addFront(element) {
+    this.items.unshift(element);
+  }
+  addRear(element) {
+    this.items.push(element);
+  }
+  removeFront() {
+    if(this.isEmpty()) return "Underflow";
+    return this.items.shift();
+  }
+  removeRear() {
+    if(this.isEmpty()) return "Underflow";
+    return this.items.pop();
+  }
+  // ... other helper methods
+}`,
+            input: "addRear 10,addRear 20,addFront 5,removeRear,removeFront",
+            visualizer: "deque",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(n)",
+          },
+          singlyLinkedList: {
+            name: "Singly Linked List",
+            description: "A linear data structure where elements are stored in nodes. Each node contains a data field and a reference (or 'pointer') to the next node in the sequence. Unlike arrays, linked lists do not have a fixed size and allow for efficient insertions and deletions.",
+            code: `class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+class LinkedList {
+    constructor() {
+        this.head = null;
+    }
+    // ... insert, delete, search methods ...
+    insertAtEnd(data) {
+      const newNode = new Node(data);
+      if (!this.head) {
+          this.head = newNode;
+          return;
+      }
+      let current = this.head;
+      while (current.next) {
+          current = current.next;
+      }
+      current.next = newNode;
+    }
+}`,
+            input: "insert 10,insert 20,insert 5,delete 20,insert 15",
+            visualizer: "linked-list",
+            timeComplexity: "O(n) Search",
+            spaceComplexity: "O(n)",
+          },
+          doublyLinkedList: {
+            name: "Doubly Linked List",
+            description: "A Doubly Linked List is a type of linked list where each node contains a data field and two pointers: one to the next node in the sequence (next pointer) and one to the previous node (prev pointer). This bidirectional linking allows for traversal in both directions.",
+            code: `class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+        this.prev = null;
+    }
+}
+class DoublyLinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+    }
+    // ... insert, delete methods ...
+    insertAtEnd(data) {
+      const newNode = new Node(data);
+      if (!this.head) {
+          this.head = newNode;
+          this.tail = newNode;
+          return;
+      }
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    }
+}`,
+            input: "insert 10,insert 20,insert 30,delete 20",
+            visualizer: "doubly-linked-list",
+            timeComplexity: "O(n) Search",
+            spaceComplexity: "O(n)",
+          },
+          circularLinkedList: {
+            name: "Circular Linked List",
+            description: "A Circular Linked List is a variation of a linked list in which the last node points back to the first node, creating a circle. There is no 'null' at the end. This structure is useful for applications that require continuous looping, like managing processes in a round-robin scheduler.",
+            code: `class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+class CircularLinkedList {
+    constructor() {
+        this.head = null;
+    }
+    // ... insert, delete, traversal methods ...
+    insertAtEnd(data) {
+      const newNode = new Node(data);
+      if (!this.head) {
+          this.head = newNode;
+          newNode.next = this.head; // Points to itself
+          return;
+      }
+      let current = this.head;
+      while (current.next !== this.head) {
+          current = current.next;
+      }
+      current.next = newNode;
+      newNode.next = this.head;
+    }
+}`,
+            input: "insert 10,insert 20,insert 30,insert 40",
+            visualizer: "circular-linked-list",
+            timeComplexity: "O(n) Search/Insert",
+            spaceComplexity: "O(n)",
+          },
+          circularQueue: {
+            name: "Circular Queue",
+            description: "A Circular Queue is a linear data structure that follows the FIFO principle but its last position is connected back to the first position to make a circle. It is also called 'Ring Buffer'. It's an efficient implementation of a queue using a fixed-size array.",
+            code: `class CircularQueue {
+    constructor(size) {
+        this.size = size;
+        this.queue = new Array(size);
+        this.front = -1;
+        this.rear = -1;
+    }
+    enqueue(data) {
+        if ((this.rear + 1) % this.size === this.front) {
+            return "Queue is full";
+        }
+        if (this.front === -1) this.front = 0;
+        this.rear = (this.rear + 1) % this.size;
+        this.queue[this.rear] = data;
+    }
+    dequeue() {
+        if (this.front === -1) {
+            return "Queue is empty";
+        }
+        let data = this.queue[this.front];
+        if (this.front === this.rear) {
+            this.front = -1;
+            this.rear = -1;
+        } else {
+            this.front = (this.front + 1) % this.size;
+        }
+        return data;
+    }
+}`,
+            input: "enqueue 10,enqueue 20,enqueue 30,dequeue,enqueue 40,enqueue 50,dequeue,dequeue,enqueue 60",
+            visualizer: "circular-queue",
+            timeComplexity: "O(1)",
+            spaceComplexity: "O(k)",
+          },
       }
   }
 } as const;

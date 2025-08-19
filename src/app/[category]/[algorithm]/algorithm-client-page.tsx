@@ -660,7 +660,7 @@ function generateIntroSortTrace(arr: number[]): TraceStep[] {
         }
         for (let i = n - 1; i > 0; i--) {
             addTrace(48, { i });
-            [localArr[begin], localArr[begin + i]] = [localArr[begin + i], localArr[begin]];
+            [localArr[begin], localArr[begin + i]] = [localArr[begin + i], arr[begin]];
             addTrace(49, { arr: `[${localArr.join(',')}]` }, [begin, begin+i]);
             heapify(i, 0, begin);
             addTrace(50, {});
@@ -1043,6 +1043,143 @@ function generateHashTableTrace(pairs: {key: string, value: string}[], size: num
     return trace;
 }
 
+function generateStackTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const stack: number[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    trace.push({ line: 2, variables: { status: 'Initializing stack' }, data: [...stack], highlighted: [] });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'push' && !isNaN(value)) {
+            trace.push({ line: 4, variables: { action: `push(${value})` }, data: [...stack], highlighted: [] });
+            stack.push(value);
+            trace.push({ line: 5, variables: { status: `Pushed ${value}`, top: value }, data: [...stack], highlighted: [stack.length - 1] });
+        } else if (operation === 'pop') {
+            trace.push({ line: 7, variables: { action: 'pop()' }, data: [...stack], highlighted: [stack.length - 1] });
+            if (stack.length === 0) {
+                trace.push({ line: 8, variables: { status: 'Underflow: cannot pop from empty stack' }, data: [...stack], highlighted: [] });
+            } else {
+                const poppedValue = stack.pop();
+                trace.push({ line: 11, variables: { status: `Popped ${poppedValue}`, top: stack.length > 0 ? stack[stack.length - 1] : 'empty' }, data: [...stack], highlighted: [] });
+            }
+        }
+    }
+    trace.push({ line: 18, variables: { status: 'Operations complete', final_stack: `[${stack.join(', ')}]` }, data: [...stack], highlighted: [] });
+    return trace;
+}
+
+function generateSinglyLinkedListTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const list: {value: number}[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    const listToArray = () => list.map(node => ({ value: node.value }));
+
+    trace.push({ line: 7, variables: { status: 'Initializing Linked List' }, data: listToArray(), highlighted: -1 });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'insert' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `insert(${value})` }, data: listToArray(), highlighted: -1 });
+            list.push({ value });
+            trace.push({ line: 19, variables: { status: `Inserted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: list.length - 1 });
+        } else if (operation === 'delete' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `delete(${value})` }, data: listToArray(), highlighted: -1 });
+            const indexToDelete = list.findIndex(node => node.value === value);
+            if (indexToDelete !== -1) {
+                trace.push({ line: 11, variables: { action: `delete(${value})`, status: `Found ${value} at index ${indexToDelete}` }, data: listToArray(), highlighted: indexToDelete });
+                list.splice(indexToDelete, 1);
+                trace.push({ line: 11, variables: { status: `Deleted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: -1 });
+            } else {
+                 trace.push({ line: 11, variables: { action: `delete(${value})`, status: `${value} not found` }, data: listToArray(), highlighted: -1 });
+            }
+        }
+    }
+    trace.push({ line: 20, variables: { status: 'Operations complete', final_list: `[${list.map(n => n.value).join(' -> ')}]` }, data: listToArray(), highlighted: -1 });
+    return trace;
+}
+
+function generateDoublyLinkedListTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const list: {value: number, prev: number | null, next: number | null}[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    const listToArray = () => list.map(node => ({ value: node.value }));
+    const updatePointers = () => {
+        for (let i = 0; i < list.length; i++) {
+            list[i].prev = i > 0 ? list[i-1].value : null;
+            list[i].next = i < list.length - 1 ? list[i+1].value : null;
+        }
+    }
+
+    trace.push({ line: 1, variables: { status: 'Initializing Doubly Linked List' }, data: listToArray(), highlighted: -1 });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'insert' && !isNaN(value)) {
+            trace.push({ line: 13, variables: { action: `insert(${value})` }, data: listToArray(), highlighted: -1 });
+            list.push({ value, prev: null, next: null });
+            updatePointers();
+            trace.push({ line: 22, variables: { status: `Inserted ${value}`, head: list[0]?.value ?? 'null', tail: list[list.length-1]?.value ?? 'null' }, data: listToArray(), highlighted: list.length - 1 });
+        } else if (operation === 'delete' && !isNaN(value)) {
+            trace.push({ line: 13, variables: { action: `delete(${value})` }, data: listToArray(), highlighted: -1 });
+            const indexToDelete = list.findIndex(node => node.value === value);
+            if (indexToDelete !== -1) {
+                trace.push({ line: 13, variables: { action: `delete(${value})`, status: `Found ${value} at index ${indexToDelete}` }, data: listToArray(), highlighted: indexToDelete });
+                list.splice(indexToDelete, 1);
+                updatePointers();
+                trace.push({ line: 13, variables: { status: `Deleted ${value}`, head: list[0]?.value ?? 'null', tail: list[list.length-1]?.value ?? 'null' }, data: listToArray(), highlighted: -1 });
+            } else {
+                 trace.push({ line: 13, variables: { action: `delete(${value})`, status: `${value} not found` }, data: listToArray(), highlighted: -1 });
+            }
+        }
+    }
+    trace.push({ line: 23, variables: { status: 'Operations complete' }, data: listToArray(), highlighted: -1 });
+    return trace;
+}
+
+function generateCircularLinkedListTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const list: {value: number}[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    const listToArray = () => list.map(node => ({ value: node.value }));
+
+    trace.push({ line: 7, variables: { status: 'Initializing Circular Linked List' }, data: listToArray(), highlighted: -1 });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'insert' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `insert(${value})` }, data: listToArray(), highlighted: -1 });
+            list.push({ value });
+            trace.push({ line: 19, variables: { status: `Inserted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: list.length - 1 });
+        } else if (operation === 'delete' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `delete(${value})` }, data: listToArray(), highlighted: -1 });
+            const indexToDelete = list.findIndex(node => node.value === value);
+            if (indexToDelete !== -1) {
+                trace.push({ line: 11, variables: { action: `delete(${value})`, status: `Found ${value} at index ${indexToDelete}` }, data: listToArray(), highlighted: indexToDelete });
+                list.splice(indexToDelete, 1);
+                trace.push({ line: 11, variables: { status: `Deleted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: -1 });
+            } else {
+                 trace.push({ line: 11, variables: { action: `delete(${value})`, status: `${value} not found` }, data: listToArray(), highlighted: -1 });
+            }
+        }
+    }
+    trace.push({ line: 20, variables: { status: 'Operations complete' }, data: listToArray(), highlighted: -1 });
+    return trace;
+}
+
+
 function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const trace: TraceStep[] = [];
     const traversalPath: number[] = [];
@@ -1403,6 +1540,220 @@ function generateAVLTreeTrace(arr: number[]): TraceStep[] {
     return trace;
 }
 
+function generateMinHeapTrace(arr: number[]): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const localArr = [...arr];
+
+    const arrayToTree = (array: number[], i = 0): TreeNode | null => {
+        if (i >= array.length) return null;
+        const node: TreeNode = {
+            value: array[i],
+            left: arrayToTree(array, 2 * i + 1),
+            right: arrayToTree(array, 2 * i + 2)
+        };
+        return node;
+    };
+
+    const getHighlightNodeFromIndex = (index: number) => {
+        return localArr[index];
+    }
+    
+    const getHighlightNodesFromIndices = (i: number, j: number) => {
+        return [localArr[i], localArr[j]];
+    }
+
+    function heapify(n: number, i: number) {
+        trace.push({ line: 2, variables: { status: `Heapifying at index ${i}`, node_value: localArr[i] }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        let smallest = i;
+        const left = 2 * i + 1;
+        const right = 2 * i + 2;
+        trace.push({ line: 3, variables: { i, smallest }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        trace.push({ line: 4, variables: { left_child_index: left }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        trace.push({ line: 5, variables: { right_child_index: right }, data: [], highlighted: getHighlightNodeFromIndex(i), treeData: arrayToTree(localArr) });
+        
+        trace.push({ line: 7, variables: { condition: `${left} < ${n} && ${localArr[left]} < ${localArr[smallest]}`}, data: [], highlighted: getHighlightNodeFromIndex(i), secondaryHighlight: left < n ? getHighlightNodesFromIndices(left, smallest) : [], treeData: arrayToTree(localArr) });
+        if (left < n && localArr[left] < localArr[smallest]) {
+            smallest = left;
+            trace.push({ line: 8, variables: { smallest_now: smallest }, data: [], highlighted: getHighlightNodeFromIndex(smallest), treeData: arrayToTree(localArr) });
+        }
+        
+        trace.push({ line: 10, variables: { condition: `${right} < ${n} && ${localArr[right]} < ${localArr[smallest]}`}, data: [], highlighted: getHighlightNodeFromIndex(i), secondaryHighlight: right < n ? getHighlightNodesFromIndices(right, smallest) : [], treeData: arrayToTree(localArr) });
+        if (right < n && localArr[right] < localArr[smallest]) {
+            smallest = right;
+            trace.push({ line: 11, variables: { smallest_now: smallest }, data: [], highlighted: getHighlightNodeFromIndex(smallest), treeData: arrayToTree(localArr) });
+        }
+
+        trace.push({ line: 13, variables: { condition: `${smallest} !== ${i}`}, data: [], highlighted: getHighlightNodeFromIndex(i), secondaryHighlight: getHighlightNodesFromIndices(i, smallest), treeData: arrayToTree(localArr) });
+        if (smallest !== i) {
+            [localArr[i], localArr[smallest]] = [localArr[smallest], localArr[i]];
+            trace.push({ line: 14, variables: { action: `Swapping ${localArr[smallest]} and ${localArr[i]}` }, data: [], highlighted: getHighlightNodeFromIndex(smallest), secondaryHighlight: getHighlightNodesFromIndices(i, smallest), treeData: arrayToTree(localArr) });
+            heapify(n, smallest);
+            trace.push({ line: 15, variables: { action: `Recursively heapify on new subtree` }, data: [], highlighted: getHighlightNodeFromIndex(smallest), treeData: arrayToTree(localArr) });
+        }
+    }
+
+    trace.push({ line: 19, variables: { status: 'Starting to build Min-Heap...' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+    const n = localArr.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(n, i);
+    }
+    trace.push({ line: 22, variables: { status: 'Min-Heap built successfully' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+
+    // Demonstrate extract min
+    trace.push({ line: 25, variables: { status: 'Demonstrating extractMin...' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+    const min = localArr[0];
+    trace.push({ line: 26, variables: { extracted_min: min }, data: [], highlighted: getHighlightNodeFromIndex(0), treeData: arrayToTree(localArr) });
+    localArr[0] = localArr.pop()!;
+    trace.push({ line: 27, variables: { action: 'Move last element to root' }, data: [], highlighted: getHighlightNodeFromIndex(0), treeData: arrayToTree(localArr) });
+    heapify(localArr.length, 0);
+    trace.push({ line: 28, variables: { action: 'Heapify root to restore heap property' }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+    trace.push({ line: 29, variables: { status: 'Extraction complete', returned_min: min, final_heap: `[${localArr.join(', ')}]` }, data: [], highlighted: null, treeData: arrayToTree(localArr) });
+
+    return trace;
+}
+
+function generateQueueTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const queue: number[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    trace.push({ line: 2, variables: { status: 'Initializing queue' }, data: [...queue], highlighted: {} });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'enqueue' && !isNaN(value)) {
+            trace.push({ line: 4, variables: { action: `enqueue(${value})` }, data: [...queue], highlighted: {} });
+            queue.push(value);
+            trace.push({ line: 5, variables: { status: `Enqueued ${value}`, front: queue[0], rear: queue[queue.length - 1] }, data: [...queue], highlighted: { index: queue.length - 1, type: 'enqueue' } });
+        } else if (operation === 'dequeue') {
+            trace.push({ line: 7, variables: { action: 'dequeue()' }, data: [...queue], highlighted: { index: 0, type: 'dequeue' } });
+            if (queue.length === 0) {
+                trace.push({ line: 8, variables: { status: 'Underflow: cannot dequeue from empty queue' }, data: [...queue], highlighted: {} });
+            } else {
+                const dequeuedValue = queue.shift();
+                trace.push({ line: 11, variables: { status: `Dequeued ${dequeuedValue}`, front: queue.length > 0 ? queue[0] : 'empty', rear: queue.length > 0 ? queue[queue.length-1] : 'empty' }, data: [...queue], highlighted: {} });
+            }
+        }
+    }
+    trace.push({ line: 18, variables: { status: 'Operations complete', final_queue: `[${queue.join(', ')}]` }, data: [...queue], highlighted: {} });
+    return trace;
+}
+
+function generateDequeTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const deque: number[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    trace.push({ line: 1, variables: { status: 'Initializing deque' }, data: [...deque], highlighted: {} });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'addFront' && !isNaN(value)) {
+            trace.push({ line: 5, variables: { action: `addFront(${value})` }, data: [...deque], highlighted: {} });
+            deque.unshift(value);
+            trace.push({ line: 6, variables: { status: `Added ${value} to front`, front: deque[0], rear: deque[deque.length - 1] }, data: [...deque], highlighted: { index: 0, type: 'front' } });
+        } else if (operation === 'addRear' && !isNaN(value)) {
+            trace.push({ line: 8, variables: { action: `addRear(${value})` }, data: [...deque], highlighted: {} });
+            deque.push(value);
+            trace.push({ line: 9, variables: { status: `Added ${value} to rear`, front: deque[0], rear: deque[deque.length - 1] }, data: [...deque], highlighted: { index: deque.length - 1, type: 'rear' } });
+        } else if (operation === 'removeFront') {
+            trace.push({ line: 11, variables: { action: 'removeFront()' }, data: [...deque], highlighted: { index: 0, type: 'front' } });
+            if (deque.length === 0) {
+                trace.push({ line: 12, variables: { status: 'Deque is empty' }, data: [...deque], highlighted: {} });
+            } else {
+                const removedValue = deque.shift();
+                trace.push({ line: 13, variables: { status: `Removed ${removedValue} from front`, front: deque.length > 0 ? deque[0] : 'empty', rear: deque.length > 0 ? deque[deque.length-1] : 'empty' }, data: [...deque], highlighted: {} });
+            }
+        } else if (operation === 'removeRear') {
+            trace.push({ line: 15, variables: { action: 'removeRear()' }, data: [...deque], highlighted: { index: deque.length - 1, type: 'rear' } });
+            if (deque.length === 0) {
+                trace.push({ line: 16, variables: { status: 'Deque is empty' }, data: [...deque], highlighted: {} });
+            } else {
+                const removedValue = deque.pop();
+                trace.push({ line: 17, variables: { status: `Removed ${removedValue} from rear`, front: deque.length > 0 ? deque[0] : 'empty', rear: deque.length > 0 ? deque[deque.length-1] : 'empty' }, data: [...deque], highlighted: {} });
+            }
+        }
+    }
+    trace.push({ line: 24, variables: { status: 'Operations complete', final_deque: `[${deque.join(', ')}]` }, data: [...deque], highlighted: {} });
+    return trace;
+}
+
+function generateCircularQueueTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const size = 5; // Fixed size for visualization
+    const queue = new Array(size).fill(null);
+    let front = -1;
+    let rear = -1;
+
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    const getQueueState = () => ({
+        queue: [...queue],
+        front,
+        rear,
+        size
+    });
+
+    trace.push({ line: 1, variables: { status: 'Initializing Circular Queue', size }, data: getQueueState(), highlighted: {} });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'enqueue' && !isNaN(value)) {
+            trace.push({ line: 9, variables: { action: `enqueue(${value})` }, data: getQueueState(), highlighted: {} });
+            
+            const isFull = (rear + 1) % size === front;
+            trace.push({ line: 10, variables: { condition: `(rear + 1) % size === front -> ${isFull}` }, data: getQueueState(), highlighted: {} });
+            if (isFull) {
+                trace.push({ line: 11, variables: { status: 'Queue is full. Cannot enqueue.' }, data: getQueueState(), highlighted: {} });
+                continue;
+            }
+
+            trace.push({ line: 13, variables: { condition: `front === -1 -> ${front === -1}` }, data: getQueueState(), highlighted: {} });
+            if (front === -1) {
+                front = 0;
+                trace.push({ line: 13, variables: { front: 0 }, data: getQueueState(), highlighted: { index: front, type: 'front' } });
+            }
+
+            rear = (rear + 1) % size;
+            trace.push({ line: 14, variables: { rear }, data: getQueueState(), highlighted: { index: rear, type: 'rear' } });
+            queue[rear] = value;
+            trace.push({ line: 15, variables: { status: `Enqueued ${value}` }, data: getQueueState(), highlighted: { index: rear, type: 'enqueue' } });
+
+        } else if (operation === 'dequeue') {
+            trace.push({ line: 17, variables: { action: 'dequeue()' }, data: getQueueState(), highlighted: {} });
+            
+            const isEmpty = front === -1;
+            trace.push({ line: 18, variables: { condition: `front === -1 -> ${isEmpty}` }, data: getQueueState(), highlighted: {} });
+            if (isEmpty) {
+                trace.push({ line: 19, variables: { status: 'Queue is empty. Cannot dequeue.' }, data: getQueueState(), highlighted: {} });
+                continue;
+            }
+
+            const dequeuedValue = queue[front];
+            queue[front] = null; // Visually empty the slot
+            trace.push({ line: 21, variables: { dequeuedValue }, data: getQueueState(), highlighted: { index: front, type: 'dequeue' } });
+
+            const wasLastElement = front === rear;
+            trace.push({ line: 22, variables: { condition: `front === rear -> ${wasLastElement}` }, data: getQueueState(), highlighted: {} });
+            if (wasLastElement) {
+                front = -1;
+                rear = -1;
+                trace.push({ line: 23, variables: { status: 'Queue is now empty', front, rear }, data: getQueueState(), highlighted: {} });
+            } else {
+                front = (front + 1) % size;
+                trace.push({ line: 26, variables: { front }, data: getQueueState(), highlighted: { index: front, type: 'front' } });
+            }
+        }
+    }
+    trace.push({ line: 30, variables: { status: 'Operations complete' }, data: getQueueState(), highlighted: {} });
+    return trace;
+}
 
 
 const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: string) => TraceStep[]> = {
@@ -1425,6 +1776,11 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   exponentialSearch: (arr, target) => generateExponentialSearchTrace(arr, target!),
   ternarySearch: (arr, target) => generateTernarySearchTrace(arr, target!),
   hashing: (pairs, _target, searchKey) => generateHashTableTrace(pairs, 10, searchKey), // Default size 10
+  stack: (commands) => generateStackTrace(commands),
+  singlyLinkedList: (commands) => generateSinglyLinkedListTrace(commands),
+  doublyLinkedList: (commands) => generateDoublyLinkedListTrace(commands),
+  circularLinkedList: (commands) => generateCircularLinkedListTrace(commands),
+  minHeap: (arr) => generateMinHeapTrace(arr),
   inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
   postOrderTraversal: (tree: any) => generatePostOrderTraversalTrace(tree),
@@ -1432,6 +1788,9 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   bestFirstSearch: (tree: any, target: any) => generateBestFirstSearchTrace(tree, target),
   binarySearchTree: (arr: any) => generateBinarySearchTreeTrace(arr),
   avlTree: (arr: any) => generateAVLTreeTrace(arr),
+  queue: (commands) => generateQueueTrace(commands),
+  deque: (commands) => generateDequeTrace(commands),
+  circularQueue: (commands) => generateCircularQueueTrace(commands),
 };
 
 type AlgorithmClientPageProps = {
@@ -1501,16 +1860,24 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (categoryKey === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal', 'bestFirstSearch'].includes(algorithmKey)) {
-          try {
-              const parsedTree = JSON.parse(inputStr);
-              const target = Number(targetStr.trim());
-              if (algorithmKey === 'bestFirstSearch' && isNaN(target)) {
-                  throw new Error("Invalid target value for Best-First Search. Please enter a number.");
-              }
-              trace = traceGenerator(parsedTree, target);
-          } catch (e) {
-              throw new Error("Invalid JSON input for the tree structure.");
+      } else if (categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque', 'circularQueue'].includes(algorithmKey)) {
+          trace = traceGenerator(inputStr, undefined, undefined);
+      } else if (categoryKey === 'tree') {
+          if (algorithmKey === 'minHeap') {
+            const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
+            if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
+            trace = traceGenerator(parsedArray, undefined);
+          } else {
+            try {
+                const parsedTree = JSON.parse(inputStr);
+                const target = Number(targetStr.trim());
+                if (algorithmKey === 'bestFirstSearch' && isNaN(target)) {
+                    throw new Error("Invalid target value for Best-First Search. Please enter a number.");
+                }
+                trace = traceGenerator(parsedTree, target);
+            } catch (e) {
+                throw new Error("Invalid JSON input for the tree structure.");
+            }
           }
       } else { // Sorting or BST/AVL construction
         const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
@@ -1582,7 +1949,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table';
+  const visualizerType = algorithm.visualizer as | 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list' | 'queue' | 'deque' | 'circular-queue';
   const needsTargetInput = (categoryKey === 'searching') || (categoryKey === 'tree' && algorithmKey === 'bestFirstSearch');
 
   return (
@@ -1610,7 +1977,8 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
                           placeholder={
                             categoryKey === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             categoryKey === 'searching' ? "e.g. 2, 8, 5, 12" :
-                            categoryKey === 'tree' ? "e.g. { \"value\": 10, ... }" :
+                            categoryKey === 'tree' ? "e.g. { \"value\": 10, ... } or 10,20,5..." :
+                            categoryKey === 'data-structures' && ['stack', 'singlyLinkedList', 'doublyLinkedList', 'circularLinkedList', 'queue', 'deque', 'circularQueue'].includes(algorithmKey) ? "e.g. push 5,push 10,pop" :
                             "e.g. key1,val1;key2,val2"
                           }
                           className="flex-1"

@@ -1,17 +1,25 @@
 
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from 'lucide-react';
 import { ArrayVisualizer } from '@/components/array-visualizer';
-import type { TraceStep } from './algo-viz';
+import type { TraceStep } from '@/app/[category]/[algorithm]/algorithm-client-page';
 import { HashTableVisualizer } from "./hash-table-visualizer";
 import { TreeVisualizer } from "./tree-visualizer";
+import { StackVisualizer } from "./stack-visualizer";
+import { LinkedListVisualizer } from "./linked-list-visualizer";
+import { DoublyLinkedListVisualizer } from "./doubly-linked-list-visualizer";
+import { CircularLinkedListVisualizer } from "./circular-linked-list-visualizer";
+import { QueueVisualizer } from "./queue-visualizer";
+import { DequeVisualizer } from "./deque-visualizer";
+import { CircularQueueVisualizer } from "./circular-queue-visualizer";
 
 type VisualizerProps = {
     isLoading: boolean;
     traceStep?: TraceStep;
-    type: 'array' | 'tree' | 'graph' | 'hash-table'; // Extensible for future types
+    type: 'array' | 'tree' | 'graph' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list' | 'queue' | 'deque' | 'circular-queue'; // Extensible for future types
 };
 
 export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
@@ -48,7 +56,49 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
                 traversalPath={traceStep?.traversalPath}
               />
             )}
-            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && (
+            {type === 'stack' && (
+              <StackVisualizer 
+                data={traceStep?.data ?? []}
+                highlightedIndex={Array.isArray(traceStep?.highlighted) ? traceStep.highlighted[0] : -1}
+              />
+            )}
+             {type === 'linked-list' && (
+              <LinkedListVisualizer
+                nodes={traceStep?.data ?? []}
+                highlightedIndex={traceStep?.highlighted}
+              />
+            )}
+            {type === 'doubly-linked-list' && (
+              <DoublyLinkedListVisualizer
+                nodes={traceStep?.data ?? []}
+                highlightedIndex={traceStep?.highlighted}
+              />
+            )}
+             {type === 'circular-linked-list' && (
+              <CircularLinkedListVisualizer
+                nodes={traceStep?.data ?? []}
+                highlightedIndex={traceStep?.highlighted}
+              />
+            )}
+            {type === 'queue' && (
+              <QueueVisualizer 
+                data={traceStep?.data ?? []}
+                highlighted={traceStep?.highlighted}
+              />
+            )}
+            {type === 'deque' && (
+              <DequeVisualizer
+                data={traceStep?.data ?? []}
+                highlighted={traceStep?.highlighted}
+              />
+            )}
+            {type === 'circular-queue' && (
+              <CircularQueueVisualizer
+                queueState={traceStep?.data}
+                highlighted={traceStep?.highlighted}
+              />
+            )}
+            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && type !== 'stack' && type !== 'linked-list' && type !== 'doubly-linked-list' && type !== 'circular-linked-list' && type !== 'queue' && type !== 'deque' && type !== 'circular-queue' && (
                  <div className="flex items-center justify-center h-64 text-muted-foreground">{type} visualizer coming soon!</div>
             )}
           </>
@@ -57,5 +107,3 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
     </Card>
   );
 }
-
-    
