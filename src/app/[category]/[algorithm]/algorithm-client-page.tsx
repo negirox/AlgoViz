@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -660,7 +661,7 @@ function generateIntroSortTrace(arr: number[]): TraceStep[] {
         }
         for (let i = n - 1; i > 0; i--) {
             addTrace(48, { i });
-            [localArr[begin], localArr[begin + i]] = [localArr[begin + i], localArr[begin]];
+            [localArr[begin], localArr[begin + i]] = [localArr[begin + i], arr[begin]];
             addTrace(49, { arr: `[${localArr.join(',')}]` }, [begin, begin+i]);
             heapify(i, 0, begin);
             addTrace(50, {});
@@ -1146,6 +1147,39 @@ function generateDoublyLinkedListTrace(commands: string): TraceStep[] {
     return trace;
 }
 
+function generateCircularLinkedListTrace(commands: string): TraceStep[] {
+    const trace: TraceStep[] = [];
+    const list: {value: number}[] = [];
+    const commandList = commands.split(',').map(cmd => cmd.trim());
+
+    const listToArray = () => list.map(node => ({ value: node.value }));
+
+    trace.push({ line: 7, variables: { status: 'Initializing Circular Linked List' }, data: listToArray(), highlighted: -1 });
+
+    for (const command of commandList) {
+        const [operation, valueStr] = command.split(' ');
+        const value = Number(valueStr);
+
+        if (operation === 'insert' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `insert(${value})` }, data: listToArray(), highlighted: -1 });
+            list.push({ value });
+            trace.push({ line: 19, variables: { status: `Inserted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: list.length - 1 });
+        } else if (operation === 'delete' && !isNaN(value)) {
+            trace.push({ line: 11, variables: { action: `delete(${value})` }, data: listToArray(), highlighted: -1 });
+            const indexToDelete = list.findIndex(node => node.value === value);
+            if (indexToDelete !== -1) {
+                trace.push({ line: 11, variables: { action: `delete(${value})`, status: `Found ${value} at index ${indexToDelete}` }, data: listToArray(), highlighted: indexToDelete });
+                list.splice(indexToDelete, 1);
+                trace.push({ line: 11, variables: { status: `Deleted ${value}`, head: list[0]?.value ?? 'null' }, data: listToArray(), highlighted: -1 });
+            } else {
+                 trace.push({ line: 11, variables: { action: `delete(${value})`, status: `${value} not found` }, data: listToArray(), highlighted: -1 });
+            }
+        }
+    }
+    trace.push({ line: 20, variables: { status: 'Operations complete' }, data: listToArray(), highlighted: -1 });
+    return trace;
+}
+
 
 function generateInOrderTraversalTrace(tree: TreeNode): TraceStep[] {
     const trace: TraceStep[] = [];
@@ -1604,6 +1638,7 @@ const TRACE_GENERATORS: Record<string, (arr: any, target?: any, searchKey?: stri
   stack: (commands) => generateStackTrace(commands),
   singlyLinkedList: (commands) => generateSinglyLinkedListTrace(commands),
   doublyLinkedList: (commands) => generateDoublyLinkedListTrace(commands),
+  circularLinkedList: (commands) => generateCircularLinkedListTrace(commands),
   minHeap: (arr) => generateMinHeapTrace(arr),
   inOrderTraversal: (tree: any) => generateInOrderTraversalTrace(tree),
   preOrderTraversal: (tree: any) => generatePreOrderTraversalTrace(tree),
@@ -1681,8 +1716,8 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'minHeap' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList')) {
-          if (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList') {
+      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'minHeap' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList')) {
+          if (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList') {
             trace = traceGenerator(inputStr, undefined, undefined);
           } else { // minHeap
             const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
@@ -1770,7 +1805,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list';
+  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table' | 'stack' | 'linked-list' | 'doubly-linked-list' | 'circular-linked-list';
   const needsTargetInput = (categoryKey === 'searching') || (categoryKey === 'tree' && algorithmKey === 'bestFirstSearch');
 
   return (
@@ -1799,7 +1834,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
                             categoryKey === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             categoryKey === 'searching' ? "e.g. 2, 8, 5, 12" :
                             categoryKey === 'tree' ? "e.g. { \"value\": 10, ... }" :
-                            categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList') ? "e.g. push 5,push 10,pop" :
+                            categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList') ? "e.g. push 5,push 10,pop" :
                             "e.g. key1,val1;key2,val2"
                           }
                           className="flex-1"

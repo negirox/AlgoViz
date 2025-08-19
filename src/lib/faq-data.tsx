@@ -1,4 +1,5 @@
 
+
 import { ALGO_CATEGORIES } from "./algo-templates";
 
 type FaqItem = {
@@ -1249,6 +1250,39 @@ export const FAQ_DATA: FaqData = {
                     {
                         question: "Where can I learn more?",
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/doubly-linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
+            },
+             circularLinkedList: {
+                title: "Circular Linked List",
+                faqs: [
+                    {
+                        question: "What is a Circular Linked List?",
+                        answer: "A Circular Linked List is a variation of a linked list where all nodes are connected to form a circle. There is no `null` at the end; instead, the `next` pointer of the last node points to the first node (the head)."
+                    },
+                    {
+                        question: "What are the advantages of a Circular Linked List?",
+                        answer: "The primary advantage is that the entire list can be traversed starting from any node. It's also useful for implementing circular data structures like queues, and for applications that require continuous looping, such as round-robin scheduling in operating systems or playlists in media players."
+                    },
+                    {
+                        question: "How do you know when you've traversed the whole list?",
+                        answer: "You start at the `head` and traverse until you reach the `head` again. You need a `do-while` loop or a careful `while` loop condition to ensure the loop executes at least once if there's only one node."
+                    },
+                    {
+                        question: "What are the time complexities for operations?",
+                        answer: "<ul><li><b>Search:</b> O(n).</li><li><b>Insertion at beginning/end:</b> O(1) if a `tail` pointer is maintained, otherwise O(n).</li><li><b>Deletion:</b> O(n) to find the element, but O(1) if a pointer to the node (and its predecessor) is known.</li></ul>"
+                    },
+                    {
+                        question: "What is a major use case?",
+                        answer: "They are excellent for implementing round-robin algorithms. For example, in a multiplayer game, you can use a circular linked list to cycle through players for their turns."
+                    },
+                    {
+                        question: "How does insertion at the end work efficiently?",
+                        answer: "If you maintain a pointer to the `tail` node, you can insert a new node in O(1) time. The new node is inserted after the tail, and then the new node's `next` pointer is set to the head. The old tail's `next` pointer is updated to point to the new node, which becomes the new tail."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/circular-linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
             }

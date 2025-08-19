@@ -1,4 +1,5 @@
 
+
 export const ALGO_CATEGORIES = {
   sorting: {
     name: "Sorting",
@@ -956,6 +957,40 @@ class DoublyLinkedList {
             input: "insert 10,insert 20,insert 30,delete 20",
             visualizer: "doubly-linked-list",
             timeComplexity: "O(n) Search",
+            spaceComplexity: "O(n)",
+          },
+          circularLinkedList: {
+            name: "Circular Linked List",
+            description: "A Circular Linked List is a variation of a linked list in which the last node points back to the first node, creating a circle. There is no 'null' at the end. This structure is useful for applications that require continuous looping, like managing processes in a round-robin scheduler.",
+            code: `class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+class CircularLinkedList {
+    constructor() {
+        this.head = null;
+    }
+    // ... insert, delete, traversal methods ...
+    insertAtEnd(data) {
+      const newNode = new Node(data);
+      if (!this.head) {
+          this.head = newNode;
+          newNode.next = this.head; // Points to itself
+          return;
+      }
+      let current = this.head;
+      while (current.next !== this.head) {
+          current = current.next;
+      }
+      current.next = newNode;
+      newNode.next = this.head;
+    }
+}`,
+            input: "insert 10,insert 20,insert 30,insert 40",
+            visualizer: "circular-linked-list",
+            timeComplexity: "O(n) Search/Insert",
             spaceComplexity: "O(n)",
           }
       }
