@@ -1716,24 +1716,24 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
             return { key, value };
         });
         trace = traceGenerator(pairs, undefined, searchKeyStr.trim());
-      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'minHeap' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList')) {
-          if (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList') {
-            trace = traceGenerator(inputStr, undefined, undefined);
-          } else { // minHeap
+      } else if (categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList')) {
+          trace = traceGenerator(inputStr, undefined, undefined);
+      } else if (categoryKey === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal', 'bestFirstSearch', 'minHeap'].includes(algorithmKey)) {
+          if (algorithmKey === 'minHeap') {
             const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
             if (parsedArray.some(isNaN)) throw new Error("Invalid input. Please enter comma-separated numbers.");
             trace = traceGenerator(parsedArray, undefined);
-          }
-      } else if (categoryKey === 'tree' && ['inOrderTraversal', 'preOrderTraversal', 'postOrderTraversal', 'bfsTraversal', 'bestFirstSearch'].includes(algorithmKey)) {
-          try {
-              const parsedTree = JSON.parse(inputStr);
-              const target = Number(targetStr.trim());
-              if (algorithmKey === 'bestFirstSearch' && isNaN(target)) {
-                  throw new Error("Invalid target value for Best-First Search. Please enter a number.");
-              }
-              trace = traceGenerator(parsedTree, target);
-          } catch (e) {
-              throw new Error("Invalid JSON input for the tree structure.");
+          } else {
+            try {
+                const parsedTree = JSON.parse(inputStr);
+                const target = Number(targetStr.trim());
+                if (algorithmKey === 'bestFirstSearch' && isNaN(target)) {
+                    throw new Error("Invalid target value for Best-First Search. Please enter a number.");
+                }
+                trace = traceGenerator(parsedTree, target);
+            } catch (e) {
+                throw new Error("Invalid JSON input for the tree structure.");
+            }
           }
       } else { // Sorting or BST/AVL construction
         const parsedArray = inputStr.split(',').map(s => s.trim()).filter(Boolean).map(Number);
@@ -1833,7 +1833,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
                           placeholder={
                             categoryKey === 'sorting' ? "e.g. 5, 3, 8, 4, 2" :
                             categoryKey === 'searching' ? "e.g. 2, 8, 5, 12" :
-                            categoryKey === 'tree' ? "e.g. { \"value\": 10, ... }" :
+                            categoryKey === 'tree' ? "e.g. { \"value\": 10, ... } or 10,20,5..." :
                             categoryKey === 'data-structures' && (algorithmKey === 'stack' || algorithmKey === 'singlyLinkedList' || algorithmKey === 'doublyLinkedList' || algorithmKey === 'circularLinkedList') ? "e.g. push 5,push 10,pop" :
                             "e.g. key1,val1;key2,val2"
                           }
