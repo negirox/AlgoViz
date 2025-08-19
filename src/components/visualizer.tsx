@@ -4,14 +4,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from 'lucide-react';
 import { ArrayVisualizer } from '@/components/array-visualizer';
-import type { TraceStep } from './algo-viz';
+import type { TraceStep } from '@/app/[category]/[algorithm]/algorithm-client-page';
 import { HashTableVisualizer } from "./hash-table-visualizer";
 import { TreeVisualizer } from "./tree-visualizer";
+import { StackVisualizer } from "./stack-visualizer";
 
 type VisualizerProps = {
     isLoading: boolean;
     traceStep?: TraceStep;
-    type: 'array' | 'tree' | 'graph' | 'hash-table'; // Extensible for future types
+    type: 'array' | 'tree' | 'graph' | 'hash-table' | 'stack'; // Extensible for future types
 };
 
 export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
@@ -48,7 +49,13 @@ export function Visualizer({ isLoading, traceStep, type }: VisualizerProps) {
                 traversalPath={traceStep?.traversalPath}
               />
             )}
-            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && (
+            {type === 'stack' && (
+              <StackVisualizer 
+                data={traceStep?.data ?? []}
+                highlightedIndex={Array.isArray(traceStep?.highlighted) ? traceStep.highlighted[0] : -1}
+              />
+            )}
+            {type !== 'array' && type !== 'hash-table' && type !== 'tree' && type !== 'stack' && (
                  <div className="flex items-center justify-center h-64 text-muted-foreground">{type} visualizer coming soon!</div>
             )}
           </>

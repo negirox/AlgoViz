@@ -845,7 +845,7 @@ function insert(node, key) {
   }
 }`,
             input: "push 10,push 20,push 30,pop,push 40,pop,pop",
-            visualizer: "array",
+            visualizer: "stack",
             timeComplexity: "O(1)",
             spaceComplexity: "O(n)",
           }

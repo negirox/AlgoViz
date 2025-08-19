@@ -1064,7 +1064,7 @@ function generateStackTrace(commands: string): TraceStep[] {
                 trace.push({ line: 8, variables: { status: 'Underflow: cannot pop from empty stack' }, data: [...stack], highlighted: [] });
             } else {
                 const poppedValue = stack.pop();
-                trace.push({ line: 11, variables: { status: `Popped ${poppedValue}`, top: stack[stack.length - 1] ?? 'empty' }, data: [...stack], highlighted: [] });
+                trace.push({ line: 11, variables: { status: `Popped ${poppedValue}`, top: stack.length > 0 ? stack[stack.length - 1] : 'empty' }, data: [...stack], highlighted: [] });
             }
         }
     }
@@ -1614,7 +1614,7 @@ export default function AlgorithmClientPage({ categoryKey, algorithmKey, algorit
     }
   }, [isPlaying, currentStep, executionTrace.length, handleNext]);
 
-  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table';
+  const visualizerType = algorithm.visualizer as 'array' | 'tree' | 'hash-table' | 'stack';
   const needsTargetInput = (categoryKey === 'searching') || (categoryKey === 'tree' && algorithmKey === 'bestFirstSearch');
 
   return (
