@@ -157,5 +157,61 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
     return stack.length === 0;
 }`
         }
+    },
+    {
+        slug: 'coin-change',
+        title: 'Coin Change',
+        company: 'Flipkart',
+        tags: ['Array', 'Dynamic Programming'],
+        related_algorithms: [],
+        problem: `
+            <p>You are given an integer array <code>coins</code> representing coins of different denominations and an integer <code>amount</code> representing a total amount of money.</p>
+            <p>Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return <code>-1</code>.</p>
+            <p>You may assume that you have an infinite number of each kind of coin.</p>
+             <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> coins = [1,2,5], amount = 11
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 11 = 5 + 5 + 1</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>This is a classic dynamic programming problem. We want to find the minimum number of coins for an amount, which can be broken down into subproblems: finding the minimum number of coins for smaller amounts.</p>
+                <ol>
+                    <li>Create a DP array, <code>dp</code>, of size <code>amount + 1</code>. Initialize all its values to a sentinel value that represents infinity (e.g., <code>amount + 1</code>), which indicates that the amount is not reachable yet. Set <code>dp[0] = 0</code>, because 0 coins are needed to make an amount of 0.</li>
+                    <li>Iterate from <code>1</code> to <code>amount</code>. For each amount <code>i</code>, we will try to find the minimum number of coins.</li>
+                    <li>Inside this loop, iterate through each <code>coin</code> in our <code>coins</code> array.</li>
+                    <li>If a <code>coin</code> is less than or equal to the current amount <code>i</code>, it means we can potentially use this coin. The number of coins needed would be <code>1 + dp[i - coin]</code> (1 for the current coin, plus the minimum coins needed for the remaining amount).</li>
+                    <li>We update <code>dp[i]</code> to be the minimum of its current value and the value we just calculated: <code>dp[i] = Math.min(dp[i], 1 + dp[i - coin])</code>.</li>
+                    <li>After the loops complete, <code>dp[amount]</code> will hold the minimum number of coins. If its value is still our sentinel value (infinity), it means the amount was not reachable, so we return -1. Otherwise, we return <code>dp[amount]</code>.</li>
+                </ol>
+                 <p>The time complexity is O(amount * n) where n is the number of coins, because of the nested loops. The space complexity is O(amount) for the DP array.</p>
+            `,
+            code: `function coinChange(coins, amount) {
+    // Create a DP array to store the minimum number of coins for each amount.
+    // Initialize with a value larger than any possible answer.
+    const dp = new Array(amount + 1).fill(amount + 1);
+
+    // Base case: 0 coins are needed to make an amount of 0.
+    dp[0] = 0;
+
+    // Iterate through all amounts from 1 to the target amount.
+    for (let i = 1; i <= amount; i++) {
+        // For each amount, iterate through all coin denominations.
+        for (const coin of coins) {
+            // If the coin value is less than or equal to the current amount...
+            if (coin <= i) {
+                // ...we can potentially use this coin.
+                // The number of coins would be 1 (for this coin) + the minimum
+                // coins needed for the remaining amount (i - coin).
+                dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
+            }
+        }
+    }
+
+    // If dp[amount] is still our sentinel value, it means the amount
+    // cannot be made up. Otherwise, it holds the minimum number of coins.
+    return dp[amount] > amount ? -1 : dp[amount];
+}`
+        }
     }
 ]

@@ -1343,6 +1343,39 @@ export const FAQ_DATA: FaqData = {
                         answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/circular-linked-list/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
                     }
                 ]
+            },
+            circularQueue: {
+                title: "Circular Queue",
+                faqs: [
+                     {
+                        question: "What is a Circular Queue?",
+                        answer: "A Circular Queue is a linear data structure that follows the FIFO principle, but its last position is connected back to the first position to make a circle. It's an efficient implementation of a queue using a fixed-size array, also known as a 'Ring Buffer'."
+                    },
+                    {
+                        question: "Why use a Circular Queue over a simple array-based queue?",
+                        answer: "A simple array-based queue can be inefficient. When you dequeue an element from the front, you either have to shift all other elements to the left (an O(n) operation) or leave empty space at the front. A circular queue solves this by allowing the `front` and `rear` pointers to 'wrap around' the array, making both enqueue and dequeue O(1) operations."
+                    },
+                    {
+                        question: "How do the 'front' and 'rear' pointers work?",
+                        answer: "The `front` pointer tracks the first element and the `rear` pointer tracks the last element. They are incremented using modulo arithmetic (`(pointer + 1) % size`). This allows them to wrap around to the beginning of the array when they reach the end, creating the circular behavior."
+                    },
+                    {
+                        question: "How do you check if a Circular Queue is full or empty?",
+                        answer: "A queue is empty when `front` is -1. A queue is full when the `rear` pointer is one position behind the `front` pointer. The condition for a full queue is `(rear + 1) % size === front`."
+                    },
+                    {
+                        question: "What are the time and space complexities?",
+                        answer: "The time complexity for `enqueue` and `dequeue` is O(1). The space complexity is O(k), where k is the capacity of the queue, as it uses a fixed-size array."
+                    },
+                     {
+                        question: "What are common applications?",
+                        answer: "Circular queues are used in many scenarios where a buffer of a fixed size is needed, such as in traffic light systems, CPU scheduling, and managing data buffers in streaming applications."
+                    },
+                    {
+                        question: "Where can I learn more?",
+                        answer: `You can find a more detailed explanation on <a href='https://www.geeksforgeeks.org/circular-queue-set-1-introduction-array-implementation/' target='_blank' rel='noopener noreferrer' class='text-primary hover:underline'>GeeksforGeeks</a>.`
+                    }
+                ]
             }
         }
     }

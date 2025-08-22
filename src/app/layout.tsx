@@ -1,4 +1,4 @@
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
@@ -40,11 +40,21 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        <meta name="google-adsense-account" content="ca-pub-9187440931404634" />
+        <meta name="google-site-verification" content="Ho2zcxC6OxfZE7x7sKnI0PfZHMuQpwYWvmnmjAdcUqg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9187440931404634"
+          crossOrigin="anonymous"></script>
+        <script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+        </script>
       </head>
       <body className="font-body antialiased min-h-screen bg-background">
+        <amp-auto-ads type="adsense"
+          data-ad-client="ca-pub-9187440931404634">
+        </amp-auto-ads>
         {children}
         <Toaster />
       </body>
