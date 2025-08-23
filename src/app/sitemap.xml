@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url>
+  <loc>https://algo-viz-nu.vercel.app/</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/bubbleSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/selectionSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/insertionSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/mergeSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/quickSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/heapSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/countingSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/radixSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/bucketSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/pigeonholeSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/timSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/sorting/introSort</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/searching/linearSearch</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/searching/binarySearch</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/searching/jumpSearch</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/searching/interpolationSearch</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/searching/exponentialSearch</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/searching/ternarySearch</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/minHeap</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/inOrderTraversal</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/preOrderTraversal</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/postOrderTraversal</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/bfsTraversal</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/bestFirstSearch</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/binarySearchTree</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/tree/avlTree</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/hashing</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/stack</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/queue</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/deque</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/singlyLinkedList</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/doublyLinkedList</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/circularLinkedList</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/data-structures/circularQueue</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/two-sum</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/merge-sorted-arrays</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/valid-parentheses</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/coin-change</loc>
+  <lastmod>2025-08-23T08:59:36+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+
+
+</urlset>
