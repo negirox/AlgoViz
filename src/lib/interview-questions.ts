@@ -528,5 +528,304 @@ function findKthLargest(nums, k) {
     return -1;
 }`
         }
+    },
+    {
+        slug: 'maximum-subarray',
+        title: 'Maximum Subarray',
+        company: 'Amazon',
+        tags: ['Array', 'Dynamic Programming'],
+        related_algorithms: [],
+        problem: `
+            <p>Given an integer array <code>nums</code>, find the contiguous subarray (containing at least one number) which has the largest sum, and return its sum.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> nums = [-2,1,-3,4,-1,2,1,-5,4]
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> [4,-1,2,1] has the largest sum = 6.</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>This is solved with <strong>Kadane's Algorithm</strong>, a classic dynamic programming pattern: at every index, decide whether to extend the previous subarray or start a brand new one from the current element.</p>
+                <ol>
+                    <li>Keep two running values: <code>currentSum</code> (the best sum of a subarray ending exactly at the current index) and <code>maxSum</code> (the best sum seen anywhere so far).</li>
+                    <li>Initialize both to <code>nums[0]</code>.</li>
+                    <li>For every subsequent element <code>num</code>: set <code>currentSum = Math.max(num, currentSum + num)</code>. This is the key decision — if extending the running subarray would make things worse than starting fresh at <code>num</code>, start fresh.</li>
+                    <li>Update <code>maxSum = Math.max(maxSum, currentSum)</code> after every step.</li>
+                    <li>Return <code>maxSum</code> once the array is exhausted.</li>
+                </ol>
+                <p>Because each element is visited exactly once with constant work per element, this runs in O(n) time and O(1) space — a huge improvement over the naive O(n²) approach of checking every subarray.</p>
+            `,
+            code: `function maxSubArray(nums) {
+    let currentSum = nums[0];
+    let maxSum = nums[0];
+
+    for (let i = 1; i < nums.length; i++) {
+        // Either extend the previous subarray, or start a new one at nums[i]
+        currentSum = Math.max(nums[i], currentSum + nums[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
+
+    return maxSum;
+}`
+        }
+    },
+    {
+        slug: 'group-anagrams',
+        title: 'Group Anagrams',
+        company: 'Meta',
+        tags: ['Array', 'String', 'Hash Table'],
+        related_algorithms: ['hashing'],
+        problem: `
+            <p>Given an array of strings <code>strs</code>, group the anagrams together. You can return the answer in any order.</p>
+            <p>An <strong>anagram</strong> is a word formed by rearranging the letters of another, using all the original letters exactly once.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> strs = ["eat","tea","tan","ate","nat","bat"]
+<strong>Output:</strong> [["bat"],["nat","tan"],["ate","eat","tea"]]</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>Two strings are anagrams of each other if and only if they produce the <strong>same string once sorted</strong>. That gives us a natural hash key: sort each word's letters, and group every original word under that sorted key.</p>
+                <ol>
+                    <li>Create a hash map from <code>sortedKey &rarr; list of original words</code>.</li>
+                    <li>For each word in <code>strs</code>, split it into characters, sort them, and join them back into a string — this is the canonical key for its anagram group.</li>
+                    <li>Push the original word onto the map entry for that key (creating the entry if it doesn't exist yet).</li>
+                    <li>Once every word has been processed, the map's values are exactly the grouped anagrams — return them as an array of arrays.</li>
+                </ol>
+                <p>Sorting each word of length <code>k</code> costs O(k log k), so for <code>n</code> words the total time complexity is O(n &middot; k log k). Space complexity is O(n &middot; k) to store all the words in the map.</p>
+            `,
+            code: `function groupAnagrams(strs) {
+    const map = new Map();
+
+    for (const word of strs) {
+        // Sorting the letters gives a canonical key shared by all anagrams
+        const key = word.split('').sort().join('');
+
+        if (!map.has(key)) {
+            map.set(key, []);
+        }
+        map.get(key).push(word);
+    }
+
+    return Array.from(map.values());
+}`
+        }
+    },
+    {
+        slug: 'climbing-stairs',
+        title: 'Climbing Stairs',
+        company: 'Google',
+        tags: ['Dynamic Programming', 'Math'],
+        related_algorithms: [],
+        problem: `
+            <p>You are climbing a staircase. It takes <code>n</code> steps to reach the top. Each time you can either climb <code>1</code> or <code>2</code> steps. In how many distinct ways can you climb to the top?</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> n = 4
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> [1,1,1,1], [1,1,2], [1,2,1], [2,1,1], [2,2]</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>The number of ways to reach step <code>n</code> is the sum of the ways to reach step <code>n-1</code> (then take one final 1-step) and step <code>n-2</code> (then take one final 2-step). That recurrence is exactly the <strong>Fibonacci sequence</strong>.</p>
+                <ol>
+                    <li>Handle the base cases directly: there's 1 way to reach step 1, and 2 ways to reach step 2.</li>
+                    <li>Instead of recursing naively (which recomputes the same subproblems exponentially many times), iterate from step 3 up to <code>n</code>, tracking only the previous two results.</li>
+                    <li>At each step, the current count is the sum of the previous two counts. Shift the "previous two" window forward by one.</li>
+                    <li>After the loop, the current count is the answer for <code>n</code>.</li>
+                </ol>
+                <p>Because we only keep two rolling variables instead of a full DP array, this runs in O(n) time and O(1) space — a bottom-up rewrite of what would otherwise be an O(2&#8319;) naive recursive solution.</p>
+            `,
+            code: `function climbStairs(n) {
+    if (n <= 2) return n;
+
+    let prev2 = 1; // ways to reach step (i - 2)
+    let prev1 = 2; // ways to reach step (i - 1)
+
+    for (let i = 3; i <= n; i++) {
+        const current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+
+    return prev1;
+}`
+        }
+    },
+    {
+        slug: 'merge-intervals',
+        title: 'Merge Intervals',
+        company: 'Netflix',
+        tags: ['Array', 'Sorting'],
+        related_algorithms: ['mergeSort'],
+        problem: `
+            <p>Given an array of <code>intervals</code> where <code>intervals[i] = [start_i, end_i]</code>, merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> intervals = [[1,3],[2,6],[8,10],[15,18]]
+<strong>Output:</strong> [[1,6],[8,10],[15,18]]
+<strong>Explanation:</strong> Since intervals [1,3] and [2,6] overlap, merge them into [1,6].</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>Overlaps are only easy to detect once the intervals are in a predictable order — so the first move is always to <strong>sort by start time</strong>. After that, a single linear pass can merge everything.</p>
+                <ol>
+                    <li>Sort <code>intervals</code> in ascending order by their start value.</li>
+                    <li>Initialize the result with the first interval.</li>
+                    <li>For each subsequent interval, compare it against the <em>last</em> interval already placed in the result:
+                        <ul>
+                            <li>If the current interval's start is less than or equal to that last interval's end, they overlap — extend the last interval's end to the maximum of the two ends.</li>
+                            <li>Otherwise, there's a gap — push the current interval onto the result as a new, separate interval.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>The sort dominates the cost at O(n log n); the merge pass itself is a single O(n) sweep. Overall time complexity is O(n log n), with O(n) space for the result (or O(log n) to O(n) depending on the sort's implementation).</p>
+            `,
+            code: `function merge(intervals) {
+    if (intervals.length <= 1) return intervals;
+
+    // Sort by start time so overlaps are always adjacent
+    intervals.sort((a, b) => a[0] - b[0]);
+
+    const result = [intervals[0]];
+
+    for (let i = 1; i < intervals.length; i++) {
+        const current = intervals[i];
+        const last = result[result.length - 1];
+
+        if (current[0] <= last[1]) {
+            // Overlaps with the last merged interval — extend it
+            last[1] = Math.max(last[1], current[1]);
+        } else {
+            // No overlap — it's a new interval
+            result.push(current);
+        }
+    }
+
+    return result;
+}`
+        }
+    },
+    {
+        slug: 'longest-substring-without-repeating-characters',
+        title: 'Longest Substring Without Repeating Characters',
+        company: 'Meta',
+        tags: ['String', 'Sliding Window', 'Hash Table'],
+        related_algorithms: ['hashing'],
+        problem: `
+            <p>Given a string <code>s</code>, find the length of the longest substring without repeating characters.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> s = "abcabcbb"
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The answer is "abc", with the length of 3.</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>This is the classic <strong>sliding window</strong> pattern combined with a hash map for O(1) duplicate checks. The window represents the current substring under consideration; it only ever grows from the right and shrinks from the left, never resetting from scratch.</p>
+                <ol>
+                    <li>Use a hash map to record the most recent index at which each character was seen.</li>
+                    <li>Keep a <code>left</code> pointer marking the start of the current window (initially 0), and track the best length seen so far.</li>
+                    <li>Move a <code>right</code> pointer across the string. For each character:
+                        <ul>
+                            <li>If it was seen before <em>and</em> that occurrence is inside the current window (its stored index is <code>&gt;= left</code>), jump <code>left</code> to just past that occurrence — this removes the duplicate from the window.</li>
+                            <li>Update the character's stored index to the current <code>right</code>.</li>
+                            <li>Update the best length using the current window size <code>right - left + 1</code>.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>Because <code>left</code> only ever moves forward, each character is visited a bounded number of times, giving O(n) time complexity. Space complexity is O(min(n, charset size)) for the hash map.</p>
+            `,
+            code: `function lengthOfLongestSubstring(s) {
+    const lastSeen = new Map();
+    let left = 0;
+    let maxLength = 0;
+
+    for (let right = 0; right < s.length; right++) {
+        const char = s[right];
+
+        if (lastSeen.has(char) && lastSeen.get(char) >= left) {
+            // Duplicate found inside the current window — shrink from the left
+            left = lastSeen.get(char) + 1;
+        }
+
+        lastSeen.set(char, right);
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+
+    return maxLength;
+}`
+        }
+    },
+    {
+        slug: 'top-k-frequent-elements',
+        title: 'Top K Frequent Elements',
+        company: 'Flipkart',
+        tags: ['Array', 'Hash Table', 'Heap'],
+        related_algorithms: ['minHeap', 'hashing'],
+        problem: `
+            <p>Given an integer array <code>nums</code> and an integer <code>k</code>, return the <code>k</code> most frequent elements. You may return the answer in any order.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> nums = [1,1,1,2,2,3], k = 2
+<strong>Output:</strong> [1,2]</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>This combines a frequency count with a bounded min-heap, the same "keep only the top k" pattern used in the Kth Largest Element problem.</p>
+                <ol>
+                    <li>Build a hash map counting how many times each number appears in <code>nums</code>.</li>
+                    <li>Push <code>[count, number]</code> pairs from the map onto a min-heap ordered by <code>count</code>.</li>
+                    <li>Whenever the heap grows past size <code>k</code>, pop its minimum — this discards the least frequent candidates first, so only the <code>k</code> most frequent numbers can survive.</li>
+                    <li>Once every distinct number has been processed, the heap contains exactly the <code>k</code> most frequent elements. Extract their values.</li>
+                </ol>
+                <p>Counting takes O(n). With <code>d</code> distinct numbers, maintaining a heap bounded at size <code>k</code> costs O(d log k). This beats sorting all distinct counts (O(d log d)) whenever <code>k</code> is small relative to <code>d</code>.</p>
+            `,
+            code: `class MinHeap {
+    constructor() { this.data = []; }
+    size() { return this.data.length; }
+
+    push(pair) { // pair = [count, value]
+        this.data.push(pair);
+        let i = this.data.length - 1;
+        while (i > 0) {
+            const parent = Math.floor((i - 1) / 2);
+            if (this.data[parent][0] <= this.data[i][0]) break;
+            [this.data[parent], this.data[i]] = [this.data[i], this.data[parent]];
+            i = parent;
+        }
+    }
+
+    pop() {
+        const top = this.data[0];
+        const last = this.data.pop();
+        if (this.data.length > 0) {
+            this.data[0] = last;
+            let i = 0;
+            while (true) {
+                const l = 2 * i + 1, r = 2 * i + 2;
+                let smallest = i;
+                if (l < this.data.length && this.data[l][0] < this.data[smallest][0]) smallest = l;
+                if (r < this.data.length && this.data[r][0] < this.data[smallest][0]) smallest = r;
+                if (smallest === i) break;
+                [this.data[i], this.data[smallest]] = [this.data[smallest], this.data[i]];
+                i = smallest;
+            }
+        }
+        return top;
+    }
+}
+
+function topKFrequent(nums, k) {
+    const counts = new Map();
+    for (const num of nums) {
+        counts.set(num, (counts.get(num) || 0) + 1);
+    }
+
+    const heap = new MinHeap();
+    for (const [value, count] of counts) {
+        heap.push([count, value]);
+        if (heap.size() > k) {
+            heap.pop(); // discard the least frequent so far
+        }
+    }
+
+    return heap.data.map(([count, value]) => value);
+}`
+        }
     }
 ]

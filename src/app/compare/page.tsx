@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, GitCompareArrows } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Footer } from '@/components/footer';
 import { COMPARISONS } from '@/lib/comparisons';
 import { ALGO_CATEGORIES } from '@/lib/algo-templates';
 
@@ -17,7 +16,6 @@ export const metadata: Metadata = {
 
 export default function ComparePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background font-sans text-foreground">
       <div className="container px-4 md:px-6 py-12 md:py-16 space-y-8">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
           <ArrowLeft className="h-4 w-4" />
@@ -59,7 +57,5 @@ export default function ComparePage() {
           })}
         </div>
       </div>
-      <Footer />
-    </div>
   );
 }

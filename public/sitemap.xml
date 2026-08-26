@@ -235,6 +235,36 @@
   <priority>0.64</priority>
 </url>
 <url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/maximum-subarray</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/group-anagrams</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/climbing-stairs</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/merge-intervals</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/longest-substring-without-repeating-characters</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/top-k-frequent-elements</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
   <loc>https://algo-viz-nu.vercel.app/about</loc>
   <lastmod>2026-08-26T00:00:00+00:00</lastmod>
   <priority>0.60</priority>

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Github, Mail, ArrowLeft } from 'lucide-react';
-import { Footer } from '@/components/footer';
 
 export const metadata: Metadata = {
   title: 'About | AlgoViz',
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background font-sans text-foreground">
       <div className="container max-w-3xl px-4 md:px-6 py-12 md:py-16 space-y-8">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
           <ArrowLeft className="h-4 w-4" />
@@ -86,7 +84,5 @@ export default function AboutPage() {
           </section>
         </div>
       </div>
-      <Footer />
-    </div>
   );
 }
