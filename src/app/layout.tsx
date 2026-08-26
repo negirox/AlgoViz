@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
 
 export const metadata: Metadata = {
   title: 'AlgoViz: Interactive Algorithm Visualization Tool',
@@ -49,7 +51,11 @@ export default function RootLayout({
           crossOrigin="anonymous"></script>
       </head>
       <body className="font-body antialiased min-h-screen bg-background">
-        {children}
+        <div className="relative flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
         <Toaster />
       </body>
     </html>

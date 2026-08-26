@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background font-sans text-foreground">
       <div className="container max-w-3xl px-4 md:px-6 py-12 md:py-16 space-y-6">
         <div>
           <Link href="/" className="text-sm font-medium text-primary hover:underline">
@@ -137,6 +136,5 @@ export default function PrivacyPolicyPage() {
           </section>
         </div>
       </div>
-    </div>
   );
 }

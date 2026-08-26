@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Footer } from '@/components/footer';
 import { COMPARISONS } from '@/lib/comparisons';
 import { ALGO_CATEGORIES } from '@/lib/algo-templates';
 
@@ -45,7 +44,6 @@ export default async function ComparisonDetailPage({ params }: { params: { slug:
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background font-sans text-foreground">
       <div className="container max-w-4xl px-4 md:px-6 py-12 md:py-16 space-y-10">
         <Link href="/compare" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
           <ArrowLeft className="h-4 w-4" />
@@ -107,7 +105,5 @@ export default async function ComparisonDetailPage({ params }: { params: { slug:
           </CardContent>
         </Card>
       </div>
-      <Footer />
-    </div>
   );
 }
