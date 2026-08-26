@@ -204,6 +204,85 @@
   <lastmod>2025-08-23T08:59:36+00:00</lastmod>
   <priority>0.64</priority>
 </url>
-
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/reverse-linked-list</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/linked-list-cycle</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/kth-largest-element</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/binary-tree-level-order-traversal</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/lru-cache</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/interview-questions/search-rotated-sorted-array</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/about</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.60</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/privacy-policy</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/complexity-cheat-sheet</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/compare</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.70</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/compare/quick-sort-vs-merge-sort</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.65</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/compare/bubble-sort-vs-selection-sort</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.65</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/compare/merge-sort-vs-heap-sort</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.65</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/compare/linear-search-vs-binary-search</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.65</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/compare/stack-vs-queue</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.65</priority>
+</url>
+<url>
+  <loc>https://algo-viz-nu.vercel.app/compare/binary-search-tree-vs-avl-tree</loc>
+  <lastmod>2026-08-26T00:00:00+00:00</lastmod>
+  <priority>0.65</priority>
+</url>
 
 </urlset>

@@ -213,5 +213,320 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
     return dp[amount] > amount ? -1 : dp[amount];
 }`
         }
+    },
+    {
+        slug: 'reverse-linked-list',
+        title: 'Reverse a Linked List',
+        company: 'Netflix',
+        tags: ['Linked List', 'Two Pointers'],
+        related_algorithms: ['singlyLinkedList'],
+        problem: `
+            <p>Given the <code>head</code> of a singly linked list, reverse the list, and return the reversed list's head.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> head = [1,2,3,4,5]
+<strong>Output:</strong> [5,4,3,2,1]</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>The iterative approach reverses the list in place by walking through it once and flipping each node's <code>next</code> pointer to point backward instead of forward.</p>
+                <ol>
+                    <li>Keep three pointers: <code>prev</code> (initially <code>null</code>), <code>curr</code> (initially <code>head</code>), and a temporary <code>next</code>.</li>
+                    <li>While <code>curr</code> is not <code>null</code>:
+                        <ul>
+                            <li>Save <code>curr.next</code> into <code>next</code> before you overwrite it.</li>
+                            <li>Point <code>curr.next</code> back to <code>prev</code>.</li>
+                            <li>Move <code>prev</code> up to <code>curr</code>, and <code>curr</code> up to <code>next</code>.</li>
+                        </ul>
+                    </li>
+                    <li>When the loop ends, <code>curr</code> is <code>null</code> and <code>prev</code> is sitting on the new head — return it.</li>
+                </ol>
+                <p>This runs in O(n) time with O(1) extra space, since every node is visited exactly once and no new list is allocated.</p>
+            `,
+            code: `function reverseList(head) {
+    let prev = null;
+    let curr = head;
+
+    while (curr !== null) {
+        const next = curr.next; // save the rest of the list
+        curr.next = prev;       // reverse the pointer
+        prev = curr;            // advance prev
+        curr = next;            // advance curr
+    }
+
+    return prev; // prev is now the new head
+}`
+        }
+    },
+    {
+        slug: 'linked-list-cycle',
+        title: 'Linked List Cycle Detection',
+        company: 'Google',
+        tags: ['Linked List', 'Two Pointers'],
+        related_algorithms: ['singlyLinkedList'],
+        problem: `
+            <p>Given the <code>head</code> of a linked list, determine if the linked list has a cycle in it.</p>
+            <p>A cycle exists if some node in the list can be reached again by continuously following the <code>next</code> pointer. Return <code>true</code> if there is a cycle, <code>false</code> otherwise.</p>
+        `,
+        solution: {
+            explanation: `
+                <p>This is the classic "tortoise and hare" problem, solved elegantly with <strong>Floyd's Cycle Detection Algorithm</strong> using two pointers moving at different speeds.</p>
+                <ol>
+                    <li>Initialize a <code>slow</code> pointer and a <code>fast</code> pointer, both starting at <code>head</code>.</li>
+                    <li>On each step, move <code>slow</code> forward by one node and <code>fast</code> forward by two nodes.</li>
+                    <li>If the list has no cycle, <code>fast</code> (or <code>fast.next</code>) will eventually hit <code>null</code> — return <code>false</code>.</li>
+                    <li>If the list does have a cycle, <code>fast</code> will eventually "lap" <code>slow</code> and they will point to the same node — return <code>true</code>.</li>
+                </ol>
+                <p>Because the gap between the two pointers shrinks by one node every step once both are inside the cycle, they are guaranteed to meet. This runs in O(n) time with O(1) extra space — no visited-set required.</p>
+            `,
+            code: `function hasCycle(head) {
+    let slow = head;
+    let fast = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow === fast) {
+            return true; // pointers met -> cycle found
+        }
+    }
+
+    return false; // fast reached the end -> no cycle
+}`
+        }
+    },
+    {
+        slug: 'kth-largest-element',
+        title: 'Kth Largest Element in an Array',
+        company: 'Google',
+        tags: ['Array', 'Heap', 'Sorting'],
+        related_algorithms: ['minHeap', 'quickSort'],
+        problem: `
+            <p>Given an integer array <code>nums</code> and an integer <code>k</code>, return the <code>k</code>th largest element in the array.</p>
+            <p>Note that it is the <code>k</code>th largest element in sorted order, not the <code>k</code>th distinct element.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> nums = [3,2,1,5,6,4], k = 2
+<strong>Output:</strong> 5</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>Sorting the whole array and reading off the <code>k</code>th-from-the-end element works in O(n log n), but a <strong>min-heap of size k</strong> does better — O(n log k).</p>
+                <ol>
+                    <li>Walk through <code>nums</code> and push each value onto a min-heap.</li>
+                    <li>Whenever the heap grows past size <code>k</code>, pop its minimum — this discards elements that can't possibly be among the <code>k</code> largest.</li>
+                    <li>After processing every element, the heap contains exactly the <code>k</code> largest values, and its root (the minimum of that set) is the answer.</li>
+                </ol>
+                <p>Because the heap never holds more than <code>k</code> elements, each push/pop is O(log k), giving an overall time complexity of O(n log k) and space complexity of O(k).</p>
+            `,
+            code: `class MinHeap {
+    constructor() { this.data = []; }
+    size() { return this.data.length; }
+    peek() { return this.data[0]; }
+
+    push(val) {
+        this.data.push(val);
+        let i = this.data.length - 1;
+        while (i > 0) {
+            const parent = Math.floor((i - 1) / 2);
+            if (this.data[parent] <= this.data[i]) break;
+            [this.data[parent], this.data[i]] = [this.data[i], this.data[parent]];
+            i = parent;
+        }
+    }
+
+    pop() {
+        const top = this.data[0];
+        const last = this.data.pop();
+        if (this.data.length > 0) {
+            this.data[0] = last;
+            let i = 0;
+            while (true) {
+                const left = 2 * i + 1, right = 2 * i + 2;
+                let smallest = i;
+                if (left < this.data.length && this.data[left] < this.data[smallest]) smallest = left;
+                if (right < this.data.length && this.data[right] < this.data[smallest]) smallest = right;
+                if (smallest === i) break;
+                [this.data[i], this.data[smallest]] = [this.data[smallest], this.data[i]];
+                i = smallest;
+            }
+        }
+        return top;
+    }
+}
+
+function findKthLargest(nums, k) {
+    const heap = new MinHeap();
+    for (const num of nums) {
+        heap.push(num);
+        if (heap.size() > k) {
+            heap.pop(); // discard the smallest, keeping only the top k
+        }
+    }
+    return heap.peek();
+}`
+        }
+    },
+    {
+        slug: 'binary-tree-level-order-traversal',
+        title: 'Binary Tree Level Order Traversal',
+        company: 'Meta',
+        tags: ['Tree', 'BFS', 'Queue'],
+        related_algorithms: ['bfsTraversal', 'queue'],
+        problem: `
+            <p>Given the <code>root</code> of a binary tree, return the level order traversal of its nodes' values (i.e., from left to right, level by level), as an array of arrays — one inner array per level.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> root = [3,9,20,null,null,15,7]
+<strong>Output:</strong> [[3],[9,20],[15,7]]</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>Level order traversal is a direct application of <strong>Breadth-First Search (BFS)</strong> using a queue, with one extra trick: tracking how many nodes belong to the current level.</p>
+                <ol>
+                    <li>If <code>root</code> is <code>null</code>, return an empty array immediately.</li>
+                    <li>Push <code>root</code> onto a queue.</li>
+                    <li>While the queue is not empty:
+                        <ul>
+                            <li>Record the current queue length as <code>levelSize</code> — this is exactly how many nodes are on the current level.</li>
+                            <li>Dequeue <code>levelSize</code> nodes one at a time, collecting their values into a <code>currentLevel</code> array, and enqueue each node's non-null children.</li>
+                            <li>Push <code>currentLevel</code> onto the result.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>Each node is enqueued and dequeued exactly once, giving O(n) time complexity. Space complexity is O(w), where <code>w</code> is the maximum width of the tree (the queue never holds more than one level's worth of nodes at a time).</p>
+            `,
+            code: `function levelOrder(root) {
+    if (!root) return [];
+
+    const result = [];
+    const queue = [root];
+
+    while (queue.length > 0) {
+        const levelSize = queue.length;
+        const currentLevel = [];
+
+        for (let i = 0; i < levelSize; i++) {
+            const node = queue.shift();
+            currentLevel.push(node.value);
+
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
+        }
+
+        result.push(currentLevel);
+    }
+
+    return result;
+}`
+        }
+    },
+    {
+        slug: 'lru-cache',
+        title: 'LRU Cache',
+        company: 'Amazon',
+        tags: ['Hash Table', 'Doubly Linked List', 'Design'],
+        related_algorithms: ['hashing', 'doublyLinkedList'],
+        problem: `
+            <p>Design a data structure that follows the constraints of a <strong>Least Recently Used (LRU) cache</strong>.</p>
+            <p>Implement the <code>LRUCache</code> class:</p>
+            <ul>
+                <li><code>LRUCache(capacity)</code> initializes the cache with a positive size <code>capacity</code>.</li>
+                <li><code>get(key)</code> returns the value of the <code>key</code> if it exists, otherwise <code>-1</code>. Accessing a key counts as a "use".</li>
+                <li><code>put(key, value)</code> updates the value of the key if it exists, or adds the key-value pair. If the number of keys exceeds <code>capacity</code>, evict the <strong>least recently used</strong> key.</li>
+            </ul>
+            <p>Both <code>get</code> and <code>put</code> must run in <strong>O(1)</strong> average time complexity.</p>
+        `,
+        solution: {
+            explanation: `
+                <p>The textbook solution combines a <strong>hash map</strong> (for O(1) key lookup) with a <strong>doubly linked list</strong> (for O(1) reordering of recency, since you can unlink and relink a node without shifting anything).</p>
+                <ol>
+                    <li>The hash map stores <code>key &rarr; node</code>, where each node lives in a doubly linked list ordered from most-recently-used (head) to least-recently-used (tail).</li>
+                    <li>On <code>get(key)</code>: if the key exists, unlink its node and re-insert it at the head (marking it as freshly used), then return its value. Otherwise return -1.</li>
+                    <li>On <code>put(key, value)</code>: if the key exists, update its value and move it to the head. Otherwise create a new node at the head; if this pushes the cache over capacity, remove the tail node (the least recently used one) from both the list and the map.</li>
+                </ol>
+                <p>JavaScript's built-in <code>Map</code> actually preserves insertion order and lets you re-insert a key to move it to the "most recent" end, which makes for a much shorter implementation of the same O(1) idea without hand-rolling a linked list:</p>
+            `,
+            code: `class LRUCache {
+    constructor(capacity) {
+        this.capacity = capacity;
+        this.cache = new Map(); // preserves insertion order
+    }
+
+    get(key) {
+        if (!this.cache.has(key)) return -1;
+        const value = this.cache.get(key);
+        // Re-insert to mark as most recently used
+        this.cache.delete(key);
+        this.cache.set(key, value);
+        return value;
+    }
+
+    put(key, value) {
+        if (this.cache.has(key)) {
+            this.cache.delete(key);
+        } else if (this.cache.size >= this.capacity) {
+            // Map iterates in insertion order, so the first key is the least recently used
+            const lruKey = this.cache.keys().next().value;
+            this.cache.delete(lruKey);
+        }
+        this.cache.set(key, value);
+    }
+}`
+        }
+    },
+    {
+        slug: 'search-rotated-sorted-array',
+        title: 'Search in Rotated Sorted Array',
+        company: 'Flipkart',
+        tags: ['Array', 'Binary Search'],
+        related_algorithms: ['binarySearch'],
+        problem: `
+            <p>There is an integer array <code>nums</code> sorted in ascending order (with distinct values), which is possibly rotated at an unknown pivot. Given the array and an integer <code>target</code>, return the index of <code>target</code> if it is in <code>nums</code>, or <code>-1</code> if it is not.</p>
+            <p>You must write an algorithm with <strong>O(log n)</strong> runtime complexity.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
+<strong>Output:</strong> 4</pre>
+        `,
+        solution: {
+            explanation: `
+                <p>A plain Binary Search assumes the whole array is sorted, which isn't true here — but at every step, <strong>at least one half</strong> of the current search range is guaranteed to be sorted. The trick is to detect which half is sorted and check whether the target falls inside it.</p>
+                <ol>
+                    <li>Use the standard <code>low</code>/<code>high</code>/<code>mid</code> setup from Binary Search.</li>
+                    <li>If <code>nums[mid] === target</code>, return <code>mid</code>.</li>
+                    <li>Determine which half is sorted by comparing <code>nums[low]</code> and <code>nums[mid]</code>:
+                        <ul>
+                            <li>If <code>nums[low] <= nums[mid]</code>, the left half is sorted. If <code>target</code> falls within <code>[nums[low], nums[mid])</code>, search left (<code>high = mid - 1</code>); otherwise search right (<code>low = mid + 1</code>).</li>
+                            <li>Otherwise the right half is sorted. If <code>target</code> falls within <code>(nums[mid], nums[high]]</code>, search right; otherwise search left.</li>
+                        </ul>
+                    </li>
+                    <li>Repeat until <code>low > high</code>, at which point the target isn't present — return -1.</li>
+                </ol>
+                <p>Each step still halves the search space, so this remains O(log n) time and O(1) space, just like standard Binary Search.</p>
+            `,
+            code: `function search(nums, target) {
+    let low = 0, high = nums.length - 1;
+
+    while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        if (nums[mid] === target) return mid;
+
+        if (nums[low] <= nums[mid]) {
+            // Left half [low, mid] is sorted
+            if (nums[low] <= target && target < nums[mid]) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        } else {
+            // Right half [mid, high] is sorted
+            if (nums[mid] < target && target <= nums[high]) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+    }
+
+    return -1;
+}`
+        }
     }
 ]

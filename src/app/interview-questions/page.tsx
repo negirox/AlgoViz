@@ -1,8 +1,18 @@
 
+import type { Metadata } from 'next';
 import { INTERVIEW_QUESTIONS } from "@/lib/interview-questions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowRight, BrainCircuit } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: 'Coding Interview Questions: Google, Meta, Amazon & More | AlgoViz',
+  description: 'Practice real coding interview questions from Google, Meta, Amazon, Netflix, and Flipkart, each with a full problem statement, step-by-step solution walkthrough, and working code.',
+  keywords: 'coding interview questions, algorithm interview questions, FAANG interview questions, leetcode style questions, data structures interview prep',
+  alternates: {
+    canonical: 'https://algo-viz-nu.vercel.app/interview-questions',
+  },
+};
 
 export default function InterviewQuestionsPage() {
     const questionsByCompany = INTERVIEW_QUESTIONS.reduce((acc, q) => {

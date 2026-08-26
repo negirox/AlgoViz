@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://algo-viz-nu.vercel.app/sitemap.xml
