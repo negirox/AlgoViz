@@ -20,13 +20,12 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
         tags: ['Array', 'Hash Table'],
         related_algorithms: ['hashing', 'linearSearch'],
         problem: `
-            <p>Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.</p>
-            <p>You may assume that each input would have <strong>exactly one solution</strong>, and you may not use the same element twice.</p>
-            <p>You can return the answer in any order.</p>
+            <p>A shop is running a promotion: a gift card can be spent on exactly two different items, and the card is only accepted if their prices add up to its value exactly. You are given the item prices as an integer array <code>nums</code> and the card value as <code>target</code>. Return the positions (indices) of the two items whose prices sum to <code>target</code>.</p>
+            <p>Each input has exactly one valid pair, and an item cannot be paired with itself. The two indices may be returned in either order.</p>
             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> nums = [2,7,11,15], target = 9
-<strong>Output:</strong> [0,1]
-<strong>Explanation:</strong> Because nums[0] + nums[1] == 9, we return [0, 1].</pre>
+            <pre><strong>Input:</strong> nums = [3, 9, 14, 5, 11], target = 16
+<strong>Output:</strong> [3, 4]
+<strong>Why:</strong> nums[3] + nums[4] = 5 + 11 = 16. No other pair reaches 16.</pre>
         `,
         solution: {
             explanation: `
@@ -64,9 +63,11 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
         tags: ['Array', 'Two Pointers', 'Sorting'],
         related_algorithms: ['mergeSort', 'insertionSort'],
         problem: `
-            <p>You are given two integer arrays <code>nums1</code> and <code>nums2</code>, sorted in non-decreasing order, and two integers <code>m</code> and <code>n</code>, representing the number of elements in <code>nums1</code> and <code>nums2</code> respectively.</p>
-            <p>Merge <code>nums1</code> and <code>nums2</code> into a single array sorted in non-decreasing order.</p>
-            <p>The final sorted array should not be returned by the function, but instead be stored inside the array <code>nums1</code>. To accommodate this, <code>nums1</code> has a length of <code>m + n</code>, where the first <code>m</code> elements denote the elements that should be merged, and the last <code>n</code> elements are set to 0 and should be ignored.</p>
+            <p>You have two lists of numbers that are each already sorted from smallest to largest, and you want to combine them into one sorted list <em>without allocating a new array</em>.</p>
+            <p>The first array, <code>nums1</code>, has room for both lists: its first <code>m</code> slots hold real values and its last <code>n</code> slots are placeholders filled with 0. The second array, <code>nums2</code>, holds <code>n</code> values. Rearrange <code>nums1</code> in place so that it contains all <code>m + n</code> values in sorted order. Nothing needs to be returned.</p>
+            <p><strong>Example:</strong></p>
+            <pre><strong>Input:</strong> nums1 = [1, 4, 7, 0, 0], m = 3, nums2 = [2, 8], n = 2
+<strong>Result:</strong> nums1 becomes [1, 2, 4, 7, 8]</pre>
         `,
         solution: {
             explanation: `
@@ -109,14 +110,17 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
         tags: ['String', 'Stack'],
         related_algorithms: ['stack'],
         problem: `
-            <p>Given a string <code>s</code> containing just the characters <code>'('</code>, <code>')'</code>, <code>'{'</code>, <code>'}'</code>, <code>'['</code> and <code>']'</code>, determine if the input string is valid.</p>
-            <p>An input string is valid if:
-                <ol>
-                    <li>Open brackets must be closed by the same type of brackets.</li>
-                    <li>Open brackets must be closed in the correct order.</li>
-                    <li>Every close bracket has a corresponding open bracket of the same type.</li>
-                </ol>
-            </p>
+            <p>Imagine you are building the part of a code editor that flags unbalanced brackets. You receive a string <code>s</code> made up only of the characters <code>( ) [ ] { }</code> and must decide whether it is balanced.</p>
+            <p>A string is balanced when:</p>
+            <ol>
+                <li>every opening bracket is closed by a bracket of the same kind,</li>
+                <li>brackets close in the reverse order they were opened (the most recent opener closes first), and</li>
+                <li>no closing bracket appears without a matching opener before it.</li>
+            </ol>
+            <p><strong>Examples:</strong></p>
+            <pre><strong>Input:</strong> s = "{[()]}"   <strong>Output:</strong> true
+<strong>Input:</strong> s = "([)]"     <strong>Output:</strong> false  (the ")" arrives while "[" is still open)
+<strong>Input:</strong> s = "(("       <strong>Output:</strong> false  (two openers are never closed)</pre>
         `,
         solution: {
             explanation: `
@@ -165,13 +169,14 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
         tags: ['Array', 'Dynamic Programming'],
         related_algorithms: [],
         problem: `
-            <p>You are given an integer array <code>coins</code> representing coins of different denominations and an integer <code>amount</code> representing a total amount of money.</p>
-            <p>Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return <code>-1</code>.</p>
-            <p>You may assume that you have an infinite number of each kind of coin.</p>
-             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> coins = [1,2,5], amount = 11
-<strong>Output:</strong> 3
-<strong>Explanation:</strong> 11 = 5 + 5 + 1</pre>
+            <p>A vending machine has to give change using as few coins as possible. The available coin values are given as an array <code>coins</code>, and the machine has an unlimited supply of each. Given the change due, <code>amount</code>, return the smallest number of coins that add up to it exactly. If no combination works, return <code>-1</code>.</p>
+            <p><strong>Examples:</strong></p>
+            <pre><strong>Input:</strong> coins = [1, 3, 4], amount = 6
+<strong>Output:</strong> 2
+<strong>Why:</strong> 3 + 3 = 6. Always grabbing the biggest coin first gives 4 + 1 + 1, which uses three coins, so a greedy approach fails here.
+
+<strong>Input:</strong> coins = [5, 10], amount = 3
+<strong>Output:</strong> -1</pre>
         `,
         solution: {
             explanation: `
@@ -221,10 +226,10 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
         tags: ['Linked List', 'Two Pointers'],
         related_algorithms: ['singlyLinkedList'],
         problem: `
-            <p>Given the <code>head</code> of a singly linked list, reverse the list, and return the reversed list's head.</p>
+            <p>You are given the <code>head</code> of a singly linked list. Reverse the direction of every <code>next</code> pointer so that the old last node becomes the new head, then return that new head. An empty list stays empty.</p>
             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> head = [1,2,3,4,5]
-<strong>Output:</strong> [5,4,3,2,1]</pre>
+            <pre><strong>Input:</strong>  7 -> 3 -> 9 -> 1
+<strong>Output:</strong> 1 -> 9 -> 3 -> 7</pre>
         `,
         solution: {
             explanation: `
@@ -264,8 +269,14 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
         tags: ['Linked List', 'Two Pointers'],
         related_algorithms: ['singlyLinkedList'],
         problem: `
-            <p>Given the <code>head</code> of a linked list, determine if the linked list has a cycle in it.</p>
-            <p>A cycle exists if some node in the list can be reached again by continuously following the <code>next</code> pointer. Return <code>true</code> if there is a cycle, <code>false</code> otherwise.</p>
+            <p>A linked list is supposed to end with a node whose <code>next</code> pointer is <code>null</code>. A bug elsewhere in the program may have pointed some node's <code>next</code> back to an earlier node, creating a loop. Given the <code>head</code>, return <code>true</code> if following <code>next</code> pointers would go round forever, or <code>false</code> if the list reaches its end.</p>
+            <p>Try to solve it using only a constant amount of extra memory.</p>
+            <p><strong>Examples:</strong></p>
+            <pre><strong>Input:</strong>  1 -> 2 -> 3 -> 4, where node 4 points back to node 2
+<strong>Output:</strong> true
+
+<strong>Input:</strong>  1 -> 2 -> 3 -> null
+<strong>Output:</strong> false</pre>
         `,
         solution: {
             explanation: `
@@ -301,11 +312,11 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
         tags: ['Array', 'Heap', 'Sorting'],
         related_algorithms: ['minHeap', 'quickSort'],
         problem: `
-            <p>Given an integer array <code>nums</code> and an integer <code>k</code>, return the <code>k</code>th largest element in the array.</p>
-            <p>Note that it is the <code>k</code>th largest element in sorted order, not the <code>k</code>th distinct element.</p>
+            <p>You are given an unsorted integer array <code>nums</code> and a number <code>k</code>. Return the value that would be at position <code>k</code> if the array were sorted from largest to smallest (position 1 is the maximum). Duplicates count as separate entries.</p>
             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> nums = [3,2,1,5,6,4], k = 2
-<strong>Output:</strong> 5</pre>
+            <pre><strong>Input:</strong> nums = [9, 4, 7, 4, 1], k = 3
+<strong>Output:</strong> 4
+<strong>Why:</strong> In descending order the array is 9, 7, 4, 4, 1, and the third value is 4. With k = 4 the answer is also 4, because the duplicate counts.</pre>
         `,
         solution: {
             explanation: `
@@ -372,10 +383,9 @@ function findKthLargest(nums, k) {
         tags: ['Tree', 'BFS', 'Queue'],
         related_algorithms: ['bfsTraversal', 'queue'],
         problem: `
-            <p>Given the <code>root</code> of a binary tree, return the level order traversal of its nodes' values (i.e., from left to right, level by level), as an array of arrays — one inner array per level.</p>
-            <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> root = [3,9,20,null,null,15,7]
-<strong>Output:</strong> [[3],[9,20],[15,7]]</pre>
+            <p>Given the <code>root</code> of a binary tree, list the node values one level at a time, from the top of the tree to the bottom, and from left to right within each level. Return a list of lists with one inner list per level.</p>
+            <p><strong>Example:</strong> the root is 8; its children are 4 and 12; 4 has a single left child 2; 12 has children 10 and 14.</p>
+            <pre><strong>Output:</strong> [[8], [4, 12], [2, 10, 14]]</pre>
         `,
         solution: {
             explanation: `
@@ -425,14 +435,20 @@ function findKthLargest(nums, k) {
         tags: ['Hash Table', 'Doubly Linked List', 'Design'],
         related_algorithms: ['hashing', 'doublyLinkedList'],
         problem: `
-            <p>Design a data structure that follows the constraints of a <strong>Least Recently Used (LRU) cache</strong>.</p>
-            <p>Implement the <code>LRUCache</code> class:</p>
+            <p>Build a fixed-size cache that, when it is full and a new key arrives, throws out the entry that has gone <strong>unused for the longest time</strong> (Least Recently Used, or LRU).</p>
+            <p>Implement an <code>LRUCache</code> class with:</p>
             <ul>
-                <li><code>LRUCache(capacity)</code> initializes the cache with a positive size <code>capacity</code>.</li>
-                <li><code>get(key)</code> returns the value of the <code>key</code> if it exists, otherwise <code>-1</code>. Accessing a key counts as a "use".</li>
-                <li><code>put(key, value)</code> updates the value of the key if it exists, or adds the key-value pair. If the number of keys exceeds <code>capacity</code>, evict the <strong>least recently used</strong> key.</li>
+                <li><code>LRUCache(capacity)</code> — creates an empty cache that can hold <code>capacity</code> keys.</li>
+                <li><code>get(key)</code> — returns the stored value, or <code>-1</code> if the key is missing. A successful read counts as using the key.</li>
+                <li><code>put(key, value)</code> — inserts or updates the key and counts as using it. If this pushes the cache over capacity, remove the least recently used key.</li>
             </ul>
-            <p>Both <code>get</code> and <code>put</code> must run in <strong>O(1)</strong> average time complexity.</p>
+            <p>Both operations should take <strong>O(1)</strong> time on average.</p>
+            <p><strong>Example</strong> (capacity 2):</p>
+            <pre>put(1, 10); put(2, 20)
+get(1)     -> 10   (key 1 is now the most recently used)
+put(3, 30)         (cache is full, so key 2 is evicted)
+get(2)     -> -1
+get(3)     -> 30</pre>
         `,
         solution: {
             explanation: `
@@ -479,11 +495,11 @@ function findKthLargest(nums, k) {
         tags: ['Array', 'Binary Search'],
         related_algorithms: ['binarySearch'],
         problem: `
-            <p>There is an integer array <code>nums</code> sorted in ascending order (with distinct values), which is possibly rotated at an unknown pivot. Given the array and an integer <code>target</code>, return the index of <code>target</code> if it is in <code>nums</code>, or <code>-1</code> if it is not.</p>
-            <p>You must write an algorithm with <strong>O(log n)</strong> runtime complexity.</p>
-            <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0
-<strong>Output:</strong> 4</pre>
+            <p>A sorted array of distinct integers has been <em>rotated</em>: some number of elements were taken from the front and moved, in order, to the back. For example, <code>[10, 20, 30, 40, 50]</code> rotated by three becomes <code>[40, 50, 10, 20, 30]</code>. You do not know how far it was rotated.</p>
+            <p>Given the rotated array <code>nums</code> and a <code>target</code>, return the index of <code>target</code>, or <code>-1</code> if it is not present. Your solution must run in <strong>O(log n)</strong> time, so a linear scan is not allowed.</p>
+            <p><strong>Examples:</strong></p>
+            <pre><strong>Input:</strong> nums = [40, 50, 10, 20, 30], target = 20   <strong>Output:</strong> 3
+<strong>Input:</strong> nums = [40, 50, 10, 20, 30], target = 35   <strong>Output:</strong> -1</pre>
         `,
         solution: {
             explanation: `
@@ -536,11 +552,14 @@ function findKthLargest(nums, k) {
         tags: ['Array', 'Dynamic Programming'],
         related_algorithms: [],
         problem: `
-            <p>Given an integer array <code>nums</code>, find the contiguous subarray (containing at least one number) which has the largest sum, and return its sum.</p>
-            <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> nums = [-2,1,-3,4,-1,2,1,-5,4]
+            <p>You are given a trader's daily profit and loss as an integer array <code>nums</code> (negative numbers are losing days). Find the best possible total over any run of <em>consecutive</em> days — at least one day long — and return that total.</p>
+            <p><strong>Examples:</strong></p>
+            <pre><strong>Input:</strong> nums = [3, -4, 5, -1, 2, -6, 1]
 <strong>Output:</strong> 6
-<strong>Explanation:</strong> [4,-1,2,1] has the largest sum = 6.</pre>
+<strong>Why:</strong> Days 3 to 5 give 5 + (-1) + 2 = 6. Including day 1 would add 3 but also the -4 loss.
+
+<strong>Input:</strong> nums = [-3, -1, -2]
+<strong>Output:</strong> -1   (when every day loses money, the best run is the single smallest loss)</pre>
         `,
         solution: {
             explanation: `
@@ -575,11 +594,10 @@ function findKthLargest(nums, k) {
         tags: ['Array', 'String', 'Hash Table'],
         related_algorithms: ['hashing'],
         problem: `
-            <p>Given an array of strings <code>strs</code>, group the anagrams together. You can return the answer in any order.</p>
-            <p>An <strong>anagram</strong> is a word formed by rearranging the letters of another, using all the original letters exactly once.</p>
+            <p>Two words are <strong>anagrams</strong> when one can be made by rearranging all the letters of the other — for example "listen" and "silent". Given an array of lowercase words <code>strs</code>, put words that are anagrams of each other into the same group and return the list of groups. Neither the groups nor the words inside them need to be in any particular order.</p>
             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> strs = ["eat","tea","tan","ate","nat","bat"]
-<strong>Output:</strong> [["bat"],["nat","tan"],["ate","eat","tea"]]</pre>
+            <pre><strong>Input:</strong> strs = ["listen", "rat", "silent", "dog", "tar", "enlist", "art"]
+<strong>Output:</strong> [["listen", "silent", "enlist"], ["rat", "tar", "art"], ["dog"]]</pre>
         `,
         solution: {
             explanation: `
@@ -616,11 +634,11 @@ function findKthLargest(nums, k) {
         tags: ['Dynamic Programming', 'Math'],
         related_algorithms: [],
         problem: `
-            <p>You are climbing a staircase. It takes <code>n</code> steps to reach the top. Each time you can either climb <code>1</code> or <code>2</code> steps. In how many distinct ways can you climb to the top?</p>
+            <p>A staircase has <code>n</code> steps. With each move you can climb either one step or two steps. How many different sequences of moves take you from the bottom to exactly the top step?</p>
             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> n = 4
-<strong>Output:</strong> 5
-<strong>Explanation:</strong> [1,1,1,1], [1,1,2], [1,2,1], [2,1,1], [2,2]</pre>
+            <pre><strong>Input:</strong> n = 5
+<strong>Output:</strong> 8
+<strong>Why:</strong> Counting up from the bottom: n = 1 has 1 way, n = 2 has 2, n = 3 has 3, n = 4 has 5, and n = 5 has 8. Each answer is the sum of the previous two, because the last move was either a single step or a double step.</pre>
         `,
         solution: {
             explanation: `
@@ -656,11 +674,11 @@ function findKthLargest(nums, k) {
         tags: ['Array', 'Sorting'],
         related_algorithms: ['mergeSort'],
         problem: `
-            <p>Given an array of <code>intervals</code> where <code>intervals[i] = [start_i, end_i]</code>, merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.</p>
+            <p>A calendar stores meetings as <code>[start, end]</code> pairs in no particular order. Combine every group of meetings that overlap into one block, and return the resulting blocks sorted by start time. Meetings that merely touch — one ends exactly when the next begins — also count as overlapping.</p>
             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> intervals = [[1,3],[2,6],[8,10],[15,18]]
-<strong>Output:</strong> [[1,6],[8,10],[15,18]]
-<strong>Explanation:</strong> Since intervals [1,3] and [2,6] overlap, merge them into [1,6].</pre>
+            <pre><strong>Input:</strong> intervals = [[9, 11], [1, 4], [3, 5], [11, 12]]
+<strong>Output:</strong> [[1, 5], [9, 12]]
+<strong>Why:</strong> [1, 4] and [3, 5] overlap and become [1, 5]; [9, 11] and [11, 12] touch at 11 and become [9, 12].</pre>
         `,
         solution: {
             explanation: `
@@ -709,11 +727,11 @@ function findKthLargest(nums, k) {
         tags: ['String', 'Sliding Window', 'Hash Table'],
         related_algorithms: ['hashing'],
         problem: `
-            <p>Given a string <code>s</code>, find the length of the longest substring without repeating characters.</p>
-            <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> s = "abcabcbb"
-<strong>Output:</strong> 3
-<strong>Explanation:</strong> The answer is "abc", with the length of 3.</pre>
+            <p>Given a string <code>s</code>, return the length of the longest stretch of <em>consecutive</em> characters in which no character appears twice.</p>
+            <p><strong>Examples:</strong></p>
+            <pre><strong>Input:</strong> s = "dvdfa"   <strong>Output:</strong> 4   (the stretch "vdfa")
+<strong>Input:</strong> s = "aaaa"    <strong>Output:</strong> 1
+<strong>Input:</strong> s = ""        <strong>Output:</strong> 0</pre>
         `,
         solution: {
             explanation: `
@@ -759,10 +777,11 @@ function findKthLargest(nums, k) {
         tags: ['Array', 'Hash Table', 'Heap'],
         related_algorithms: ['minHeap', 'hashing'],
         problem: `
-            <p>Given an integer array <code>nums</code> and an integer <code>k</code>, return the <code>k</code> most frequent elements. You may return the answer in any order.</p>
+            <p>Given an integer array <code>nums</code> and a number <code>k</code>, return the <code>k</code> values that occur most often. You can return them in any order, and you may assume the answer is unique (there is no tie at the cut-off).</p>
             <p><strong>Example:</strong></p>
-            <pre><strong>Input:</strong> nums = [1,1,1,2,2,3], k = 2
-<strong>Output:</strong> [1,2]</pre>
+            <pre><strong>Input:</strong> nums = [4, 4, 6, 6, 6, 1, 4, 6, 2], k = 2
+<strong>Output:</strong> [6, 4]
+<strong>Why:</strong> 6 appears four times and 4 appears three times; 1 and 2 appear once each.</pre>
         `,
         solution: {
             explanation: `

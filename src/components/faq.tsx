@@ -1,8 +1,5 @@
 
-"use client";
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlgorithmCategoryKey, AlgorithmKey } from "@/lib/algo-templates";
 import { FAQ_DATA } from "@/lib/faq-data.tsx";
 import { INTERVIEW_QUESTIONS } from "@/lib/interview-questions";
@@ -34,16 +31,15 @@ export function Faq({ category, algorithm }: FaqProps) {
                     <CardDescription>About {faqContent.title}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
+                    {/* Answers are rendered as plain text (not a collapsed accordion) so they are part of the page content. */}
+                    <div className="divide-y divide-border">
                         {faqContent.faqs.map((faq, index) => (
-                            <AccordionItem value={`item-${index}`} key={index}>
-                                <AccordionTrigger>{faq.question}</AccordionTrigger>
-                                <AccordionContent>
-                                    <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
-                                </AccordionContent>
-                            </AccordionItem>
+                            <div key={index} className="py-4 first:pt-0 last:pb-0">
+                                <h3 className="font-semibold text-card-foreground mb-2">{faq.question}</h3>
+                                <div className="text-muted-foreground leading-relaxed [&_a]:text-primary [&_a]:underline [&_code]:font-code" dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                            </div>
                         ))}
-                    </Accordion>
+                    </div>
                 </CardContent>
             </Card>
 

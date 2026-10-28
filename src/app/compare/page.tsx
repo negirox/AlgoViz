@@ -4,13 +4,14 @@ import { ArrowLeft, ArrowRight, GitCompareArrows } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { COMPARISONS } from '@/lib/comparisons';
 import { ALGO_CATEGORIES } from '@/lib/algo-templates';
+import { absoluteUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Algorithm Comparisons | AlgoViz',
   description: 'Head-to-head algorithm comparisons — Quick Sort vs Merge Sort, Linear vs Binary Search, Stack vs Queue, and more — with complexity, tradeoffs, and when to use each.',
   keywords: 'algorithm comparison, quick sort vs merge sort, linear search vs binary search, stack vs queue, binary search tree vs avl tree',
   alternates: {
-    canonical: 'https://algo-viz-nu.vercel.app/compare',
+    canonical: absoluteUrl('/compare'),
   },
 };
 

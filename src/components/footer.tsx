@@ -4,6 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 export function Footer() {
     const currentYear = new Date().getFullYear();
@@ -23,6 +24,12 @@ export function Footer() {
                         <Link href="/compare" className="text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-primary">
                             Compare Algorithms
                         </Link>
+                        <Link href="/about" className="text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-primary">
+                            About
+                        </Link>
+                        <Link href="/contact" className="text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-primary">
+                            Contact
+                        </Link>
                         <Link href="/privacy-policy" className="text-sm font-medium text-muted-foreground underline underline-offset-4 hover:text-primary">
                             Privacy Policy
                         </Link>
@@ -40,7 +47,7 @@ export function Footer() {
                         </a>
                     </Button>
                     <Button variant="ghost" size="icon" asChild>
-                        <a href="mailto:mukeshsingh.negi07@gmail.com" aria-label="Email">
+                        <a href={`mailto:${CONTACT_EMAIL}`} aria-label="Email">
                             <Mail className="h-5 w-5" />
                         </a>
                     </Button>
