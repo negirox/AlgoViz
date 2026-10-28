@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Github, Mail, ArrowLeft } from 'lucide-react';
+import { absoluteUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'About | AlgoViz',
   description: 'Learn about AlgoViz, a free interactive algorithm visualization tool built to help students and developers understand sorting, searching, trees, and data structures.',
   alternates: {
-    canonical: 'https://algo-viz-nu.vercel.app/about',
+    canonical: absoluteUrl('/about'),
   },
 };
 
@@ -55,6 +56,21 @@ export default function AboutPage() {
               To democratize algorithm learning by providing a free, accessible, and interactive
               way to explore computer science concepts. AlgoViz is built for learners who want to
               master algorithms visually and strengthen their problem-solving skills.
+            </p>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-lg font-semibold text-foreground">How the content is made</h2>
+            <p>
+              Every algorithm page combines three things: an interactive visualizer, a written guide
+              (how the algorithm works, its complexity, when to use it and common mistakes), and a
+              worked example. The worked example is generated from the same code that drives the
+              visualizer, so the dry run you read always matches the animation you watch.
+            </p>
+            <p>
+              Interview questions are restated in our own words with original examples, and each
+              solution links back to the algorithms it uses. Pages show when they were last updated,
+              and corrections are welcome — see the <Link href="/contact" className="text-primary hover:underline">contact page</Link>.
             </p>
           </section>
 

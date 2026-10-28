@@ -390,7 +390,7 @@ function partition(arr, begin, end) {
   for (let j = begin; j < end; j++) {
     if (arr[j] <= pivot) {
       i++;
-      [arr[i], arr[j]] = [arr[j], arr[j]];
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
   }
   [arr[i + 1], arr[end]] = [arr[end], arr[i + 1]];

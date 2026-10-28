@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { COMPARISONS } from '@/lib/comparisons';
 import { ALGO_CATEGORIES } from '@/lib/algo-templates';
+import { absoluteUrl } from '@/lib/site';
 
 type Algo = { name: string; description: string; timeComplexity: string; spaceComplexity: string };
 
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: `${comparison.title}: Which Should You Use? | AlgoViz`,
     description: comparison.summary,
     alternates: {
-      canonical: `https://algo-viz-nu.vercel.app/compare/${comparison.slug}`,
+      canonical: absoluteUrl(`/compare/${comparison.slug}`),
     },
   };
 }

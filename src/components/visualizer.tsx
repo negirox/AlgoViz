@@ -5,7 +5,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from 'lucide-react';
 import { ArrayVisualizer } from '@/components/array-visualizer';
-import type { TraceStep } from '@/app/[category]/[algorithm]/algorithm-client-page';
+import type { TraceStep } from '@/lib/trace-generators';
 import { HashTableVisualizer } from "./hash-table-visualizer";
 import { TreeVisualizer } from "./tree-visualizer";
 import { StackVisualizer } from "./stack-visualizer";

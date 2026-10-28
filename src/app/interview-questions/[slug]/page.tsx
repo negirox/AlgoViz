@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { CodeEditor } from "@/components/code-editor";
+import { absoluteUrl } from '@/lib/site';
 
 function resolveAlgorithmLink(key: string): { href: string; name: string } | null {
     for (const [categoryKey, category] of Object.entries(ALGO_CATEGORIES)) {
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
         return {};
     }
 
-    const url = `https://algo-viz-nu.vercel.app/interview-questions/${question.slug}`;
+    const url = absoluteUrl(`/interview-questions/${question.slug}`);
     const title = `${question.title} - ${question.company} Interview Question & Solution | AlgoViz`;
     const description = `Solve "${question.title}", a ${question.company} coding interview question (${question.tags.join(', ')}). Includes the full problem statement, a step-by-step solution walkthrough, and working code.`;
 

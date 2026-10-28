@@ -1,6 +1,6 @@
 # AlgoViz: Interactive Algorithm Visualization
 
-[![Deploy with Vercel](httpshttps://vercel.com/button)](https://algo-viz-nu.vercel.app/)
+[![Deploy with Vercel](https://vercel.com/button)](https://algo-viz-nu.vercel.app/)
 
 **Live Demo: [https://algo-viz-nu.vercel.app/](https://algo-viz-nu.vercel.app/)**
 

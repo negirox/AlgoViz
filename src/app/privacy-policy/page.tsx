@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { absoluteUrl, SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | AlgoViz',
   description: 'Privacy Policy for AlgoViz, explaining how we handle data and how third-party vendors like Google use cookies to serve ads.',
   alternates: {
-    canonical: 'https://algo-viz-nu.vercel.app/privacy-policy',
+    canonical: absoluteUrl('/privacy-policy'),
   },
 };
 
@@ -23,7 +24,7 @@ export default function PrivacyPolicyPage() {
         <div className="space-y-6 text-sm leading-relaxed text-muted-foreground">
           <p>
             AlgoViz ("we", "our", or "us") is committed to protecting your privacy. This Privacy
-            Policy explains how information is handled when you use algo-viz-nu.vercel.app (the "Site").
+            Policy explains how information is handled when you use {new URL(SITE_URL).host} (the "Site").
           </p>
 
           <section className="space-y-2">

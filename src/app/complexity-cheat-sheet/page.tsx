@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, BarChartHorizontal } from 'lucide-react';
 import { ComplexityCheatSheet } from '@/components/complexity-cheat-sheet';
+import { absoluteUrl } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Big-O Cheat Sheet: Algorithm Time & Space Complexity | AlgoViz',
   description: 'A complete Big-O cheat sheet covering the time and space complexity of every sorting, searching, tree, and data structure algorithm on AlgoViz, with direct links to interactive visualizations.',
   keywords: 'big o cheat sheet, time complexity, space complexity, algorithm complexity chart, sorting algorithm complexity, searching algorithm complexity, data structure complexity',
   alternates: {
-    canonical: 'https://algo-viz-nu.vercel.app/complexity-cheat-sheet',
+    canonical: absoluteUrl('/complexity-cheat-sheet'),
   },
 };
 
